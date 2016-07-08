@@ -5,9 +5,11 @@ a = JL.fromfile('hodjkin-huxley.json', '', False)
 
 print a
 
-'''
+eqs = B.Equations(a["equations"])
 for i in a:
         eqs.substitute(i, str(a[i]))
+
+print eqs
 
 g = B.NeuronGroup(N=1, model = eqs, threshold=None)
 
