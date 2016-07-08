@@ -1,12 +1,14 @@
 import json
 
-def fromdict(stri, d, a):
+def fromdict(stri, d, a, dolists):
     for k in d:
         nstr = stri+"_"+k if stri!='' else k
         if type(d[k])==dict:
             fromdict(nstr, d[k], a)
         elif type(d[k])==list:
-            fromlist(nstr, d[k], a)
+            if dolists:
+                fromlist(nstr, d[k], a)
+            else: a[nstr] = "\n".join(map(str, d[k]))
         else:   a[nstr] = d[k]
 
 def fromlist(stri, l, a):
@@ -18,9 +20,9 @@ def fromlist(stri, l, a):
             fromlist(nstr, l[i], a)
         else:   a[nstr] = l[i]
 
-def fromfile(filename, name):
+def fromfile(filename, name, dolists=True):
     a = {}
     with open(filename) as f:
         d = json.load(f)
-    fromdict(name, d, a)
+    fromdict(name, d, a, dolists)
     return a

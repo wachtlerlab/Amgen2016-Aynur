@@ -1,24 +1,11 @@
 import brian as B
 import json_to_one_lauer as JL
 
-a = JL.fromfile('params.json', '')
+a = JL.fromfile('hodjkin-huxley.json', '', False)
 
-eqs = B.Equations('''
-    dNa_ch_f/dt = (Na_ch_foo-Na_ch_f)/Na_ch_tf/ms : 1
-    dNa_ch_x/dt = (Na_ch_xoo-Na_ch_x)/Na_ch_tx/ms : 1
-    Na_ch_cond = Na_ch_max*Na_ch_x**Na_ch_px*Na_ch_f**Na_ch_pf : 1
+print a
 
-    Na_ch_current = (Na_rest - V/mV)*Na_ch_cond : 1
-    
-    dKa_ch_f/dt = (Ka_ch_foo-Ka_ch_f)/Ka_ch_tf/ms : 1
-    dKa_ch_x/dt = (Ka_ch_xoo-Ka_ch_x)/Ka_ch_tx/ms : 1
-    Ka_ch_cond = Ka_ch_max*Ka_ch_x**Ka_ch_px*Ka_ch_f**Ka_ch_pf : 1
-
-    Ka_ch_current = (Ka_rest - V/mV)*Ka_ch_cond : 1
-
-
-    dV/dt = (Ka_ch_current + Na_ch_current)*capacity*mV/ms : mV
-    ''')
+'''
 for i in a:
         eqs.substitute(i, str(a[i]))
 
@@ -36,7 +23,7 @@ for i in p:
 
 B.legend()
 B.show()
-'''
+
 KAaI = 0.5
 AaI = 0.01*B.mvolt
 MAaI = 30*B.mvolt
