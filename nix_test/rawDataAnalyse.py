@@ -1,7 +1,7 @@
 # Ajayrama Kumaraswamy, 2016
 # Ginjang project, LMU
 
-from GJEMS.ephys.neoNIXIO import tag2AnalogSignal, multiTag2SpikeTrain, property2qu
+from neoNIXIO import tag2AnalogSignal, multiTag2SpikeTrain, property2qu
 import nix
 import os
 import quantities as qu

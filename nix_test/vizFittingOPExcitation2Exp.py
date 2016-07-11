@@ -1,4 +1,4 @@
-from GJEMS.ephys.rawDataAnalyse import RawDataAnalyser
+from rawDataAnalyse import RawDataAnalyser
 from scipy.signal import iirfilter, freqz, lfilter, kaiserord, firwin
 import numpy as np
 from neo import AnalogSignal
