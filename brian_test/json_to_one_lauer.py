@@ -1,6 +1,6 @@
 import json
 
-def fromdict(stri, d, a, dolists):
+def fromdict(stri, d, a, dolists = True):
     for k in d:
         nstr = stri+"_"+k if stri!='' else k
         if type(d[k])==dict:
