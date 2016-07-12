@@ -18,13 +18,19 @@ class Dmodel:
         #    model.substitute(i, str(new_dic[i]))
         return model
 
-    def simulate(self, time, g, d = None):
+    def simulate(self, time, g, funcI, d = None):
         if d==None:
             d = self.monitors_list
         self.monitors = {}
         self.monitors_un = d
         for k in d:
             self.monitors[k] = StateMonitor(g, k, record=[0])
+
+        if funcI!=None:
+            @network_operation
+            def myoperation():
+                g.I = funcI(defaultclock.t)
+
         run(time, threads=2)
         return self.monitors
 
@@ -50,7 +56,7 @@ class DummyModel(Dmodel):
         self.monitors_list = ['V']
 
 
-class hodjkin_huxley(Dmodel):
+class hodgkin_huxley(Dmodel):
     def __init__(self):
         self.def_inits = {"n":0.31, "m":0.05, "h": 0.6}
         self.monitors_list = {"V":mV, "INa":uA, "IK":uA}
