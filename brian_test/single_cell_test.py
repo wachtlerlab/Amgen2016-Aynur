@@ -1,36 +1,25 @@
 import SYM
-initials = {'V' : -65*SYM.M.mvolt, 'I' : 55*SYM.M.mA}
-SYM.single_cell(SYM.M.hodjkin_huxley(), 50*SYM.M.msecond, initials)
-'''
-md = SYM.M.DummyModel()
+SYM.M.defaultclock.dt=0.01*SYM.M.ms
 
-eqs = md.get_model()#SYM.M.Equations("dV/dt = 1*mV/ms : mV")
+spk = [(0, i*SYM.M.ms) for i in xrange(4, 120)]
 
-print eqs
+inits = {'V' : 0*SYM.M.mvolt, 'I' : 0*SYM.M.uA}
 
-g = SYM.M.NeuronGroup(N=1, model = eqs, threshold=None)
+mons = {"V":SYM.M.mV, "INa":10*SYM.M.uA, "IK":10*SYM.M.uA, "Il":10*SYM.M.uA, "I":10*SYM.M.uA}
 
-md.set_start_params(g, **initials)
+time = 150*SYM.M.msecond
 
-#p = md.set_monitors(g)
-pn = ['V']
-pp = {}
+spkp = "I"
 
-def func(pp):
-    for i in pn:
-        pp[i] = SYM.M.StateMonitor(g, i, record=0)
-    print "monitors:", pp
-    SYM.M.run(200*SYM.M.msecond)
-    return pp
+units = {"V":SYM.M.mvolt, "I":SYM.M.uA}
 
-p = func(pp)
+for i in [30]:
+    SYM.M.defaultclock.t=0*SYM.M.ms
+    dV = i*units[spkp]
+    SYM.single_cell(SYM.M.hodjkin_huxley(), time=time, initials=inits,
+                    spikes = spk, sptype=spkp, monitors = mons, deltaV = -dV,
+                    prefix="$dV={0}mV$, ".format(i))
 
 
-print p
-
-for i in p:
-    print p[i].times
-    SYM.M.plot(p[i].times/SYM.M.ms, p[i][0]/SYM.M.mvolt, label=i)
 SYM.M.legend()
 SYM.M.show()
-'''
