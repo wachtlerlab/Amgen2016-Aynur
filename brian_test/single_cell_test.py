@@ -17,12 +17,12 @@ Y = I.PeriodicSineFilter(15, 0).on(X, Y)
 print Y
 Y = I.VolFilter(7).on(X, Y)
 
-inits = {'I' : I.TR(Y, nA, dtstep, ms)}
+inits = {'I' : I.TR(Y, mA, dtstep, ms)}
 
 time = timemax*ms
 
 
-myModel = SYM.M.Izhikevich()
+myModel = SYM.M.Izhikevich(inits=inits)
 
 for i in [13]:
     defaultclock.t=0*ms

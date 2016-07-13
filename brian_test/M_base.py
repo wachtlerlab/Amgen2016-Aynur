@@ -47,6 +47,6 @@ class model_template:
             print "times:|",self.monitors[self.monitors.keys()[0]].times, "|"
         for i in self.monitors:
             unit = self.monitors_un[i]
-            plot(self.monitors[i].times / ms, self.monitors[i][0] / unit, label=prefix+i)
+            plot(self.monitors[i].times / ms, self.monitors[i][0] / unit, label="$"+prefix+i+"["+str(unit)+"]$")
 #        legend()
 #        show()
