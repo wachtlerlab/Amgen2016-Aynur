@@ -5,7 +5,7 @@ import input_signals as I
 defaultclock.dt=0.01*ms
 
 timemax = 100
-dtstep = 0.1
+dtstep = 0.02
 
 seq = np.arange(10234, timemax-15, 2)
 spk = zip([0]*len(seq), [i*ms for i in seq])
@@ -13,9 +13,9 @@ spk = zip([0]*len(seq), [i*ms for i in seq])
 X = I.gen_time_interval(0, timemax, dtstep)
 Y = I.gen_constant_signal(X, 1)
 print Y
-Y = I.PeriodicSineFilter(15, 0).on(X, Y)
+Y = I.PeriodicRectFilter(5 ,1, 0).on(X, Y)
 print Y
-Y = I.VolFilter(9).on(X, Y)
+Y = I.VolFilter(-188).on(X, Y)
 
 inits = {'I' : I.TR(Y, uA, dtstep, ms)}
 
