@@ -1,7 +1,7 @@
 from M import ms, mV, mA, uA
 import M
 
-def single_cell(Nmodel, time=200*ms, inits={'V': -65 * mV, 'I': 0 * mA}, spikes=[], dV=3*mV, monitors=None, prefix=""):
+def single_cell(Nmodel, time=200*ms, inits={}, spikes=[], dV=3*mV, monitors=None, prefix=""):
     eqs = Nmodel.get_model()
     print eqs
     print "T,R = ", Nmodel.get_threshold(), Nmodel.get_reset()

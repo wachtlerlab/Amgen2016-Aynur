@@ -9,8 +9,16 @@ class DummyModel(model_template):
 
 class AdEx(model_template):
     def __init__(self):
-        self.def_inits = {"w":0*uA, "V":0*uA}
-        self.monitors_list = {"V": mV, "I": uA, "w":uA}
+        self.def_inits = {
+            "w":0*uA,
+            "V":0*uA,
+            "Vr":-48.5*mV,
+            "Vt":-50.4*mV,
+            "b": 0.08 * nA,
+            "V":-70.4*mV,
+            "sF": 2 * mV
+        }
+        self.monitors_list = {"V": mV, "I": nA, "w":nA}
         self.equations = [
             "dV/dt = (I + IL + Ex - w)/C : mV",
 
@@ -18,22 +26,21 @@ class AdEx(model_template):
             "Ex = gL*sF*exp((V - Vt)/sF) : mA",
             "IL = gL*(EL - V) : mA",
             "dI/dt = cI : mA",
-            "",
+            "DV : mV",
+            "Vt : mV",
+            "Vr : mV",
+            "b : mA",
+            "sF : mV",
             ""
         ]
         self.params = {
             "tau": 40 * ms,
-            "EL": 0 * mV,
-            "gL": 0.003 * msiemens,
-            "C": 1 * ufarad,
+            "EL": -70.6 * mV,
+            "gL": 30 * nS,
+            "C": 281 * pF,
             "a": 4 * nS,
-            "b": 0.08 * nA,
-            "sF": 1 * mV,
             "cI": 0*mA/ms,
-            "Vt": 30*mV,
-            "Vr": 3*mV
             }
-        self._threshold = 'V > %(Vt)f - 0.00001' % self.params
-        self._reset = 'V = %(Vr)f;w+=%(b)f' % self.params
-
+        self._threshold = 'V > Vt + 5*sF'
+        self._reset = 'V = Vr; w+=b'
 
