@@ -18,7 +18,7 @@ class AdEx(model_template):
             "dIdt": 0*mA/ms
         }
         self.def_inits.update(inits)
-        self.monitors_list = {"V": mV, "I": nA, "w":nA}
+        self.monitors_list = {"V": mV, "I": nA, "w":0.1*nA}
         self.equations = [
             "dV/dt = (I + IL + Ex - w)/C : mV",
 

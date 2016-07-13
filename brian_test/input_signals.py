@@ -1,28 +1,42 @@
-import numpy as np
 from M import *
 
-def gen_time_interval(start, end, step=1.):
-    return np.arange(start, end, step)
+def gen_time_interval(start, end, step):
+    return arange(start, end, step)
 
 def gen_constant_signal(X, val):
-    return np.array([val]*len(X))
+    return array([val]*len(X))
 
 class Filter(object):
     def __init__(self, func):
         self.func = func
     def on(self, X, Y):
         leng = min(len(X), len(Y))
-        Z = np.zeros(leng)
+        Z = zeros(leng)
         for i in xrange(leng):
             Z[i] = self.func(X[i], Y[i])
+        return Z
 
-class QuadraticFilter(Filter):
+class SingleRectFilter(Filter):
     def __init__(self, start, end):
-        super(QuadraticFilter, self).__init__(lambda x, y: 0. if x<start or x>end else y)
+        super(SingleRectFilter, self).__init__(lambda x, y: y if x >= start and x <= end else 0)
 
-class Vol(Filter):
+class PeriodicRectFilter(Filter):
+    def __init__(self, period, width, shift):
+        def func(x, y):
+            n = round((x - shift)/period)
+            if abs(x-shift-n*period)*2 < width:
+                return y
+            else: return 0.
+        super(PeriodicRectFilter, self).__init__(func)
+
+class PeriodicSineFilter(Filter):
+    def __init__(self, period, shift):
+        print pi
+        super(PeriodicSineFilter, self).__init__(lambda x, y: y*sin((x-shift)*2.*pi/period))
+
+class VolFilter(Filter):
     def __init__(self, val):
-        super(Filter, self).__init__(lambda x, y: val*y)
+        super(VolFilter, self).__init__(lambda x, y: val*y)
 
-def TR(Y, dt):
-    return TimedArray(Y, dt=dt)
+def TR(Y, d1, dt, d2):
+    return TimedArray(Y*d1, dt=dt*d2)

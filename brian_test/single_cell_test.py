@@ -2,22 +2,22 @@ import SYM, numpy as np
 from M import ms, mA, nA, uA, mV, defaultclock, nS, pF, TimedArray
 import input_signals as I
 
-defaultclock.dt=0.01*ms
+defaultclock.dt=0.1*ms
 
-timemax = 50
-dtstep = 1.
+timemax = 300
+dtstep = 0.5
 
 seq = np.arange(10980, timemax-15, 2)
 spk = zip([0]*len(seq), [i*ms for i in seq])
 
-X = I.gen_time_interval(0*ms, timemax*ms, dtstep*ms)
-print X
-Y = I.gen_constant_signal(X, 1*uA)
+X = I.gen_time_interval(0, timemax, dtstep)
+Y = I.gen_constant_signal(X, 1)
 print Y
-Y = I.QuadraticFilter(10, 30).on(X, Y)
+Y = I.PeriodicSineFilter(15, 0).on(X, Y)
 print Y
+Y = I.VolFilter(7).on(X, Y)
 
-inits = {'I' : I.TR(Y, dtstep*ms), 'tau': 20*ms, 'C':600*pF, 'gL': 30*nS, 'a': 6*nS}
+inits = {'I' : I.TR(Y, nA, dtstep, ms), 'tau': 20*ms, 'C':600*pF, 'gL': 30*nS, 'a': 6*nS}
 
 time = timemax*ms
 
