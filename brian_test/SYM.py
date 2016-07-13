@@ -1,14 +1,17 @@
+from M import ms, mV, mA, uA
 import M
 
-def single_cell(Mmodel_object, time=200*M.msecond, initials={'V':-65*M.mvolt, 'I':0*M.mA}, spikes=[], deltaV=3*M.mvolt, monitors=None, prefix="", funcI = None):
-    eqs = Mmodel_object.get_model()
+def single_cell(Nmodel, time=200*ms, inits={'V': -65 * mV, 'I': 0 * mA}, spikes=[], dV=3*mV, monitors=None, prefix=""):
+    eqs = Nmodel.get_model()
     print eqs
-    g = M.NeuronGroup(N=1, model = eqs, threshold=None)
+    print "T,R = ", Nmodel.get_threshold(), Nmodel.get_reset()
+    if Nmodel.get_threshold()!=None:
+        g = M.NeuronGroup(N=1, model = eqs, threshold=Nmodel.get_threshold(), reset=Nmodel.get_reset())
+    else: g = M.NeuronGroup(N=1, model = eqs, threshold=None)
     j = M.SpikeGeneratorGroup(1, spiketimes=spikes)
     conn = M.Connection(j, g, "V")
-    conn[0,0]=deltaV
-    Mmodel_object.set_start_params(g, **initials)
-    Mmodel_object.simulate(time, g, d=monitors, funcI=funcI)
+    conn[0,0]=dV
+    Nmodel.set_start_params(g, **inits)
+    Nmodel.simulate(time, g, d=monitors)
     print j.get_spikes(0)
-    Mmodel_object.plot_results(prefix=prefix)
-
+    Nmodel.plot_results(prefix=prefix)
