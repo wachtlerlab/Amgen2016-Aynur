@@ -7,7 +7,7 @@ defaultclock.dt=0.1*ms
 timemax = 100
 dtstep = 0.5
 
-seq = np.arange(10, timemax-15, 20)
+seq = np.arange(10, timemax-15, 2)
 spk = zip([0]*len(seq), [i*ms for i in seq])
 
 X = I.gen_time_interval(0, timemax, dtstep)
@@ -24,7 +24,7 @@ time = timemax*ms
 
 myModel = SYM.M.Izhikevich(inits=inits)
 
-for i in [15, 25, 50]:
+for i in [5, 10, 20]:
     defaultclock.t=0*ms
     dV = i*mV
     SYM.single_cell(myModel, time=time,
