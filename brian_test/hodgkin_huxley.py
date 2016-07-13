@@ -1,8 +1,9 @@
 from M_base import *
 
 class hodgkin_huxley(model_template):
-    def __init__(self):
+    def __init__(self, inits = {}):
         self.def_inits = {"n":0.31, "m":0.05, "h": 0.6}
+        self.def_inits.update(inits)
         self.monitors_list = {"V":mV, "INa":10*uA, "IK":10*uA, "Il":10*uA, "I":10*uA}
         self.equations = [
                 "dV/dt = (I + INa + IK + Il)/C : mV",
@@ -22,11 +23,10 @@ class hodgkin_huxley(model_template):
                 "dh/dt = (ah*(1-h)-bh*h)/tau2 : 1",
                 "ah = h_a_A*exp(VD/h_a_C) : 1",
                 "bh = h_b_A/(exp((VD-h_b_B)/h_b_C)-h_b_D) : 1",
-                "dI/dt = -I/tau : mA",
+                "I : mA",
                 "VD = V - Vr : mV",
                 ]
         self.params = {
-            "tau": 0.2*ms,
             "tau2": 1.*ms,
             "ENa": -115.*mV,
             "EK": 12.*mV,

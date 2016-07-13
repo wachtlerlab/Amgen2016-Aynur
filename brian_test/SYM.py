@@ -4,7 +4,7 @@ import M
 def single_cell(Nmodel, time=200*ms, inits={}, spikes=[], dV=3*mV, monitors=None, prefix=""):
     eqs = Nmodel.get_model()
     print eqs
-    print "T,R = ", Nmodel.get_threshold(), Nmodel.get_reset()
+    print "Treshold,Reset = ", Nmodel.get_threshold(), Nmodel.get_reset()
     if Nmodel.get_threshold()!=None:
         g = M.NeuronGroup(N=1, model = eqs, threshold=Nmodel.get_threshold(), reset=Nmodel.get_reset())
     else: g = M.NeuronGroup(N=1, model = eqs, threshold=None)
