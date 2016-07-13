@@ -24,7 +24,7 @@ time = timemax*ms
 
 myModel = SYM.M.Izhikevich(inits=inits)
 
-for i in [10, 15, 20, 25]:
+for i in [15, 25, 50]:
     defaultclock.t=0*ms
     dV = i*mV
     SYM.single_cell(myModel, time=time,
