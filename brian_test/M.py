@@ -8,5 +8,3 @@ class DummyModel(model_template):
         self.equations = ["dV/dt = 1*mV/ms : mV"]
         self.monitors_list = ['V']
 
-
-

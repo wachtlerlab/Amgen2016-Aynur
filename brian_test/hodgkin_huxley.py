@@ -23,7 +23,7 @@ class hodgkin_huxley(model_template):
                 "ah = h_a_A*exp(VD/h_a_C) : 1",
                 "bh = h_b_A/(exp((VD-h_b_B)/h_b_C)-h_b_D) : 1",
                 "dI/dt = -I/tau : mA",
-                "VD = V - Vr : mV"
+                "VD = V - Vr : mV",
                 ]
         self.params = {
             "tau": 0.2*ms,
