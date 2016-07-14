@@ -6,8 +6,8 @@ def single_cell(Nmodel, time=200*ms, inits={}, spikes=[], dV=3*mV, monitors=None
     print eqs
     print "Treshold,Reset = ", Nmodel.get_threshold(), Nmodel.get_reset()
     if Nmodel.get_threshold()!=None:
-        g = M.NeuronGroup(N=1, model = eqs, threshold=Nmodel.get_threshold(), reset=Nmodel.get_reset())
-    else: g = M.NeuronGroup(N=1, model = eqs, threshold=None)
+        g = M.NeuronGroup(N=1, model = eqs, threshold=Nmodel.get_threshold(), reset=Nmodel.get_reset(), method = "RK")
+    else: g = M.NeuronGroup(N=1, model = eqs, threshold=None, method = "RK")
     j = M.SpikeGeneratorGroup(1, spiketimes=spikes)
     conn = M.Connection(j, g, "V")
     conn[0,0]=dV

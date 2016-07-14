@@ -2,7 +2,7 @@ import SYM, numpy as np
 from M import ms, mA, nA, uA, mV, defaultclock, nS, pF, TimedArray
 import input_signals as I
 
-defaultclock.dt=0.01*ms
+defaultclock.dt=0.02*ms
 
 timemax = 100
 dtstep = 0.02
@@ -13,9 +13,9 @@ spk = zip([0]*len(seq), [i*ms for i in seq])
 X = I.gen_time_interval(0, timemax, dtstep)
 Y = I.gen_constant_signal(X, 1)
 print Y
-Y = I.PeriodicRectFilter(5 ,1, 0).on(X, Y)
+Y = I.PeriodicRectFilter(18 ,1, 0).on(X, Y)
 print Y
-Y = I.VolFilter(-188).on(X, Y)
+Y = I.VolFilter(-8).on(X, Y)
 
 inits = {'I' : I.TR(Y, uA, dtstep, ms)}
 

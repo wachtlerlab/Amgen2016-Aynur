@@ -40,3 +40,6 @@ class VolFilter(Filter):
 
 def TR(Y, d1, dt, d2):
     return TimedArray(Y*d1, dt=dt*d2)
+
+def sum_signals(x, y):
+    return x+y
