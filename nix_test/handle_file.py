@@ -1,6 +1,7 @@
-import rawDataAnalyse  as rd, os
+from . import rawDataAnalyse  as rd
+import os
 dirname = "/home/maksutov/NIXFiles/exp_data"
-nfile = "/home/maksutov/NIXFiles/reorg/cont265.h5"
+nfile = "/home/maksutov/NIXFiles/reorg/OOOcont265.h5"
 freqs = [265]
 sec = []
 for i in os.listdir(dirname):
