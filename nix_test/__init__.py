@@ -1,1 +1,1 @@
-import neoNIXIO, rawDataAnalyse, vizFittingOPExcitation2Exp
+import rawDataAnalyse
