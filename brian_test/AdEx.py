@@ -14,8 +14,7 @@ class AdEx(model_template):
             "EL": -70.6 * mV,
             "gL": 30 * nS,
             "C": 281 * pF,
-            "a": 4 * nS,
-            "dIdt": 0*mA/ms
+            "a": 4 * nS
         }
         self.def_inits.update(inits)
         self.monitors_list = {"V": mV, "I": nA, "w":0.1*nA}
@@ -25,8 +24,7 @@ class AdEx(model_template):
             "dw/dt = (a*(V - EL) - w)/tau : mA",
             "Ex = gL*sF*exp((V - Vt)/sF) : mA",
             "IL = gL*(EL - V) : mA",
-            "dI/dt = dIdt : mA",
-            "DV : mV",
+            "I : mA",
             "Vt : mV",
             "Vr : mV",
             "b : mA",
@@ -35,8 +33,7 @@ class AdEx(model_template):
             "EL : mV",
             "gL : siemens",
             "C : pF",
-            "a : siemens",
-            "dIdt : mA/ms",
+            "a : siemens"
             ""
         ]
         self.params = {}
@@ -45,5 +42,5 @@ class AdEx(model_template):
         print "C/gL", tm
         print "a/gL", aa
         print "tm/tw", tm/self.def_inits["tau"]
-        self._threshold = 'V > Vt + 5*sF'
+        self._threshold = 'V > Vt'
         self._reset = 'V = Vr; w+=b'
