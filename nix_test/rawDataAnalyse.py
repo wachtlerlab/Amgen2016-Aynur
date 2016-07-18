@@ -48,7 +48,8 @@ class RawDataAnalyser(object):
         '''
 
         self.expName = expName
-        self.nixFile = nix.File.open(os.path.join(dirpath, expName + '.h5'), nix.FileMode.ReadOnly)
+        self.fname = os.path.join(dirpath, expName + '.h5')
+        self.nixFile = nix.File.open(self.fname, nix.FileMode.ReadOnly)
 
     def getContResps(self, freqs=None, types=None):
         '''
@@ -70,7 +71,10 @@ class RawDataAnalyser(object):
             types = ['BeforeStimulus', 'DuringStimulus', 'AfterStimulus']
 
         resps = {}
-        allFreqSecs = self.nixFile.sections['VibrationStimulii-Processed'].sections['ContinuousStimulii'].sections
+        if "VibrationStimulii-Processed" in self.nixFile.sections:
+            allFreqSecs = self.nixFile.sections['VibrationStimulii-Processed'].sections['ContinuousStimulii'].sections
+        else:
+            allFreqSecs = []
         freqSecs = {}
 
         for fs in allFreqSecs:
