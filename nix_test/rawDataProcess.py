@@ -2,7 +2,7 @@ from neo import AnalogSignal
 import matplotlib.pyplot as plt
 from scipy.signal import argrelmin, argrelmax
 import os
-from GJEMS.ephys.neoNIXIO import *
+from neoNIXIO import *
 import nix
 
 
