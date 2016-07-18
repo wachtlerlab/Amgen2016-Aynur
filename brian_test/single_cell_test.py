@@ -5,7 +5,7 @@ import input_signals as I
 
 defaultclock.dt=0.02*ms
 
-timemax = 100
+timemax = 50
 dtstep = 0.02
 
 seq = np.arange(10, timemax-15, 30)
@@ -23,11 +23,11 @@ time = timemax*ms
 
 myModel = SYM.M.hodgkin_huxley(inits)
 
-for i in [-5, -10, -15]:
+for i in [-5, -6, -7, -8, -10, -15]:
     defaultclock.t=0*ms
     dV = i*mV
     SYM.single_cell(myModel, time=time,
-                    spikes = spk, dV= dV, monitors={"V":mV})
+                    spikes = spk, dV= dV, monitors={"V":mV}, prefix="(dV={0}mV)".format(i))
 
 
 
