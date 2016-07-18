@@ -8,28 +8,26 @@ defaultclock.dt=0.02*ms
 timemax = 100
 dtstep = 0.02
 
-seq = np.arange(10234, timemax-15, 2)
+seq = np.arange(10, timemax-15, 30)
 spk = zip([0]*len(seq), [i*ms for i in seq])
 
-X = I.gen_time_interval(0, timemax, dtstep)
-Y = I.gen_constant_signal(X, 1)
-print Y
-Y = I.PeriodicRectFilter(17 ,1, 0).on(X, Y)
-print Y
-Y = I.VolFilter(-8).on(X, Y)
+#X = I.gen_time_interval(0, timemax, dtstep)
+#Y = I.gen_constant_signal(X, 1)
+#Y = I.PeriodicRectFilter(17 ,1, 0).on(X, Y)
+#Y = I.VolFilter(-8).on(X, Y)
 
-inits = {'I' : I.TR(Y, uA, dtstep, ms)}
+inits = {}#{'I' : I.TR(Y, uA, dtstep, ms)}
 
 time = timemax*ms
 
 
 myModel = SYM.M.hodgkin_huxley(inits)
 
-for i in [0]:
+for i in [-5, -10, -15]:
     defaultclock.t=0*ms
     dV = i*mV
     SYM.single_cell(myModel, time=time,
-                    spikes = spk, dV= dV, monitors={"V":mV, "I":uA})
+                    spikes = spk, dV= dV, monitors={"V":mV})
 
 
 
