@@ -8,7 +8,7 @@ defaultclock.dt=0.02*ms
 timemax = 50
 dtstep = 0.02
 
-seq = np.arange(10, timemax-15, 30)
+seq = np.arange(10, timemax-15, 50)
 spk = zip([0]*len(seq), [i*ms for i in seq])
 
 #X = I.gen_time_interval(0, timemax, dtstep)
@@ -23,11 +23,11 @@ time = timemax*ms
 
 myModel = SYM.M.hodgkin_huxley(inits)
 
-for i in [-5, -6, -7, -8, -10, -15]:
+for i in [-10]:
     defaultclock.t=0*ms
     dV = i*mV
     SYM.single_cell(myModel, time=time,
-                    spikes = spk, dV= dV, monitors={"V":mV}, prefix="(dV={0}mV)".format(i))
+                    spikes = spk, dV= dV, monitors={"V":mV, "INa":10*uA, "IK":10*uA, "Il":10*uA})
 
 
 
