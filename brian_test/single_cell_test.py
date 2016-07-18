@@ -5,25 +5,26 @@ import input_signals as I
 
 defaultclock.dt=0.02*ms
 
-timemax = 50
+timemax = 100
 dtstep = 0.02
 
-seq = np.arange(100000, timemax-15, 50)
+seq = np.arange(18900, timemax-15, 5)
 spk = zip([0]*len(seq), [i*ms for i in seq])
 
 X = I.gen_time_interval(0, timemax, dtstep)
 Y = I.gen_constant_signal(X, 1)
-Y = I.PeriodicRectFilter(17 ,1, 0).on(X, Y)
-Y = I.VolFilter(18).on(X, Y)
+Y = I.PeriodicRectFilter(50, 40, 0).on(X, Y)
+#Y = I.SingleRectFilter(10 , 50).on(X, Y)
+Y = I.VolFilter(3).on(X, Y)
 
-inits = {'I' : I.TR(Y, nA, dtstep, ms)}
+inits = {'I' : I.TR(Y, nA, dtstep, ms), 'tau': 20*ms, 'C':600*pF, 'gL': 30*nS, 'a': 6*nS}
 
 time = timemax*ms
 
 
 myModel = SYM.M.AdEx(inits)
 
-for i in [21]:
+for i in [41]:
     defaultclock.t=0*ms
     dV = i*mV
     SYM.single_cell(myModel, time=time,

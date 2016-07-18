@@ -42,5 +42,5 @@ class AdEx(model_template):
         print "C/gL", tm
         print "a/gL", aa
         print "tm/tw", tm/self.def_inits["tau"]
-        self._threshold = 'V > Vt'
+        self._threshold = 'V > Vt+5*sF'
         self._reset = 'V = Vr; w+=b'
