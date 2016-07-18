@@ -1,6 +1,6 @@
 from ..nix_test import rawDataAnalyse as rd
 
-r = rd.RawDataAnalyser("141121-1Al", "/home/maksutov/NIXFiles/exp_data")
+r = rd.RawDataAnalyser("cont265", "/home/maksutov/NIXFiles/reorg")
 
 print r.getContResps([265])
 

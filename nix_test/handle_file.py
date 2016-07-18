@@ -1,21 +1,25 @@
-from . import rawDataAnalyse  as rd
+import rawDataAnalyse as rd
 import os
 dirname = "/home/maksutov/NIXFiles/exp_data"
-nfile = "/home/maksutov/NIXFiles/reorg/OOOcont265.h5"
+nfile = "/home/maksutov/NIXFiles/reorg/cont265.h5"
 freqs = [265]
+problems = ["121224-1LY"]
 sec = []
-for i in os.listdir(dirname):
-    if i[-2:]!='h5': continue
-    i = i.split(".")[0]
-    if i=="toIgnore" or len(i)<3: continue
-    analyser=rd.RawDataAnalyser(i, dirname)
+names = list(set([a[0] for a in map(lambda x:x.split("."), os.listdir(dirname)) if len(a)>1 and a[1]=="h5" and a[0]!="toIgnore"]).difference(set(problems)))
+print names
+for i in names:
+    try:
+        analyser=rd.RawDataAnalyser(i, dirname)
+    except:
+        print "analyser=rd.RawDataAnalyser(i, dirname)"
     sec.append([i, analyser.getContResps(freqs)])
-print sec[0][1][265]
 
-import nix
-f = nix.File.open(nfile, nix.FileMode.Overwrite)
-cont = f.create_section("continous_stimulii", "stimulii_type")
-fs = cont.create_property("frequency", [nix.Value(v) for v in freqs])
+'''
+#print sec
+#import nix
+#f = nix.File.open(nfile, nix.FileMode.Overwrite)
+cont = f.create_section("ContinuousStimulii", "StimuliiType")
+fs = cont.create_property("Frequency", [nix.Value(v) for v in freqs])
 for i in sec:
     blk = f.create_block(i[0], "exp_name")
     md = f.create_section(i[0], "raw_metadata")
@@ -26,3 +30,4 @@ for i in sec:
             for n in k:
                 blk.create_data_array(name=i[0]+"_"+str(fr)+"_"+str(j)+"_"+n, array_type="signal", dtype=k[n].dtype, shape=k[n].shape, data=k[n])
 f.close()
+'''
