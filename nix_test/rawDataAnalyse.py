@@ -2,7 +2,7 @@
 # Ginjang project, LMU
 
 from neoNIXIO import tag2AnalogSignal, multiTag2SpikeTrain, property2qu
-import nix
+import nixio as nix
 import os
 import quantities as qu
 from neo import SpikeTrain

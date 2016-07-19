@@ -225,16 +225,16 @@ expNames = [
 
 homeFolder = os.path.expanduser('~')
 
-dirpath = os.path.join(homeFolder, 'DataAndResults/ephys/NIXFiles/')
+dirpath = os.path.join(homeFolder, 'NIXFiles/exp_data/')
 resDir = os.path.join(homeFolder, 'DataAndResults/ephys/Backups/OPExcitationFitting_2exp_1/')
-toIgnoreFile = os.path.join(homeFolder, 'DataAndResults/ephys/NIXFiles/toIgnore.json')
-scalesFile = os.path.join(homeFolder, 'DataAndResults/ephys/scales.json')
+toIgnoreFile = os.path.join(homeFolder, 'NIXFiles/exp_data/toIgnore.json')
+#commented by Aynur# scalesFile = os.path.join(homeFolder, 'DataAndResults/ephys/scales.json')
 tempParFile = os.path.join(homeFolder, 'DataAndResults/ephys/OPExcitationFitting/tempPars265All.json')
 with open(toIgnoreFile, 'r') as fle:
     toIgnore = json.load(fle)
 
-with open(scalesFile, 'r') as fle:
-    scales = json.load(fle)
+#commented by Aynur# with open(scalesFile, 'r') as fle:
+#commented by Aynur#     scales = json.load(fle)
 
 Ts = 4.8e-5 * qu.s
 

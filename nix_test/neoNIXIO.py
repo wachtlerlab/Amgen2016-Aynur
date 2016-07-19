@@ -1,7 +1,7 @@
 # Ajayrama Kumaraswamy, 2016
 # Ginjang Project, LMU
 
-import nix
+import nixio as nix
 import neo
 import quantities as qu
 import numpy as np
@@ -21,7 +21,7 @@ def addAnalogSignal2Block(blk, analogSignal):
 
     assert hasattr(analogSignal, 'name'), 'Analog signal has no name'
 
-    data = blk.create_data_array(analogSignal.name, 'nix.regular_sampled', data=analogSignal.magnitude)
+    data = blk.create_data_array(str(analogSignal.name), str('nix.regular_sampled'), data=analogSignal.magnitude)
 
     data.unit = quUnitStr(analogSignal)
     data.label = analogSignal.name

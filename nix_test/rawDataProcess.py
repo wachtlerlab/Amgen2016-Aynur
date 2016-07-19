@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from scipy.signal import argrelmin, argrelmax
 import os
 from neoNIXIO import *
-import nix
+import nixio as nix
 
 
 def getSpikesIn(spikeTimes, intervalStart, intervalEnd):
