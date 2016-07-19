@@ -21,7 +21,7 @@ def addAnalogSignal2Block(blk, analogSignal):
 
     assert hasattr(analogSignal, 'name'), 'Analog signal has no name'
 
-    data = blk.create_data_array(str(analogSignal.name), str('nix.regular_sampled'), data=analogSignal.magnitude)
+    data = blk.create_data_array(analogSignal.name, 'nix.regular_sampled', data=analogSignal.magnitude)
 
     data.unit = quUnitStr(analogSignal)
     data.label = analogSignal.name
@@ -218,5 +218,86 @@ def sliceAnalogSignal(analogSignal, sliceStartTime=None, sliceEndTime=None):
     sliceEndInd = int(((sliceEndTime - analogSignal.t_start) / analogSignal.sampling_period).simplified)
 
     return analogSignal[sliceStartInd: sliceEndInd + 1]
+
+#***********************************************************************************************************************
+
+def addMultiTag(name, type, positions, blk, refs, metadata=None, extents=None):
+    '''
+    Add a multi_tag to one or more data_arrays
+    :param name: string, name of the multi_tag
+    :param type: string, type of the multi_tag
+    :param positions: nix.data_array, positions of the multi_tag
+    :param blk: nix.Block, the block in which the multi_tag is to be created
+    :param refs: list, list of nix.data_array objects, to which the multi_tag refers
+    :param metadata: nix.Section, to which the the multi_tag refers
+    :param extents: nix.data_array, extents of the multi_tag
+    :return: nix.multi_tag, the newly created multi_tag
+    '''
+
+
+    tag = blk.create_multi_tag(name, type, positions)
+
+
+    if extents is not None:
+        tag.extents = extents
+
+    for ref in refs:
+        tag.references.append(ref)
+        tag.units = [ref.dimensions[0].unit] * len(positions)
+
+    if metadata is not None:
+        tag.metadata = metadata
+
+#***********************************************************************************************************************
+
+def addTag(name, type, position, blk, refs, metadata=None, extent=None):
+    '''
+    Add a tag to one or more data_arrays
+    :param name: string, name of the tag
+    :param type: string, type of the tag
+    :param position: float, position of the tag
+    :param blk: nix.Block, the block in which the multi_tag is to be created
+    :param refs: list, list of nix.data_array objects, to which the multi_tag refers
+    :param metadata: nix.Section, to which the the multi_tag refers
+    :param extent: float, extent of the multi_tag
+    :return: nix.tag, the newly created tag
+    '''
+    tag = blk.create_tag(name, type, [position])
+
+
+
+    if extent is not None:
+        tag.extent = [extent]
+
+    for ref in refs:
+        tag.references.append(ref)
+        tag.units = [ref.dimensions[0].unit]
+
+    if metadata is not None:
+        tag.metadata = metadata
+
+
+#***********************************************************************************************************************
+
+def simpleFloat(quant):
+    '''
+    Float(s) of simplified version(s) of a quantity.Quantity or an iterable of quantity.Quantity objects
+    :param quant: a quantity.Quantity or an iterable of quantity.Quantity objects
+    :return: float or iterable of floats
+    '''
+
+    if quant.shape == ():
+
+        return float(quant.simplified)
+
+    elif len(quant.shape) == 1:
+
+        if quant.shape[0]:
+
+            return [float(q.simplified) for q in quant]
+
+    else:
+
+        raise(ValueError('simpleFloat only supports scalar and 1D quantities'))
 
 #***********************************************************************************************************************
