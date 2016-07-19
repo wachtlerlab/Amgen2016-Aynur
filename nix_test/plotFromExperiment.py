@@ -1,9 +1,7 @@
 import rawDataAnalyse as rd
-from neoNIXIO import tag2AnalogSignal, sliceAnalogSignal
+from neoNIXIO import tag2AnalogSignal
 import numpy as np
 from matplotlib import pylab as plt
-import neo
-import pprint
 
 dirname = "/home/maksutov/NIXFiles/reorg/"
 freqs = [265]
