@@ -48,8 +48,7 @@ class RawDataAnalyser(object):
         '''
 
         self.expName = expName
-        self.fname = os.path.join(dirpath, expName + '.h5')
-        self.nixFile = nix.File.open(self.fname, nix.FileMode.ReadOnly)
+        self.nixFile = nix.File.open(os.path.join(dirpath, expName + '.h5'), nix.FileMode.ReadOnly)
 
     def getContResps(self, freqs=None, types=None):
         '''
@@ -71,10 +70,7 @@ class RawDataAnalyser(object):
             types = ['BeforeStimulus', 'DuringStimulus', 'AfterStimulus']
 
         resps = {}
-        if "VibrationStimulii-Processed" in self.nixFile.sections:
-            allFreqSecs = self.nixFile.sections['VibrationStimulii-Processed'].sections['ContinuousStimulii'].sections
-        else:
-            allFreqSecs = []
+        allFreqSecs = self.nixFile.sections['VibrationStimulii-Processed'].sections['ContinuousStimulii'].sections
         freqSecs = {}
 
         for fs in allFreqSecs:
@@ -99,7 +95,7 @@ class RawDataAnalyser(object):
 
         for tag in self.nixFile.blocks['RawDataTraces'].tags:
 
-            if tag.metadata.parent in freqSecs and tag.type in types:
+            if tag.metadata.parent in freqSecs and tag.type in types and tag.metadata.type == 'StimulusTrial/Sine':
 
                 freq = tag.metadata.parent.props['Frequency'].values[0].value
 
@@ -141,7 +137,8 @@ class RawDataAnalyser(object):
             if freq in freqs:
                 freqSecs[freq] = fs
                 spikes[freq] = []
-                for sec in fs.sections:
+                trialSecs = [s for s in fs.sections if s.type == 'StimulusTrial/Sine']
+                for sec in trialSecs:
                     temp = {}
                     for typ in types:
 
@@ -154,7 +151,7 @@ class RawDataAnalyser(object):
 
         for tag in self.nixFile.blocks['RawDataTraces'].multi_tags:
 
-            if tag.metadata.parent in freqSecs and tag.type in types:
+            if tag.metadata.parent in freqSecs and tag.type in types and tag.metadata.type == 'StimulusTrial/Sine':
 
                 freq = tag.metadata.parent.props['Frequency'].values[0].value
 
