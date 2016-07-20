@@ -8,7 +8,7 @@ from quantities import Hz
 import quantities as qs
 import rawDataProcess as rd
 import os
-
+'''
 def doubleExpFun(xSig, Ar, Ad, t0, itaur, itaud):
 
     expd = Ad * np.exp(-itaud * (xSig - t0))
@@ -81,3 +81,4 @@ plt.legend()
 plt.xlabel("time, ms")
 plt.ylabel("voltage, mV")
 plt.show()
+'''

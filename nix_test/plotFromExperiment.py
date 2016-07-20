@@ -24,7 +24,6 @@ def getDataFromExp(exp, aver = 1, model = 1):
     sec = [t for t in analyser.getContResps(freqs)[freqs[0]] if len(t)>0]
 
     spk = analyser.getContSpikes(freqs=freqs, types=None)[freqs[0]]
-    print sec
 
     myExpSect = analyser.nixFile.sections["VibrationStimulii-Processed"].sections["ContinuousStimulii"
         ].sections["ContinuousStimulusAt265.0"].sections["Fitting1"]
@@ -114,9 +113,3 @@ def plotData(DATA, subplot=True, spikes=True, average = True, fitting = True):
         plt.legend()
     plt.show()
 
-exp = ""  # "= raw_input("Enter exp.name (default '130605-2LY')")
-if exp == "":
-    exp = '130605-2LY'
-DATA = getDataFromExp(exp)
-
-plotData(DATA)

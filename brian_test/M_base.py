@@ -11,6 +11,12 @@ class model_template:
         self.def_inits = {}
     	pass
 
+    def get_inits(self):
+        return self.def_inits
+
+    def get_params(self):
+        return self.params
+
     def get_threshold(self):
         return self._threshold
 

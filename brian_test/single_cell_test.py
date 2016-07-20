@@ -17,7 +17,7 @@ Y = I.PeriodicRectFilter(50, 40, 0).on(X, Y)
 #Y = I.SingleRectFilter(10 , 50).on(X, Y)
 Y = I.VolFilter(3).on(X, Y)
 
-inits = {'I' : I.TR(Y, nA, dtstep, ms), 'tau': 20*ms, 'C':600*pF, 'gL': 30*nS, 'a': 6*nS}
+inits = {'I' : I.TR(Y, nA, dtstep, ms)} #, 'tau': 20*ms, 'C':600*pF, 'gL': 30*nS, 'a': 6*nS}
 
 time = timemax*ms
 
