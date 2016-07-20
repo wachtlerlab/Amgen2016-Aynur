@@ -68,7 +68,7 @@ if model:
 numsset = range(1, 100)
 plotset = set(map(str, numsset)+["average","fitting"])
 for k in [k for k in DATA if k["name"] in plotset]:
-    plt.subplot(k["place"])
+    #plt.subplot(k["place"])
     plt.plot(k["x"], k["y"], label=k["name"])
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
