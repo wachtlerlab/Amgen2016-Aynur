@@ -17,7 +17,7 @@ class model_template:
         return self.def_inits
 
     def get_opt_params(self):
-        return {k: np.array(self.opt_params[k][:-1])*self.opt_params[k][-1] for k in self.opt_params}
+        return {k: np.array(self.opt_params[k][:-1], dtype=float)*self.opt_params[k][-1] for k in self.opt_params}
 
     def get_params(self):
         return self.params
