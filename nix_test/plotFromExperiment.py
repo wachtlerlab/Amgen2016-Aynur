@@ -12,6 +12,8 @@ class Foo(object):
     def __unicode__(self):
         return str(self.__dict__)
 
+
+
 def getDataFromExp(exp, aver = 1, model = 1):
 
     dirname = "/home/maksutov/NIXFiles/reorg/"
@@ -62,6 +64,8 @@ def getDataFromExp(exp, aver = 1, model = 1):
         step.median = np.mean([k.median for k in DATA])
         step.x = DATA[0].x
         step.y = Y
+        step.xunits = DATA[0].xunits
+        step.yunits = DATA[0].yunits
         DATA.append(step)
 
 
@@ -72,6 +76,8 @@ def getDataFromExp(exp, aver = 1, model = 1):
         step.median = None
         step.x = x
         step.y = y
+        step.xunits = DATA[0].xunits
+        step.yunits = DATA[0].yunits
         DATA.append(step)
 
     SPK = []

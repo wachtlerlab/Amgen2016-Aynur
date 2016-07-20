@@ -1,5 +1,6 @@
 from brian import *
 import json_to_one_lauer as JL
+import numpy as np
 
 class model_template:
 
@@ -9,10 +10,14 @@ class model_template:
         self.equations = []
         self.params = {}
         self.def_inits = {}
+        self.opt_params = {}
     	pass
 
     def get_inits(self):
         return self.def_inits
+
+    def get_opt_params(self):
+        return {k: np.array(self.opt_params[k][:-1])*self.opt_params[k][-1] for k in self.opt_params}
 
     def get_params(self):
         return self.params
