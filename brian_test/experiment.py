@@ -16,8 +16,10 @@ if exp == "":
 data = pe.getDataFromExp(exp)
 #pe.plotData(data)
 rec = [f for f in data.RAW if f.name=="fitting"][0]
-input = input_signal("I", rec.x, rec.y, rec.xunits, q.mA)
+input = input_signal("I", rec.x, rec.y, rec.xunits, q.nA)
 for rec in data.RAW:
-    preout = [f for f in data.SPIKES if rec.name==f.name][0]
-    output = preout.times*preout.units
-    fit = fm.FitModel(M.AdEx(), input, output)
+    preout = [f for f in data.SPIKES if rec.name==f.name]
+    if len(preout)>0:
+        preout = preout[0]
+        output = preout.times*preout.units
+        fit = fm.FitModel(M.AdEx(), input, output, cpu=None, gpu=None)

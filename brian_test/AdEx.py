@@ -26,17 +26,17 @@ class AdEx(model_template):
             "C": 281 * pF,
             "a": 4 * nS
         }
-        self.params = {}
-#            "Vr":-48.5*mV,
-#            "Vt":-50.4*mV,
-#            "b": 0.08 * nA,
-#            "sF": 2 * mV,
-#            "tau": 40 * ms,
-#            "EL": -70.6 * mV,
-#            "gL": 30 * nS,
-#            "C": 281 * pF,
-#            "a": 4 * nS
-#         }
+        self.params = {
+           # "Vr":-48.5*mV,
+           # "Vt":-50.4*mV,
+           # "b": 0.08 * nA,
+           # "sF": 2 * mV,
+           # "tau": 40 * ms,
+           # "EL": -70.6 * mV,
+           # "gL": 30 * nS,
+           # "C": 281 * pF,
+           # "a": 4 * nS
+        }
         self.def_inits.update(inits)
         self.monitors_list = {"V": mV, "I": nA, "w":0.1*nA}
         self.equations = [
@@ -57,10 +57,10 @@ class AdEx(model_template):
             "a : siemens"
             ""
         ]
-        tm = self.def_inits["C"]/self.def_inits["gL"]
-        aa = self.def_inits["a"]/self.def_inits["gL"]
-        print "C/gL", tm
-        print "a/gL", aa
-        print "tm/tw", tm/self.def_inits["tau"]
+        # tm = self.def_inits["C"]/self.def_inits["gL"]
+        # aa = self.def_inits["a"]/self.def_inits["gL"]
+        # print "C/gL", tm
+        # print "a/gL", aa
+        # print "tm/tw", tm/self.def_inits["tau"]
         self._threshold = 'V > Vt+5*sF'
         self._reset = 'V = Vr; w+=b'
