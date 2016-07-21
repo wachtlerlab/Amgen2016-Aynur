@@ -55,3 +55,15 @@ def run_custom_single_test(model, inits, start, time, dt):
     SYM.M.xlabel("time, ms")
     SYM.M.ylabel("value, unit")
     SYM.M.show()
+
+def return_custom_single_test(model, inits, start, time, dt):
+    initials = {'I' : I.TR(Y, nA, dtstep, ms)} #, 'tau': 20*ms, 'C':600*pF, 'gL': 30*nS, 'a': 6*nS}
+
+    initials.update(inits)
+
+    myModel = model(initials)
+
+    defaultclock.t= start
+    defaultclock.dt = dt
+
+    return SYM.single_cell_return(myModel, time=time, monitors={"V":mV, "I":nA})

@@ -114,6 +114,9 @@ def plotData(DATA, subplot=True, spikes=True, average = True, fitting = True):
             for l in [ll for ll in DATA.SPIKES if ll.name==k.name]:
                 for x in l.times:
                     plt.axvline(x, linestyle = "--", color = plt.getp(line[0], "color"))
+        if "FIT" in dir(DATA):
+            for l in [ll for ll in DATA.FIT if ll.name==k.name]:
+                plt.plot(l.x, l.y, l.name)
         plt.xlabel(DATA.xlabel)
         plt.ylabel(DATA.ylabel)
         plt.legend()

@@ -2,6 +2,14 @@ from brian import *
 import json_to_one_lauer as JL
 import numpy as np
 
+class Foo(object):
+    def __init__(self, name, x, y, xunit, yunit):
+        self.name = name
+        self.x = x
+        self.y = y
+        self.xunit = xunit
+        self.yunit = yunit
+
 class model_template:
 
     _threshold = None
@@ -52,6 +60,11 @@ class model_template:
         init.update(kwargs)
         for k in init:
             setattr(g, k, init[k])
+
+    def return_results(self):
+        for i in self.monitors:
+            unit = self.monitors_un[i]
+            return Foo("Nothing", self.monitors[i].times, self.monitors[i][0], ms, unit)
 
     def plot_results(self, prefix=""):
         if len(self.monitors)>0:
