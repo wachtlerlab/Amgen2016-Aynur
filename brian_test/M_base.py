@@ -3,12 +3,13 @@ import json_to_one_lauer as JL
 import numpy as np
 
 class Foo(object):
-    def __init__(self, name, x, y, xunit, yunit):
+    def __init__(self, name, x, y, xunits, yunits):
         self.name = name
+        self.label = name
         self.x = x
         self.y = y
-        self.xunit = xunit
-        self.yunit = yunit
+        self.xunits = xunits
+        self.yunits = yunits
 
 class model_template:
 
@@ -64,7 +65,7 @@ class model_template:
     def return_results(self):
         for i in self.monitors:
             unit = self.monitors_un[i]
-            return Foo("Nothing", self.monitors[i].times, self.monitors[i][0], ms, unit)
+        return {i:Foo(i, self.monitors[i].times, self.monitors[i][0], ms, self.monitors_un[i]) for i in self.monitors}
 
     def plot_results(self, prefix=""):
         if len(self.monitors)>0:

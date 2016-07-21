@@ -7,6 +7,7 @@ from matplotlib import pylab as plt
 class Foo(object):
     def __init__(self, name):
         self.name = name
+        self.label = name
     def __str__(self):
         return str(self.__dict__)
     def __unicode__(self):
@@ -109,16 +110,15 @@ def plotData(DATA, subplot=True, spikes=True, average = True, fitting = True):
     for k in toPlot:
         i+=1
         if subplot: plt.subplot(val+i)
-        line = plt.plot(k.x, k.y, label=k.name)
+        line = plt.plot(k.x, k.y, label=k.label)
         if spikes:
             for l in [ll for ll in DATA.SPIKES if ll.name==k.name]:
                 for x in l.times:
                     plt.axvline(x, linestyle = "--", color = plt.getp(line[0], "color"))
         if "FIT" in dir(DATA):
             for l in [ll for ll in DATA.FIT if ll.name==k.name]:
-                plt.plot(l.x, l.y, l.name)
+                plt.plot(l.x, l.y, label = l.label)
         plt.xlabel(DATA.xlabel)
         plt.ylabel(DATA.ylabel)
         plt.legend()
     plt.show()
-

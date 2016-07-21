@@ -67,3 +67,6 @@ def return_custom_single_test(model, inits, start, time, dt):
     defaultclock.dt = dt
 
     return SYM.single_cell_return(myModel, time=time, monitors={"V":mV, "I":nA})
+
+if __name__=="__main__":
+    run_custom_single_test(SYM.M.AdEx, inits = {}, start = 0*ms, time = timemax*ms, dt = dtstep*ms)
