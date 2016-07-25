@@ -1,1 +1,1 @@
-import brian_test, nix_test
+import brian_test, nix_utilities
