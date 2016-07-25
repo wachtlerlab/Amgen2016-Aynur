@@ -1,8 +1,8 @@
 import numpy as np
 
 import input_signals as I
-from brian_projects.NeuronModels.M import ms, nA, mV, defaultclock
-from brian_projects.NeuronModels.simulation import SYM
+from brian_test.NeuronModels.M import ms, nA, mV, defaultclock
+from brian_test.simulation import SYM
 
 defaultclock.dt=0.02*ms
 

@@ -25,6 +25,7 @@ def getDataFromExp(exp, aver = 1, model = 1):
     except:
         print "analyser=rd.RawDataAnalyser(i, dirname)"
     sec = [t for t in analyser.getContResps(freqs)[freqs[0]] if len(t)>0]
+    print sec
 
     spk = analyser.getContSpikes(freqs=freqs, types=None)[freqs[0]]
 

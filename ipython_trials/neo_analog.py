@@ -1,7 +1,7 @@
 import neo
 import numpy as np
 import quantities as q
-import signals.plot as pl
+import sig_proc.plot as pl
 x = np.arange(-2, 10, 0.1)
 y1 = np.sin(x)*q.mA
 y2 = np.cos(x)*q.uA
