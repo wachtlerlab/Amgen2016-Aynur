@@ -7,7 +7,7 @@ import quantities as q
 def __plot_single_analog_signal(signal, color=None, plotlabel = False, timeunit = q.ms, valunit = None):
     if valunit==None: valunit = signal.units
     dims = ", ["+str(valunit)+"]"
-    label = signal.description+dims if plotlabel else signal.name+", "+signal.description+dims
+    label = str(signal.description)+dims if plotlabel else str(signal.name)+", "+str(signal.description)+dims
     x = signal.times.rescale(timeunit)
     y = signal.rescale(valunit)
     l = plt.plot(x, y, label=label, color=color)

@@ -1,9 +1,9 @@
 import nix_utilities.rawDataAnalyse as rd
+import sig_proc.signals
 from nix_utilities.neoNIXIO import tag2AnalogSignal
 import quantities as q, numpy as np
 import plot as pl
 import signals as ss
-import sig_proc.signal_converter as sconv
 
 import neo
 
@@ -28,11 +28,11 @@ def ReadExperiment(ename):
         if not(Ds in sc and As in sc and Bs in sc): continue
         median = np.median(np.concatenate((sc[Bs].magnitude/sc[Bs].units, sc[As].magnitude/sc[As].units)))*sc[Ds].units
         interm = sc[Ds] - ss.SignalBuilder(sc[Ds]).get_constant(median)
-        signal = sconv.BeginSignalOn(interm, 0*q.s)
+        signal = sig_proc.signals.BeginSignalOn(interm, 0 * q.s)
         signal = signal[signal.times < 1*q.s]
         signal.name = "Trial"+str(i+1)
         signal.description = "voltage"
-        sh_spk = sconv.ShiftSpikeTrain(sp[Ds], interm.times[0])
+        sh_spk = sig_proc.signals.ShiftSpikeTrain(sp[Ds], -interm.times[0])
         sh_spk.name = signal.name
         sh_spk.description = "spikes"
         seg.analogsignals.append(signal)
