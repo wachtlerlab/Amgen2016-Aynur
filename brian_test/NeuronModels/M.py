@@ -1,7 +1,4 @@
-from M_base import *
-from hodgkin_huxley import *
-from AdEx import *
-from Izhikevich import *
+from brian_test.NeuronModels.Izhikevich import *
 
 class DummyModel(model_template):
     def __init__(self):

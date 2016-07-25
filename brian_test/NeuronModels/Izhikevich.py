@@ -1,4 +1,4 @@
-from M_base import *
+from brian_test.NeuronModels.M_base import *
 
 class Izhikevich(model_template):
     def __init__(self, inits={}):

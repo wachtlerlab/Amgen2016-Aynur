@@ -1,6 +1,9 @@
-from brian import *
-import json_to_one_lauer as JL
 import numpy as np
+
+from brian import *
+
+import brian_test.NeuronModels.utilities.json_to_one_lauer as JL
+
 
 class Foo(object):
     def __init__(self, name, x, y, xunits, yunits):

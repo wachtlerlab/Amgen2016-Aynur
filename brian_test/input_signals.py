@@ -1,4 +1,4 @@
-from M import *
+from brian_test.NeuronModels.M import *
 
 def gen_time_interval(start, end, step):
     return arange(start, end, step)

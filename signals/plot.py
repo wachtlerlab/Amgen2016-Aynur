@@ -10,8 +10,17 @@ def plot_single_analog_signal(signal):
     plt.xlabel(signal.times.units)
     plt.ylabel(signal.units)
     plt.legend()
-    plt.show()
+
+def plot_multiple_analog_signals(timeunit="ms", *signals):
+    for s in signals:
+        s.times.units=timeunit
+        plt.plot(s.times, s.magnitude, label=s.name)
+    plt.xlabel("time, "+timeunit)
+    plt.ylabel("value, unit")
+    plt.legend()
 
 def show():
-    plt.legend()
     plt.show()
+
+def subplot(w, h, n):
+    plt.subplot(w*100+h*10+n)
