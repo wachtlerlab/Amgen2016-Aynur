@@ -1,6 +1,6 @@
 import fitSomeModel as fm
 import single_cell_test as sst
-from brian_test.NeuronModels import M
+from brian_projects.NeuronModels import M
 from nix_utilities import XtractDataFromExp as xt
 
 

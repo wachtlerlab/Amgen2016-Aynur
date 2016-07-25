@@ -2,7 +2,7 @@ import numpy as np
 
 from brian import *
 
-import brian_test.NeuronModels.utilities.json_to_one_lauer as JL
+import brian_projects.NeuronModels.utilities.json_to_one_lauer as JL
 
 
 class Foo(object):

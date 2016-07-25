@@ -1,5 +1,5 @@
-from brian_test.NeuronModels import M
-from brian_test.NeuronModels.M import ms, mV
+from brian_projects.NeuronModels import M
+from brian_projects.NeuronModels.M import ms, mV
 
 
 def single_cell(Nmodel, time=200*ms, inits={}, spikes=[], dV=3*mV, monitors=None, prefix=""):

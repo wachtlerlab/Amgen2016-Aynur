@@ -26,9 +26,12 @@ class SignalBuilder(object):
         return self.__return_signal__(signal, units)
 
     def get_rect(self, start, stop, units = q.dimensionless):
-        signal = (self.props.times <= stop)*(self.props.times >= start)
+        signal = np.array((self.props.times <= stop)*(self.props.times >= start), dtype=float)
         return self.__return_signal__(signal, units)
 
-    def get_periodic_rect(self, period, length, shift):
+    def get_periodic_rect(self, period, width, shift, units = q.dimensionless):
         tm = self.props.times - shift
-        
+        n = np.round(tm / period)
+        signal = np.array(np.abs(tm - n * period) * 2 < width, dtype=float)
+        return self.__return_signal__(signal, units)
+

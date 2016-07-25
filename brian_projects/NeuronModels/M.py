@@ -1,4 +1,4 @@
-from brian_test.NeuronModels.Izhikevich import *
+from brian_projects.NeuronModels.Izhikevich import *
 
 class DummyModel(model_template):
     def __init__(self):
