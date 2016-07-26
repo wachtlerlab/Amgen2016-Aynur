@@ -1,5 +1,7 @@
-import Fitting as Ft
-
+from nix_utilities import XtractDataFromExp as xt
+import fitSomeModel as fm
+import NeuronModels.Models as M
+import single_cell_test as sst
 
 class input_signal(xt.Foo):
     def __init__(self, name, x, y):
@@ -15,7 +17,7 @@ data = xt.getDataFromExp(exp)
 #pe.plotData(data)
 rec = [f for f in data.RAW if f.name=="fitting"][0]
 print rec.x
-input = input_signal("I", rec.x, rec.y * M.nA / M.mV)
+input = input_signal("I", rec.x, rec.y*M.nA/M.mV)
 
 preout = [list(f.times*f.units) for f in data.SPIKES][:2]
 if len(preout)>0:
@@ -29,7 +31,7 @@ if len(preout)>0:
     data.FIT = []
     for i in range(len(preout)):
         di = fit.best_pos[i]
-        di.update({"I": M.TimedArray(input.signal, input.times)})
+        di.update({"I":M.TimedArray(input.signal, input.times)})
         start = input.times[0]
         end = input.times[-1]
         dtime = 0.5*(end-start)/(len(input.times)-1)
