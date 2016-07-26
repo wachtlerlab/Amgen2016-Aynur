@@ -66,11 +66,13 @@ def YesName(stri):
 def PlotExperiment(block, subplots=True, func = YesName):
     pl.plot_block(block, subplots, func)
 
-def PlotSets(sigs, spks):
-    for s in sigs:
-        pl.__plot_single_analog_signal(s)
-    for s in spks:
-        pl.__plot_single_spike_train(s)
+def PlotSets(sigs=[], spks=[]):
+    if sigs!=None:
+        for s in sigs:
+            pl.__plot_single_analog_signal(s)
+    if spks!=None:
+        for s in spks:
+            pl.__plot_single_spike_train(s)
     pl.show()
 
 if __name__=="__main__":

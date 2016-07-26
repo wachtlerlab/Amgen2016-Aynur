@@ -1,1 +1,1 @@
-import Models
+from Models import *

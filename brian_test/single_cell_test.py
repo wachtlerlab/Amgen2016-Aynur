@@ -1,8 +1,9 @@
 import numpy as np
 
 import input_signals as I
+from brian_test import SYM
 from brian_test.NeuronModels.Models import ms, nA, mV, defaultclock
-from brian_test.simulation import SYM
+import brian_test
 
 defaultclock.dt=0.02*ms
 
@@ -33,10 +34,10 @@ def run_single_test(model, inits):
         SYM.single_cell(myModel, time=time,
                         spikes = spk, dV= dV, monitors={"V":mV, "I":nA})
 
-    brian_test.NeuronModels.M.legend()
-    brian_test.NeuronModels.M.xlabel("time, ms")
-    brian_test.NeuronModels.M.ylabel("value, unit")
-    brian_test.NeuronModels.M.show()
+    brian_test.NeuronModels.legend()
+    brian_test.NeuronModels.xlabel("time, ms")
+    brian_test.NeuronModels.ylabel("value, unit")
+    brian_test.NeuronModels.show()
 
 def run_custom_single_test(model, inits, start, time, dt):
     initials = {'I' : I.TR(Y, nA, dtstep, ms)} #, 'tau': 20*ms, 'C':600*pF, 'gL': 30*nS, 'a': 6*nS}
@@ -50,10 +51,10 @@ def run_custom_single_test(model, inits, start, time, dt):
 
     SYM.single_cell(myModel, time=time, monitors={"V":mV, "I":nA})
 
-    brian_test.NeuronModels.M.legend()
-    brian_test.NeuronModels.M.xlabel("time, ms")
-    brian_test.NeuronModels.M.ylabel("value, unit")
-    brian_test.NeuronModels.M.show()
+    brian_test.NeuronModels.legend()
+    brian_test.NeuronModels.xlabel("time, ms")
+    brian_test.NeuronModels.ylabel("value, unit")
+    brian_test.NeuronModels.show()
 
 def return_custom_single_test(model, inits, start, time, dt):
     initials = {'I' : I.TR(Y, nA, dtstep, ms)} #, 'tau': 20*ms, 'C':600*pF, 'gL': 30*nS, 'a': 6*nS}
@@ -68,4 +69,4 @@ def return_custom_single_test(model, inits, start, time, dt):
     return SYM.single_cell_return(myModel, time=time, monitors={"V":mV, "I":nA})
 
 if __name__=="__main__":
-    run_custom_single_test(brian_test.NeuronModels.M.AdEx, inits = {}, start =0 * ms, time =timemax * ms, dt =dtstep * ms)
+    run_custom_single_test(brian_test.NeuronModels.AdEx, inits = {}, start =0 * ms, time =timemax * ms, dt =dtstep * ms)

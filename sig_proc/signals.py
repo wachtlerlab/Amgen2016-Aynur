@@ -64,6 +64,10 @@ def get_signal(sampling_period, t_start, duration, val=q.Quantity(0)):
 def TimedArray_from_AnalogSignal(sig):
     return b.TimedArray(arr = sig.magnitude*sig.units, times = sig.times)
 
+def AnalogSignalFromTimes(times, signal, name=None, description=None):
+    sp = (times[-1]-times[0])/len(times)
+    res = neo.AnalogSignal(signal, t_start=times[0], sampling_period=sp, units=signal.units, name=name, description=description)
+    return res
 
 def ShiftSignal(sig, dtime):
     return neo.AnalogSignal(sig.magnitude, t_start=sig.times[0]+dtime, sampling_period=sig.sampling_period, units=sig.units)

@@ -1,7 +1,8 @@
 from brian import *
 
 import brian_test.utilities.json_to_one_lauer as JL
-
+from sig_proc import signals as ss
+import quantities as q
 
 class Foo(object):
     def __init__(self, name, x, y, xunits, yunits):
@@ -12,6 +13,12 @@ class Foo(object):
         self.xunits = xunits
         self.yunits = yunits
 
+    def __str(self):
+        return "%name: {0}; x: {1}; y: {2}%".format(self.name, self.x, self.y)
+
+    def __unicode__(self):
+        return self.__str()
+
 class model_template:
 
     _threshold = None
@@ -21,10 +28,14 @@ class model_template:
         self.params = {}
         self.def_inits = {}
         self.opt_params = {}
+        self.monitors_list = {}
     	pass
 
     def get_inits(self):
         return self.def_inits
+
+    def update_inits(self, upd):
+        self.def_inits.update(upd)
 
     def get_opt_params(self):
         res = {k: np.array(self.opt_params[k][:-1], dtype=float)*self.opt_params[k][-1] for k in self.opt_params}
@@ -61,14 +72,18 @@ class model_template:
 
     def set_start_params(self, g, **kwargs):
         init = self.def_inits.copy()
+        init.update({"scaleFactor":1.})
         init.update(kwargs)
         for k in init:
             setattr(g, k, init[k])
 
     def return_results(self):
-        for i in self.monitors:
-            unit = self.monitors_un[i]
         return {i:Foo(i, self.monitors[i].times, self.monitors[i][0], ms, self.monitors_un[i]) for i in self.monitors}
+
+    def return_signal(self):
+        u = [(i, self.monitors[i].times, self.monitors[i][0], self.monitors_un[i]) for i in self.monitors]
+        v = [(k[0], q.Quantity(k[1], units=q.s), q.Quantity(k[2]/k[3], units=str(k[3].real).split(" ")[-1])) for k in u]
+        return [ss.AnalogSignalFromTimes(k[1], k[2], name=k[0], description="") for k in v]
 
     def plot_results(self, prefix=""):
         if len(self.monitors)>0:
