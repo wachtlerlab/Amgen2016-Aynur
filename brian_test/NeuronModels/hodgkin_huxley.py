@@ -1,4 +1,4 @@
-from brian_test.NeuronModels.M_base import *
+from brian_test.NeuronModels.model_template import *
 
 class hodgkin_huxley(model_template):
     def __init__(self, inits = {}):

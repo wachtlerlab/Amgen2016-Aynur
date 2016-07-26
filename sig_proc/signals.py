@@ -46,7 +46,7 @@ def TimedArray_from_AnalogSignal(sig):
 
 
 def ShiftSignal(sig, dtime):
-    return neo.AnalogSignal(sig.magnitude, t_start=sig.times[0]-dtime, sampling_period=sig.sampling_period, units=sig.units)
+    return neo.AnalogSignal(sig.magnitude, t_start=sig.times[0]+dtime, sampling_period=sig.sampling_period, units=sig.units)
 
 
 def BeginSignalOn(sig, time):
@@ -61,6 +61,12 @@ def ShiftSpikeTrain(spk, dtime):
     return neo.SpikeTrain(spk.times + dtime, spk.t_stop-dtime, spk.units)
 
 
+def compare(a, b, precision=1e-9):
+    sum = abs(a)+abs(b)
+    if abs(a-b)<precision*sum:
+        return True
+    else: return False
+
 def Concat(sig1, sig2):
     if sig1.times[0]<sig2.times[0]:
         x = sig1
@@ -71,14 +77,16 @@ def Concat(sig1, sig2):
     dtx = x.times[1]-x.times[0]
     dty = y.times[1]-y.times[0]
     print dtx, dty
-    if x.sampling_period!=y.sampling_period: raise Exception("sample_periods don't match")
+    if not compare(dtx, dty, ): raise Exception("sample_periods don't match")
     flt = ((y.times[0]-x.times[0])/x.sampling_period)
-    if int(flt)!=flt: raise Exception("sample times not match. {0} and {1}".format(int(flt), flt))
+    fbo = round(flt)
+    print flt, fbo
+    if not compare(flt, fbo): raise Exception("sample times not match. {0} and {1}, diff={2}".format(fbo, flt, fbo-flt))
     t_start = x.times[0]
     t = x.times < y.times[0]
     dist = int((y.times[0]-x.times[-1])/x.sampling_period) - 1
     if dist>0: data = x.units*np.concatenate((x.magnitude[t], np.array([0.]*dist), y.magnitude))
-    return neo.AnalogSignal(data, t_start=t_start, sampling_period=dtx, units = x.units)
+    return neo.AnalogSignal(data, t_start=t_start, sampling_period=x.sampling_period, units = x.units)
 
 def Join(lst):
     an = lst[0]
@@ -99,3 +107,9 @@ def JoinSpikeTrains(lst):
 
 def JoinSpikeTrainsShifted(lst, dtime=0*q.s):
     return JoinSpikeTrains([ShiftSpikeTrain(lst[i], i*dtime) for i in xrange(len(lst))])
+
+def Zip(spkl):
+    lst = []
+    for i in xrange(len(spkl)):
+        lst.append(zip([i]*len(spkl[i].times), spkl[i].times))
+    return lst

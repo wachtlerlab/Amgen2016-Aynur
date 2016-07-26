@@ -9,7 +9,10 @@ def FitModel(NModel, input, output, popsize=10000, maxiter=100, dt=0.02, method=
     t_prev = time.time()
     di = NModel.get_opt_params()
     input_raw = sig_proc.signals.TimedArray_from_AnalogSignal(input)
-    output_spk = sig_proc.signals.Zip
+    output_spk = sig_proc.signals.Zip([output])
+    print input_raw
+    print output_spk
+    '''
     deltaT = dt * brian.ms
     result = m.modelfitting(NModel.get_model(), NModel.get_reset(), NModel.get_threshold(),
                             data=output, input_var=input.var, input=input_raw,
@@ -19,4 +22,4 @@ def FitModel(NModel, input, output, popsize=10000, maxiter=100, dt=0.02, method=
                             **di
                             )
     t_next = time.time()
-    return result, t_next - t_prev
+    return result, t_next - t_prev'''

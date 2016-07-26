@@ -6,8 +6,8 @@ import plot as pl
 import signals as ss
 
 import neo
-
-labels = ["Trial", "PredictedInput"]
+default = ["Trial", "PredictedInput"]
+labels = ["Trial"]
 YesDict = labels[:1]
 
 def ReadExperiment(ename):
@@ -37,16 +37,16 @@ def ReadExperiment(ename):
         sh_spk.description = "spikes"
         seg.analogsignals.append(signal)
         seg.spiketrains.append(sh_spk)
-
-    myExpSect = analyser.nixFile.sections["VibrationStimulii-Processed"].sections["ContinuousStimulii"
-    ].sections["ContinuousStimulusAt265.0"].sections
-    for j in myExpSect:
-        if "Fitting"!=j.name[:7]: continue
-        myFitTag = [t for t in analyser.nixFile.blocks["FittingTraces"].tags if t.metadata == myExpSect[j.name]]
-        res = tag2AnalogSignal(myFitTag[0], 0)
-        res.name = labels[1]+j.name[7:]
-        res.description = "Current"
-        seg.analogsignals.append(res)
+    if default[1] in labels:
+        myExpSect = analyser.nixFile.sections["VibrationStimulii-Processed"].sections["ContinuousStimulii"
+        ].sections["ContinuousStimulusAt265.0"].sections
+        for j in myExpSect:
+            if "Fitting"!=j.name[:7]: continue
+            myFitTag = [t for t in analyser.nixFile.blocks["FittingTraces"].tags if t.metadata == myExpSect[j.name]]
+            res = tag2AnalogSignal(myFitTag[0], 0)
+            res.name = labels[1]+j.name[7:]
+            res.description = "Current"
+            seg.analogsignals.append(res)
 
     block.segments.append(seg)
     return block
