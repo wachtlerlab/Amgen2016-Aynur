@@ -27,7 +27,9 @@ class model_template:
         return self.def_inits
 
     def get_opt_params(self):
-        return {k: np.array(self.opt_params[k][:-1], dtype=float)*self.opt_params[k][-1] for k in self.opt_params}
+        res = {k: np.array(self.opt_params[k][:-1], dtype=float)*self.opt_params[k][-1] for k in self.opt_params}
+        res.update({"scaleFactor":[1e-7, 1e-6, 1e+6, 1e+7]})
+        return res
 
     def get_params(self):
         return self.params
@@ -42,7 +44,7 @@ class model_template:
         new_dic = {}
         JL.fromdict("", self.params, new_dic)
         print new_dic
-        model = Equations("\n".join(self.equations), **new_dic)
+        model = Equations("\n".join(self.equations+["scaleFactor: 1\nI: mA\ni = scaleFactor*I : mA"]), **new_dic)
         #for i in new_dic:
         #    model.substitute(i, str(new_dic[i]))
         return model

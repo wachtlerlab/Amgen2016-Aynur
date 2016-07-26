@@ -31,12 +31,11 @@ class AdEx(model_template):
         self.def_inits.update(inits)
         self.monitors_list = {"V": mV, "I": nA, "w":0.1*nA}
         self.equations = [
-            "dV/dt = (I + IL + Ex - w)/C : mV",
+            "dV/dt = (i + IL + Ex - w)/C : mV",
 
             "dw/dt = (a*(V - EL) - w)/tau : mA",
             "Ex = gL*sF*exp((V - Vt)/sF) : mA",
             "IL = gL*(EL - V) : mA",
-            "I : mA",
             "Vt : mV",
             "Vr : mV",
             "b : mA",

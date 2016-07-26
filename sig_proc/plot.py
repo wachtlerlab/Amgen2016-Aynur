@@ -67,6 +67,7 @@ def __plot_segment(seg, subplots=False, func = None):
         color = None
         for j in ans:
             color = __plot_single_analog_signal(j, color, plotlabel=subplots)
+            if (subplots): color=None
         for j in spk:
             __plot_single_spike_train(j, color)
         if not subplots:

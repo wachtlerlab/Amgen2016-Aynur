@@ -14,13 +14,12 @@ class Izhikevich(model_template):
         self.def_inits.update(inits)
         self.monitors_list = {"V": mV, "U": mV, "I":mA}
         self.equations = [
-            "dV/dt = 140*mV/ms + 5*V/ms + 0.04*V**2/mV/ms + I*mV/mA/ms - U/ms : mV",
+            "dV/dt = 140*mV/ms + 5*V/ms + 0.04*V**2/mV/ms + i*mV/mA/ms - U/ms : mV",
             "dU/dt = a*(b*V - U) : mV",
             "a : 1/ms",
             "b : 1",
             "c : mV",
-            "d : mV",
-            "I : mA"
+            "d : mV"
         ]
         self._threshold = 'V > 30*mV'
         self._reset = 'V = c; U+=d'

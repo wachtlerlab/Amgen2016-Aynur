@@ -6,7 +6,7 @@ class hodgkin_huxley(model_template):
         self.def_inits.update(inits)
         self.monitors_list = {"V":mV, "INa":10*uA, "IK":10*uA, "Il":10*uA, "I":10*uA}
         self.equations = [
-                "dV/dt = (I + INa + IK + Il)/C : mV",
+                "dV/dt = (i + INa + IK + Il)/C : mV",
 
                 "INa = gNa*m**3*h*(ENa-V) : mA",
                 "IK = gK*n**4*(EK-V) : mA",
@@ -23,7 +23,6 @@ class hodgkin_huxley(model_template):
                 "dh/dt = (ah*(1-h)-bh*h)/tau2 : 1",
                 "ah = h_a_A*exp(VD/h_a_C) : 1",
                 "bh = h_b_A/(exp((VD-h_b_B)/h_b_C)-h_b_D) : 1",
-                "I : mA",
                 "VD = V - Vr : mV",
                 ]
         self.params = {

@@ -1,25 +1,30 @@
 from brian.library import modelfitting as m
 import brian
-import time
-
-import sig_proc.signals
+import quantities as q
 
 
-def FitModel(NModel, input, output, popsize=10000, maxiter=100, dt=0.02, method="RK"):
-    t_prev = time.time()
+import sig_proc as sp
+
+
+def FitModel(NModel, input, output, popsize=10000, maxiter=100, dt=0.02*brian.ms, method="RK"):
+
     di = NModel.get_opt_params()
-    input_raw = sig_proc.signals.TimedArray_from_AnalogSignal(input)
-    output_spk = sig_proc.signals.Zip([output])
-    print input_raw
-    print output_spk
-    '''
-    deltaT = dt * brian.ms
+    input_raw = sp.signals.TimedArray_from_AnalogSignal(input)
+    output_spk = output.times
+
+    print "INPUT_RAW:", input_raw.times
+    print "OUTPUT_RAW:", output_spk
+
+    sp.multiple.PlotSets([input], [output])
+
     result = m.modelfitting(NModel.get_model(), NModel.get_reset(), NModel.get_threshold(),
-                            data=output, input_var=input.var, input=input_raw,
-                            dt=deltaT, popsize=popsize,
+                            data=output_spk, input_var="I", input=input_raw,
+                            dt = dt, popsize=popsize,
                             maxiter=maxiter, initial_values=NModel.get_inits(),
-                            method=method, returninfo=True,
+                            method=method, returninfo=True, algorithm=m.CMAES,
                             **di
                             )
-    t_next = time.time()
-    return result, t_next - t_prev'''
+    return result
+
+def Print(results):
+    m.print_table(results)

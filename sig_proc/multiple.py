@@ -7,8 +7,8 @@ import signals as ss
 
 import neo
 default = ["Trial", "PredictedInput"]
-labels = ["Trial"]
-YesDict = labels[:1]
+labels = default
+YesDict = labels
 
 def ReadExperiment(ename):
     dirname = "/home/maksutov/NIXFiles/reorg/"
@@ -45,6 +45,11 @@ def ReadExperiment(ename):
             myFitTag = [t for t in analyser.nixFile.blocks["FittingTraces"].tags if t.metadata == myExpSect[j.name]]
             res = tag2AnalogSignal(myFitTag[0], 0)
             res.name = labels[1]+j.name[7:]
+            res.description = "Voltage"
+            seg.analogsignals.append(res)
+            mag = res.sampling_rate*q.uA*q.s*np.gradient(res.magnitude)
+            res = neo.AnalogSignal(mag, t_start=res.t_start, sampling_period=res.sampling_period, units=q.mA)
+            res.name = labels[1]+j.name[7:]
             res.description = "Current"
             seg.analogsignals.append(res)
 
@@ -60,3 +65,14 @@ def YesName(stri):
 
 def PlotExperiment(block, subplots=True, func = YesName):
     pl.plot_block(block, subplots, func)
+
+def PlotSets(sigs, spks):
+    for s in sigs:
+        pl.__plot_single_analog_signal(s)
+    for s in spks:
+        pl.__plot_single_spike_train(s)
+    pl.show()
+
+if __name__=="__main__":
+    blk = ReadExperiment("130605-2LY")
+    PlotExperiment(blk, subplots=True)
