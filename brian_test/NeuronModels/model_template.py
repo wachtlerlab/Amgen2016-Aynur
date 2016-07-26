@@ -13,11 +13,11 @@ class Foo(object):
         self.xunits = xunits
         self.yunits = yunits
 
-    def __str(self):
+    def __str__(self):
         return "%name: {0}; x: {1}; y: {2}%".format(self.name, self.x, self.y)
 
     def __unicode__(self):
-        return self.__str()
+        return self.__str__()
 
 class model_template:
 
@@ -82,7 +82,7 @@ class model_template:
 
     def return_signal(self):
         u = [(i, self.monitors[i].times, self.monitors[i][0], self.monitors_un[i]) for i in self.monitors]
-        v = [(k[0], q.Quantity(k[1], units=q.s), q.Quantity(k[2]/k[3], units=str(k[3].real).split(" ")[-1])) for k in u]
+        v = [(k[0], q.Quantity(k[1], units=q.s), q.Quantity(k[2]/k[3], units=str(k[3]).split(" ")[-1])) for k in u]
         return [ss.AnalogSignalFromTimes(k[1], k[2], name=k[0], description="") for k in v]
 
     def plot_results(self, prefix=""):

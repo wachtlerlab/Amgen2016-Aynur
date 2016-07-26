@@ -72,6 +72,12 @@ def AnalogSignalFromTimes(times, signal, name=None, description=None):
 def ShiftSignal(sig, dtime):
     return neo.AnalogSignal(sig.magnitude, t_start=sig.times[0]+dtime, sampling_period=sig.sampling_period, units=sig.units)
 
+def ShiftSignalNull(sig, dtime):
+    s = nearest_multiple(dtime, sig.sampling_period)
+    n = int(s/sig.sampling_period)
+    res = neo.AnalogSignal(sig.magnitude, t_start=sig.times[0]+s, sampling_period=sig.sampling_period, units=sig.units)
+    res2 = neo.AnalogSignal(n*[0*sig.units], t_start=sig.times[0], sampling_period=sig.sampling_period, units=sig.units)
+    return Concat(res, res2)
 
 def BeginSignalOn(sig, time):
     return neo.AnalogSignal(sig.magnitude, t_start=time, sampling_period = sig.sampling_period, units = sig.units)

@@ -44,13 +44,13 @@ class AdEx(model_template):
             "EL : mV",
             "gL : siemens",
             "C : pF",
-            "a : siemens"
-            ""
+            "a : siemens",
+            "Vp = 20*mV: mV"
         ]
         # tm = self.def_inits["C"]/self.def_inits["gL"]
         # aa = self.def_inits["a"]/self.def_inits["gL"]
         # print "C/gL", tm
         # print "a/gL", aa
         # print "tm/tw", tm/self.def_inits["tau"]
-        self._threshold = 'V > 20*mV'
+        self._threshold = 'V > Vp'
         self._reset = 'V = Vr; w+=b'

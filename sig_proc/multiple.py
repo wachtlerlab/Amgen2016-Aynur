@@ -66,7 +66,7 @@ def YesName(stri):
 def PlotExperiment(block, subplots=True, func = YesName):
     pl.plot_block(block, subplots, func)
 
-def PlotSets(sigs=[], spks=[]):
+def PlotSets(sigs=[], spks=[], timeunit="ms"):
     if sigs!=None:
         for s in sigs:
             pl.__plot_single_analog_signal(s)
