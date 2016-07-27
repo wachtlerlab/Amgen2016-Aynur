@@ -1,8 +1,9 @@
 from brian import *
 
 import brian_test.utilities.json_to_one_lauer as JL
-from sig_proc import signals as ss
+import brian_test.utilities as bu
 import quantities as q
+import sig_proc.signals as ss
 
 class Foo(object):
     def __init__(self, name, x, y, xunits, yunits):
@@ -81,9 +82,14 @@ class model_template:
         return {i:Foo(i, self.monitors[i].times, self.monitors[i][0], ms, self.monitors_un[i]) for i in self.monitors}
 
     def return_signal(self):
-        u = [(i, self.monitors[i].times, self.monitors[i][0], self.monitors_un[i]) for i in self.monitors]
-        v = [(k[0], q.Quantity(k[1], units=q.s), q.Quantity(k[2]/k[3], units=str(k[3]).split(" ")[-1])) for k in u]
-        return [ss.AnalogSignalFromTimes(k[1], k[2], name=k[0], description="") for k in v]
+        res = []
+        for i in self.monitors:
+            qq = bu.BrianToQuantity(self.monitors_un[i])
+            mag = self.monitors[i][0]/self.monitors_un[i]
+            unitq = q.UnitQuantity(str(qq), qq)
+            times = q.s*self.monitors[i].times
+            res.append(ss.AnalogSignalFromTimes(times, mag, unitq, i, "[{0} from model]"))
+        return res
 
     def plot_results(self, prefix=""):
         if len(self.monitors)>0:

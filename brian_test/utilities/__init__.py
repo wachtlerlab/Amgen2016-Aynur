@@ -1,5 +1,5 @@
 import time
-
+import quantities as q
 
 class timer(object):
     def __init__(self):
@@ -30,3 +30,9 @@ class timer(object):
         dt = now - self.prev
         self.prev = now
         return dt
+
+def BrianToQuantity(bq):
+    spl = str(bq).split(" ")
+    if len(spl)==1: spl = ["1"]+spl
+    qq = q.Quantity(float(spl[0]), units=spl[1])
+    return qq

@@ -11,11 +11,14 @@ simul = sim.Simulator(NM.AdEx())
 
 print "INPUT:", input
 
-currInput = sg.ShiftSignalNull(input[0], 10*q.ms)
+currInput = sg.ShiftSignalNull(input[0], 50*q.ms)
+currInput = currInput[currInput.times<q.s]
+
+mp.PlotSets([currInput])
 
 simul.set_input("I", currInput)
 
-myMonitors = {"i": b.nA, "V": b.mV}
+myMonitors = {"i": 10*b.nA, "V": b.mV}
 
 res = simul.run(time=0.2*b.second, dtime=0.02*b.ms, monitors=myMonitors, inits={"scaleFactor":0.00000001})
 

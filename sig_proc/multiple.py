@@ -44,10 +44,12 @@ def ReadExperiment(ename):
             if "Fitting"!=j.name[:7]: continue
             myFitTag = [t for t in analyser.nixFile.blocks["FittingTraces"].tags if t.metadata == myExpSect[j.name]]
             res = tag2AnalogSignal(myFitTag[0], 0)
+            res = res[res.times<1*q.s]
+            print "times:", res.times
             res.name = labels[1]+j.name[7:]
             res.description = "Voltage"
             seg.analogsignals.append(res)
-            mag = res.sampling_rate*q.uA*q.s*np.gradient(res.magnitude)
+            mag = res.sampling_rate.simplified.magnitude*np.gradient(res.magnitude)
             res = neo.AnalogSignal(mag, t_start=res.t_start, sampling_period=res.sampling_period, units=q.mA)
             res.name = labels[1]+j.name[7:]
             res.description = "Current"
@@ -66,13 +68,15 @@ def YesName(stri):
 def PlotExperiment(block, subplots=True, func = YesName):
     pl.plot_block(block, subplots, func)
 
-def PlotSets(sigs=[], spks=[], timeunit="ms"):
+def PlotSets(sigs=[], spks=[], timeunit=q.ms):
     if sigs!=None:
         for s in sigs:
-            pl.__plot_single_analog_signal(s)
+            pl.__plot_single_analog_signal(s, timeunit=timeunit)
     if spks!=None:
         for s in spks:
-            pl.__plot_single_spike_train(s)
+            pl.__plot_single_spike_train(s, timeunit=timeunit)
+    pl.plt.xlabel("Time, "+str(timeunit))
+    pl.plt.ylabel("Value, unit")
     pl.show()
 
 if __name__=="__main__":
