@@ -88,7 +88,7 @@ class model_template:
             mag = self.monitors[i][0]/self.monitors_un[i]
             unitq = q.UnitQuantity(str(qq), qq)
             times = q.s*self.monitors[i].times
-            res.append(ss.AnalogSignalFromTimes(times, mag, unitq, i, "[{0} from model]"))
+            res.append(ss.AnalogSignalFromTimes(times, mag, unitq, i, "from the model"))
         return res
 
     def plot_results(self, prefix=""):

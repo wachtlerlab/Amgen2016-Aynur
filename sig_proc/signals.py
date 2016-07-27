@@ -74,7 +74,8 @@ def AnalogSignalFromTimes(times, signal, units=q.dimensionless, name=None, descr
     return res
 
 def ShiftSignal(sig, dtime):
-    return neo.AnalogSignal(sig.magnitude, t_start=sig.times[0]+dtime, sampling_period=sig.sampling_period, units=sig.units)
+    return neo.AnalogSignal(sig.magnitude, t_start=sig.times[0]+dtime, sampling_period=sig.sampling_period,
+                            units=sig.units, name=sig.name, description=sig.description)
 
 def ShiftSignalNull(sig, dtime):
     s = nearest_multiple(dtime, sig.sampling_period)
@@ -82,10 +83,11 @@ def ShiftSignalNull(sig, dtime):
     n = int(s/sig.sampling_period)
     res = neo.AnalogSignal(sig.magnitude, t_start=sig.times[0]+s, sampling_period=sig.sampling_period, units=sig.units)
     res2 = neo.AnalogSignal(n*[0*sig.units], t_start=sig.times[0], sampling_period=sig.sampling_period, units=sig.units)
-    return Concat(res, res2)
+    return Concat(res, res2, name=sig.name, description=sig.description)
 
 def BeginSignalOn(sig, time):
-    return neo.AnalogSignal(sig.magnitude, t_start=time, sampling_period = sig.sampling_period, units = sig.units)
+    return neo.AnalogSignal(sig.magnitude, t_start=time, sampling_period = sig.sampling_period, units = sig.units,
+                            name=sig.name, description=sig.description)
 
 
 def ReInit(magnitude, t_start, sampling_period, units):
@@ -96,7 +98,7 @@ def ShiftSpikeTrain(spk, dtime):
     return neo.SpikeTrain(spk.times + dtime, spk.t_stop-dtime, spk.units)
 
 
-def Concat(sig1, sig2):
+def Concat(sig1, sig2, name=None, description=None):
     if sig1.times[0]<sig2.times[0]:
         x = sig1
         y = sig2
@@ -112,22 +114,26 @@ def Concat(sig1, sig2):
     t_start = x.times[0]
     t = x.times < y.times[0]
     dist = int((y.times[0]-x.times[-1])/x.sampling_period) - 1
-    xdata = x.simplified
-    ydata = y.simplified
-    if dist>0: data = np.concatenate((xdata.magnitude[t], np.array([0.]*dist), ydata.magnitude))
-    else: data = np.concatenate((xdata.magnitude[t], ydata.magnitude))
-    return neo.AnalogSignal(data, t_start=t_start, sampling_period=x.sampling_period, units = xdata.units)
+    ydata = y.rescale(x.units)
+    if dist>0: data = np.concatenate((x.magnitude[t], np.array([0.]*dist), ydata.magnitude))
+    else: data = np.concatenate((x.magnitude[t], ydata.magnitude))
+    return neo.AnalogSignal(data, t_start=t_start, sampling_period=x.sampling_period, units = x.units,
+                            name=name, description=description)
 
-def Join(lst):
+def Join(lst, name=None, description=None):
     an = lst[0]
     for k in lst[1:]:
         an = Concat(an, k)
+    an.name=name
+    an.description=description
     return an
 
-def Join_Shifted(lst, dtime = 0*q.s):
+def Join_Shifted(lst, dtime = 0*q.s, name=None, description=None):
     an = lst[0]
     for i in xrange(1, len(lst)):
         an = Concat(an, ShiftSignal(lst[i], dtime*i))
+    an.name=name
+    an.description=description
     return an
 
 def JoinSpikeTrains(lst):

@@ -1,12 +1,13 @@
 from astropy.visualization import quantity_support
 quantity_support()
 from matplotlib import pylab as plt
+import numpy as np
 import quantities as q
 
 
 def __plot_single_analog_signal(signal, color=None, plotlabel = False, timeunit = q.ms, valunit = None):
     if valunit==None: valunit = signal.units
-    dims = ", ["+str(valunit)+"]"
+    dims = ", ["+str(valunit.dimensionality)+"]"
     label = str(signal.description)+dims if plotlabel else str(signal.name)+", "+str(signal.description)+dims
     x = signal.times.rescale(timeunit)
     y = signal.rescale(valunit)
@@ -22,10 +23,11 @@ def plot_single_analog_signal(signal):
     __plot_single_analog_signal(signal)
     plt.show()
 
-def __plot_single_spike_train(spk, col = None, timeunit=q.ms):
+def __plot_single_spike_train(spk, color = None, timeunit=q.ms):
+    if color==None: color = np.random.rand(3, 1)
     for m in spk.times:
         x = m.rescale(timeunit)
-        plt.axvline(x, linestyle="--", color = col)
+        plt.axvline(x, linestyle="--", color = color)
 
 def plot_block(blk, subplots = True, func = None):
     for seg in blk.segments:

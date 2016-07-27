@@ -47,12 +47,12 @@ def ReadExperiment(ename):
             res = res[res.times<1*q.s]
             print "times:", res.times
             res.name = labels[1]+j.name[7:]
-            res.description = "Voltage"
+            res.description = "voltage"
             seg.analogsignals.append(res)
             mag = res.sampling_rate.simplified.magnitude*np.gradient(res.magnitude)
             res = neo.AnalogSignal(mag, t_start=res.t_start, sampling_period=res.sampling_period, units=q.mA)
             res.name = labels[1]+j.name[7:]
-            res.description = "Current"
+            res.description = "current"
             seg.analogsignals.append(res)
 
     block.segments.append(seg)
