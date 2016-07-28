@@ -23,7 +23,7 @@ def plot_single_analog_signal(signal):
     __plot_single_analog_signal(signal)
     plt.show()
 
-def __plot_single_spike_train(spk, color = None, timeunit=q.ms):
+def __plot_single_spike_train(spk, color = None, timeunit=q.ms, linestyle="--"):
     if color==None: color = np.random.rand(3, 1)
     for m in spk.times:
         x = m.rescale(timeunit)

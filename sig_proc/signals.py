@@ -43,23 +43,23 @@ class SignalBuilder(object):
     def __return_signal__(self, signal, units):
         return neo.AnalogSignal(signal, t_start=self.props.t_start, sampling_period=self.props.sampling_period, units=units)
 
-    def get_constant(self, value = 1.):
-        signal = np.array(len(self.props.times)*[1]) * value
-        return self.__return_signal__(signal, value.units)
+    def get_constant(self, amplitude = 1.*q.dimensionless):
+        signal = np.array(len(self.props.times)*[1]) * amplitude.magnitude
+        return self.__return_signal__(signal, amplitude.units)
 
-    def get_sine(self, period, shift, units = q.dimensionless):
-        signal = np.sin(2*np.pi*(self.props.times - shift)/period)
-        return self.__return_signal__(signal, units)
+    def get_sine(self, period, shift, amplitude = 1.*q.dimensionless):
+        signal = amplitude.magnitude*np.sin(2*np.pi*(self.props.times - shift)/period)
+        return self.__return_signal__(signal, amplitude.units)
 
-    def get_rect(self, start, stop, units = q.dimensionless):
-        signal = np.array((self.props.times <= stop)*(self.props.times >= start), dtype=float)
-        return self.__return_signal__(signal, units)
+    def get_rect(self, start, stop, amplitude = 1.*q.dimensionless):
+        signal = amplitude.magnitude*np.array((self.props.times <= stop)*(self.props.times >= start), dtype=float)
+        return self.__return_signal__(signal, amplitude.units)
 
-    def get_periodic_rect(self, period, width, shift, units = q.dimensionless):
+    def get_periodic_rect(self, period, width, shift, amplitude = 1.*q.dimensionless):
         tm = self.props.times - shift
         n = np.round(tm / period)
-        signal = np.array(np.abs(tm - n * period) * 2 < width, dtype=float)
-        return self.__return_signal__(signal, units)
+        signal = amplitude.magnitude*np.array(np.abs(tm - n * period) * 2 < width, dtype=float)
+        return self.__return_signal__(signal, amplitude.units)
 
 def get_signal(sampling_period, t_start, duration, val=q.Quantity(0)):
     n = int(duration/sampling_period)

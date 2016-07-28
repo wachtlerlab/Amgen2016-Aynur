@@ -1,6 +1,6 @@
 import sig_proc as ss
 import quantities as q
-blk = ss.multiple.ReadExperiment("130605-2LY")
+blk = ss.multiple.ReadExperiment("130322-1LY")
 # ss.multiple.PlotExperiment(blk, subplots=False)
 
 sgl = [f for f in blk.segments[0].analogsignals if f.description=="voltage" and "Trial" in f.name]

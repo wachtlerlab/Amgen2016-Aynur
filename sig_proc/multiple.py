@@ -49,8 +49,12 @@ def ReadExperiment(ename):
             res.name = labels[1]+j.name[7:]
             res.description = "voltage"
             seg.analogsignals.append(res)
+            tcur = neo.AnalogSignal(res.magnitude, units=q.nA, t_start=res.t_start, sampling_period=res.sampling_period)
+            tcur.name=res.name+"-1"
+            tcur.description="current"
+            seg.analogsignals.append(tcur)
             mag = res.sampling_rate.simplified.magnitude*np.gradient(res.magnitude)
-            res = neo.AnalogSignal(mag, t_start=res.t_start, sampling_period=res.sampling_period, units=q.mA)
+            res = neo.AnalogSignal(mag, t_start=res.t_start, sampling_period=res.sampling_period, units=q.nA)
             res.name = labels[1]+j.name[7:]
             res.description = "current"
             seg.analogsignals.append(res)
@@ -68,17 +72,18 @@ def YesName(stri):
 def PlotExperiment(block, subplots=True, func = YesName):
     pl.plot_block(block, subplots, func)
 
-def PlotSets(sigs=[], spks=[], timeunit=q.ms):
+def PlotSets(sigs=[], spks=[], timeunit=q.ms, spikelines="--"):
     if sigs!=None:
         for s in sigs:
             pl.__plot_single_analog_signal(s, timeunit=timeunit)
     if spks!=None:
         for s in spks:
-            pl.__plot_single_spike_train(s, timeunit=timeunit)
+            pl.__plot_single_spike_train(s, timeunit=timeunit, linestyle=spikelines)
     pl.plt.xlabel("Time, "+str(timeunit))
     pl.plt.ylabel("Value, unit")
+    pl.plt.grid(True)
     pl.show()
 
 if __name__=="__main__":
-    blk = ReadExperiment("130605-2LY")
+    blk = ReadExperiment("130322-1LY")
     PlotExperiment(blk, subplots=True)

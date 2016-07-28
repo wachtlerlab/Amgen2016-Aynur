@@ -14,28 +14,29 @@ class AdEx(model_template):
             # "a": [3., 3.1, 5., 5.2, nS]
         }
         self.def_inits = {
-            "w":0*uA,
-            "Vr": -70.6* mV,#-48.5*mV,
-            "Vt":-50.4*mV,
+            "w": 0*uA,
+            "Vr": -70.6 * mV,#-48.5*mV,
+            "Vt":-50.4 * mV,
             "b": 0.0805 * nA,
-            "V":-70.4*mV,
+            "V":-70.4 * mV,
             "sF": 2 * mV,
             "tau": 144 * ms,
             "EL": -70.6 * mV,
             "gL": 30 * nS,
             "C": 281 * pF,
-            "a": 4 * nS
+            "a": 4 * nS,
+            "Vp": 20 * mV
         }
         self.params = {
         }
         self.def_inits.update(inits)
         self.monitors_list = {"V": mV, "I": nA, "w":0.1*nA}
         self.equations = [
+            "Ex = gL*sF*exp( (V - Vt)/sF ) : mA",
+            "IL = gL*(EL - V) : mA",
             "dV/dt = (i + IL + Ex - w)/C : mV",
 
             "dw/dt = (a*(V - EL) - w)/tau : mA",
-            "Ex = gL*sF*exp((V - Vt)/sF) : mA",
-            "IL = gL*(EL - V) : mA",
             "Vt : mV",
             "Vr : mV",
             "b : mA",
@@ -45,7 +46,7 @@ class AdEx(model_template):
             "gL : siemens",
             "C : pF",
             "a : siemens",
-            "Vp = 20*mV: mV"
+            "Vp : mV"
         ]
         # tm = self.def_inits["C"]/self.def_inits["gL"]
         # aa = self.def_inits["a"]/self.def_inits["gL"]
@@ -54,3 +55,25 @@ class AdEx(model_template):
         # print "tm/tw", tm/self.def_inits["tau"]
         self._threshold = 'V > Vp'
         self._reset = 'V = Vr; w+=b'
+
+ad_ex_resonator = {
+    "b": 0.0805 * nA,
+    "V":-70.4*mV,
+    "sF": 2 * mV,
+    "tau": 144 * ms,
+    "EL": -70.6 * mV,
+    "gL": 20 * nS,
+    "C": 2810 * pF,
+    "a": 8 * nS
+}
+
+ad_ex_integrator = {
+    "b": 0.0805 * nA,
+    "V":-70.4*mV,
+    "sF": 2 * mV,
+    "tau": 144 * ms,
+    "EL": -70.6 * mV,
+    "gL": 20 * nS,
+    "C": 12 * nF,
+    "a": 4 * nS
+}

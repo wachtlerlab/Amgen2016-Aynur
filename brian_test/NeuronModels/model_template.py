@@ -91,6 +91,9 @@ class model_template:
             res.append(ss.AnalogSignalFromTimes(times, mag, unitq, i, "from the model"))
         return res
 
+    def return_spikes(self):
+        res = []
+
     def plot_results(self, prefix=""):
         if len(self.monitors)>0:
             print "times:|",self.monitors[self.monitors.keys()[0]].times, "|"
