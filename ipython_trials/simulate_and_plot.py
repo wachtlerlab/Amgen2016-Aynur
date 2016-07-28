@@ -11,7 +11,7 @@ voltage = [f for f in blk.segments[0].analogsignals if f.name=="PredictedInput1"
 
 output = []#[f for f in blk.segments[0].analogsignals if "Trial"in f.name and f.description=="voltage"]
 
-spikes = []#[f for f in blk.segments[0].spiketrains if "Trial" in f.name]
+spikes = [f for f in blk.segments[0].spiketrains if "Trial" in f.name]
 
 simul = sim.Simulator(NM.AdEx())
 
@@ -21,7 +21,7 @@ print "INPUT:", input
 
 initials = {
     "scaleFactor": 0.1,
-    # "a":   20 * b.nS,
+    "a":   20 * b.nS,
 }
 
 '''ad_ex_custom_fitting1 = {
@@ -40,8 +40,8 @@ initials = {
 
 #initials.update(ad_ex_custom_fitting1)
 
-shift = 300*q.ms
-inp_duration = 250*q.ms
+shift = 200*q.ms
+inp_duration = 300*q.ms
 
 currInput = sg.ShiftSignalNull(input[0], shift)
 currInput = currInput[currInput.times<duration]
@@ -85,7 +85,7 @@ myMonitors = {
 
 initials.update({})
 
-res = simul.run(time=duration, dtime=0.02*b.ms, monitors=myMonitors, inits=initials)
+res = simul.run(time=duration, dtime=0.05*b.ms, monitors=myMonitors, inits=initials)
 
 res = res#+output[voltage]
 
