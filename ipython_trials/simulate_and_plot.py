@@ -21,7 +21,9 @@ print "INPUT:", input
 
 initials = {
     "scaleFactor": 0.1,
-    "a":   20 * b.nS,
+    "a":   6 * b.nS,
+    "gL": 40 * b.nS,
+    "Vr" : -54*b.mV,
 }
 
 '''ad_ex_custom_fitting1 = {
