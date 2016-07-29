@@ -25,7 +25,7 @@ class AdEx(model_template):
             "gL": 30 * nS,
             "C": 281 * pF,
             "a": 4 * nS,
-            "Vp": 20 * mV
+            "Vp": -25 * mV
         }
         self.params = {
         }
@@ -56,24 +56,52 @@ class AdEx(model_template):
         self._threshold = 'V > Vp'
         self._reset = 'V = Vr; w+=b'
 
-ad_ex_resonator = {
-    "b": 0.0805 * nA,
-    "V":-70.4*mV,
-    "sF": 2 * mV,
-    "tau": 144 * ms,
-    "EL": -70.6 * mV,
-    "gL": 20 * nS,
-    "C": 2810 * pF,
-    "a": 8 * nS
-}
+    resonator = {
+        "b": 0.0805 * nA,
+        "V":-70.4*mV,
+        "sF": 2 * mV,
+        "tau": 144 * ms,
+        "EL": -70.6 * mV,
+        "gL": 20 * nS,
+        "C": 2810 * pF,
+        "a": 8 * nS
+    }
 
-ad_ex_integrator = {
-    "b": 0.0805 * nA,
-    "V":-70.4*mV,
-    "sF": 2 * mV,
-    "tau": 144 * ms,
-    "EL": -70.6 * mV,
-    "gL": 20 * nS,
-    "C": 12 * nF,
-    "a": 4 * nS
-}
+    integrator = {
+        "b": 0.0805 * nA,
+        "V":-70.4*mV,
+        "sF": 2 * mV,
+        "tau": 144 * ms,
+        "EL": -70.6 * mV,
+        "gL": 20 * nS,
+        "C": 12 * nF,
+        "a": 4 * nS
+    }
+
+    rebound = {
+        "w": 0 * uA,
+        "Vr": -60 * mV,  # -48.5*mV,
+        "Vt": -50.4 * mV,
+        "b": 0.0805 * nA,
+        "V": -60 * mV,
+        "sF": 2 * mV,
+        "tau": 720 * ms,
+        "EL": -60 * mV,
+        "gL": 30 * nS,
+        "C": 281 * pF,
+        "a": 80 * nS
+    }
+
+    bursting = {
+        "w": 0 * uA,
+        "Vr": -67.6 * mV,
+        "Vt": -50.4 * mV,
+        "b": 0.0805 * nA,
+        "V": -70.4 * mV,
+        "sF": 2 * mV,
+        "tau": 144 * ms,
+        "EL": -70.6 * mV,
+        "gL": 30 * nS,
+        "C": 281 * pF,
+        "a": 4 * nS
+    }

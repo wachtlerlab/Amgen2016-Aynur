@@ -81,6 +81,7 @@ def PlotSets(sigs=[], spks=[], timeunit=q.ms, spikelines="--"):
             pl.__plot_single_spike_train(s, timeunit=timeunit, linestyle=spikelines)
     pl.plt.xlabel("Time, "+str(timeunit))
     pl.plt.ylabel("Value, unit")
+    pl.plt.legend(loc=2)
     pl.plt.grid(True)
     pl.show()
 
