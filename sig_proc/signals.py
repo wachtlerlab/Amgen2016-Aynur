@@ -61,6 +61,10 @@ class SignalBuilder(object):
         signal = amplitude.magnitude*np.array(np.abs(tm - n * period) * 2 < width, dtype=float)
         return self.__return_signal__(signal, amplitude.units)
 
+    def get_signal_by_func(self, func, amplitude = 1*q.dimensionless):
+        signal = amplitude.magnitude*func(self.props.times)
+        return self.__return_signal__(signal, amplitude.units)
+
 def get_signal(sampling_period, t_start, duration, val=q.Quantity(0)):
     n = int(duration/sampling_period)
     return neo.AnalogSignal([val]*n, units=val.units, t_start=t_start, sampling_period=sampling_period)

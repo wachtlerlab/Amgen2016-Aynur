@@ -2,57 +2,45 @@ from brian_test import simulation as sim, NeuronModels as NM
 from sig_proc import multiple as mp, plot as pt, signals as sg
 import quantities as q
 import brian as b
+import numpy as np
 
 blk = mp.ReadExperiment("130322-1LY")
 
 input = [f for f in blk.segments[0].analogsignals if f.name=="PredictedInput1-1" and f.description=="current"]
-
 # voltage = [f for f in blk.segments[0].analogsignals if f.name=="PredictedInput1" and f.description=="voltage"]
-
 output = []#[f for f in blk.segments[0].analogsignals if "Trial"in f.name and f.description=="voltage"]
-
 spikes = []# [f for f in blk.segments[0].spiketrains if "Trial" in f.name]
 
 model = NM.AdEx()
-
 simul = sim.Simulator(model)
 
-duration = 0.7*b.second
+duration = 1.1*b.second
 shift = 200*q.ms
-inp_duration = 400*q.ms
-
-print "INPUT:", input
+inp_duration = 800*q.ms
+n_shift = 400*q.ms
 
 initials = {
     "scaleFactor": 1.,
 }
 
-'''ad_ex_custom_fitting1 = {
-    "Vr": -70.6 * mV,  # -48.5*mV,
-    "Vt": -50.4 * mV,
-    "b": 0.0805 * nA,
-    "V": -70.4 * mV,
-    "sF": 2 * mV,
-    "tau": 144 * ms,
-    "EL": -70.6 * mV,
-    "gL": 30 * nS,
-    "C": 281 * pF,
-    "a": 4 * nS,
-    "Vp": 20 * mV
-}'''
-
-initials.update(model.bursting)
+initials.update(model.bursting_rebound)
+def func(times):
+    k = times > shift+n_shift
+    print k
+    tlen= len(times)
+    llen = len(times[k])
+    return np.array([1.]*(tlen-llen)+[-1.]*llen)
 
 currInput = sg.ShiftSignalNull(input[0], shift)
 currInput = currInput[currInput.times<duration]
-currInput = sg.SignalBuilder(currInput).get_rect(shift, shift+inp_duration, amplitude=.8*q.nA)
-
+template = sg.SignalBuilder(currInput)
+currInput = template.get_rect(shift, shift+inp_duration, amplitude=.8*q.nA)
+currInput*= template.get_signal_by_func(func, amplitude=1*q.dimensionless)
 # voltage = sg.ShiftSignal(voltage[0], shift)
 
 for i in xrange(len(output)):
     output[i] = sg.ShiftSignalNull(output[i], shift)
     output[i] = output[i][output[i].times < duration]
-
 for i in xrange(len(spikes)):
     spikes[i] = sg.ShiftSpikeTrain(spikes[i], shift)
     spikes[i] = spikes[i][spikes[i].times.simplified < duration]
@@ -82,10 +70,6 @@ myMonitors = {
 #             # "Ex":  1 * b.nA
 #         })
 
-initials.update({})
-
 res = simul.run(time=duration, dtime=0.05*b.ms, monitors=myMonitors, inits=initials)
-
-res = res#+output[voltage]
 
 mp.PlotSets(res, spikes)
