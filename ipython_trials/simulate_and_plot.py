@@ -41,11 +41,11 @@ initials = {
     "Vp": 20 * mV
 }'''
 
-initials.update(model.rebound)
+initials.update(model.bursting)
 
 currInput = sg.ShiftSignalNull(input[0], shift)
 currInput = currInput[currInput.times<duration]
-currInput = sg.SignalBuilder(currInput).get_rect(shift, shift+inp_duration, amplitude=-.8*q.nA)
+currInput = sg.SignalBuilder(currInput).get_rect(shift, shift+inp_duration, amplitude=.8*q.nA)
 
 # voltage = sg.ShiftSignal(voltage[0], shift)
 

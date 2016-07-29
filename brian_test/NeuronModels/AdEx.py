@@ -94,7 +94,7 @@ class AdEx(model_template):
 
     bursting = {
         "w": 0 * uA,
-        "Vr": -67.6 * mV,
+        "Vr": -47.4 * mV,
         "Vt": -50.4 * mV,
         "b": 0.0805 * nA,
         "V": -70.4 * mV,
