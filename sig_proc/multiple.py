@@ -1,4 +1,5 @@
 import nix_utilities.rawDataAnalyse as rd
+import os
 import sig_proc.signals
 from nix_utilities.neoNIXIO import tag2AnalogSignal
 import quantities as q, numpy as np
@@ -11,7 +12,8 @@ labels = default
 YesDict = labels
 
 def ReadExperiment(ename):
-    dirname = "/home/maksutov/NIXFiles/reorg/"
+    HOME=os.path.expanduser('~')
+    dirname = os.path.join(HOME, "NIXFiles", "reorg")
     freqs = [265]
     try:
         analyser=rd.RawDataAnalyser(ename, dirname)
