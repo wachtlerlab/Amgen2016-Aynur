@@ -2,6 +2,7 @@ from brian_test.NeuronModels.model_template import *
 
 class AdEx(model_template):
     def __init__(self, inits={}):
+        self.name = "AdEx model"
         self.opt_params = {
             # "Vr":[-55., -52., -45., -42., mV],
             # "Vt":[-59., -56., -45., -43., mV],

@@ -9,7 +9,7 @@ blk = mp.ReadExperiment("130322-1LY")
 input = [f for f in blk.segments[0].analogsignals if f.name=="PredictedInput1-1" and f.description=="current"]
 # voltage = [f for f in blk.segments[0].analogsignals if f.name=="PredictedInput1" and f.description=="voltage"]
 output = []#[f for f in blk.segments[0].analogsignals if "Trial"in f.name and f.description=="voltage"]
-spikes = []# [f for f in blk.segments[0].spiketrains if "Trial" in f.name]
+spikes =  [f for f in blk.segments[0].spiketrains if "Trial" in f.name]
 
 model = NM.AdEx()
 simul = sim.Simulator(model)

@@ -25,12 +25,16 @@ class model_template:
     _threshold = None
     _reset = None
     def __init__(self):
+        self.name = "template"
         self.equations = []
         self.params = {}
         self.def_inits = {}
         self.opt_params = {}
         self.monitors_list = {}
     	pass
+
+    def __str__(self):
+        return self.name
 
     def get_inits(self):
         return self.def_inits

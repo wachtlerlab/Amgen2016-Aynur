@@ -4,21 +4,22 @@ import numpy as np
 import quantities as q
 
 
-
-
 def compare(a, b, precision=1e-9):
     sum = abs(a)+abs(b)
     if abs(a-b)<precision*sum:
         return True
     else: return False
 
-
-
 def nearest_multiple(a, d):
     n = int((a/d).simplified)
     return n*d
 
-
+def QuantityFromString(stri):
+    spl = stri.split(" ")
+    if len(spl)==1: spl = ["1"]+spl
+    elif len(spl)>2: spl = [str(float(spl[0])*float(spl[1]))]+[spl[-1]]
+    print spl
+    return q.Quantity(float(spl[0]), units=str(spl[1]))
 
 class SignalBuilder(object):
     def __init__(self, *args, **kwargs):

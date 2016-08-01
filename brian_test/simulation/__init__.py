@@ -1,4 +1,5 @@
-from sig_proc import  signals as ss, plot as plt, multiple as mpl
+from sig_proc import  signals as ss
+import json
 import brian as b
 
 class Simulator(object):
@@ -18,4 +19,5 @@ class Simulator(object):
         self.model.set_start_params(self.g, **inits)
         self.model.simulate(time, self.g, d=monitors)
         di = self.model.return_signal()
-        return di
+        self.results = di
+        return self.results

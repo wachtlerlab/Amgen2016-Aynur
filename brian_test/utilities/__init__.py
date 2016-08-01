@@ -32,7 +32,9 @@ class timer(object):
         return dt
 
 def BrianToQuantity(bq):
-    spl = str(bq).split(" ")
+    return QuantityFromString(str(bq))
+
+def QuantityFromString(stri):
+    spl = stri.split(" ")
     if len(spl)==1: spl = ["1"]+spl
-    qq = q.Quantity(float(spl[0]), units=spl[1])
-    return qq
+    return q.Quantity(float(spl[0]), units=spl[1])
