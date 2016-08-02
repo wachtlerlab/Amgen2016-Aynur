@@ -1,6 +1,7 @@
 from astropy.visualization import quantity_support
 quantity_support()
 from matplotlib import pylab as plt
+from signals import CutFirst
 import numpy as np
 import quantities as q
 
@@ -18,8 +19,8 @@ def __plot_single_analog_signal(signal, color=None, plotlabel = False, timeunit 
 
 
 def plot_single_analog_signal(signal):
-    plt.xlabel(signal.times.units)
-    plt.ylabel(signal.units)
+    plt.xlabel(CutFirst(signal.times.units))
+    plt.ylabel(CutFirst(signal.units))
     __plot_single_analog_signal(signal)
     plt.show()
 

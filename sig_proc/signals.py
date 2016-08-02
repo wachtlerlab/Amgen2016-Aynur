@@ -3,6 +3,12 @@ import neo
 import numpy as np
 import quantities as q
 
+def CutFirst(stri):
+    stri = str(stri)
+    spl = stri.split(" ")
+    if len(spl)>2:
+        return " ".join(spl[-2:])
+    else: return stri
 
 def compare(a, b, precision=1e-9):
     sum = abs(a)+abs(b)
@@ -17,8 +23,7 @@ def nearest_multiple(a, d):
 def QuantityFromString(stri):
     spl = stri.split(" ")
     if len(spl)==1: spl = ["1"]+spl
-    elif len(spl)>2: spl = [str(float(spl[0])*float(spl[1]))]+[spl[-1]]
-    print spl
+    elif len(spl)>2: raise Exception("Unsupported quantity format: {0}".format(stri))
     return q.Quantity(float(spl[0]), units=str(spl[1]))
 
 class SignalBuilder(object):

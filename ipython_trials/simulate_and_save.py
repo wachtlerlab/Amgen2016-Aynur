@@ -14,7 +14,7 @@ spikes =  [f for f in blk.segments[0].spiketrains if "Trial" in f.name]
 model = NM.AdEx()
 simul = sim.Simulator(model)
 
-duration = 1.1*b.second
+duration = 0.3*b.second
 shift = 200*q.ms
 inp_duration = 800*q.ms
 n_shift = 400*q.ms
@@ -72,4 +72,4 @@ myMonitors = {
 
 res = simul.run(time=duration, dtime=0.05*b.ms, monitors=myMonitors, inits=initials)
 
-mp.PlotSets(res, spikes)
+pt.plot_single_analog_signal(res[0])

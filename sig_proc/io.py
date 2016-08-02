@@ -3,11 +3,12 @@ from sig_proc.signals import QuantityFromString
 import numpy as np
 import quantities as q
 import neo
+from .signals import CutFirst
 
 def AnalogSignalToDict(sig):
     res = {}
     res["signal"] = list(sig.magnitude)
-    res["units"] = str(sig.units)
+    res["units"] = CutFirst(str(sig.units))
     res["t_start"] = str(sig.t_start)
     res["sampling_period"] = str(sig.sampling_period)
     print "sampling_period", sig.sampling_period, res["sampling_period"]
@@ -28,10 +29,8 @@ def DictToAnalogSignal(dic):
         units = q.UnitQuantity(str(units), units)
     if t_start!=None:
         t_start = QuantityFromString(t_start)
-        t_start = q.UnitQuantity(str(t_start), t_start)
     if sampling_period!=None:
         sampling_period = QuantityFromString(sampling_period)
-        sampling_period = q.UnitQuantity(str(sampling_period), sampling_period)
     return neo.AnalogSignal(signal, t_start=t_start, sampling_period=sampling_period, units=units,
                             name=name, description=description)
 
