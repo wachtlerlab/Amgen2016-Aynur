@@ -4,6 +4,7 @@ import numpy as np
 import quantities as q
 import neo
 from .signals import CutFirst
+from .multiple import PlotSets
 
 def AnalogSignalToDict(sig):
     res = {}
@@ -88,3 +89,7 @@ def LoadJson(fname):
     if times!=None:
         spks.append(DictToSpikeTrain(inp))
     return [sigs, spks]
+
+def PlotJson(fname):
+    di = LoadJson(fname)
+    PlotSets(*di)

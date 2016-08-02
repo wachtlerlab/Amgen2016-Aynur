@@ -2,6 +2,8 @@ from brian_test.NeuronModels.model_template import *
 
 class hodgkin_huxley(model_template):
     def __init__(self, inits = {}):
+        self.name = "Hodgkin-Huxley model"
+        self.id = "hohu"
         self.def_inits = {"n":0.31, "m":0.05, "h": 0.6}
         self.def_inits.update(inits)
         self.monitors_list = {"V":mV, "INa":10*uA, "IK":10*uA, "Il":10*uA, "I":10*uA}

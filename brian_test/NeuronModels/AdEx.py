@@ -3,6 +3,7 @@ from brian_test.NeuronModels.model_template import *
 class AdEx(model_template):
     def __init__(self, inits={}):
         self.name = "AdEx model"
+        self.id = "adex"
         self.opt_params = {
             # "Vr":[-55., -52., -45., -42., mV],
             # "Vt":[-59., -56., -45., -43., mV],
@@ -49,11 +50,6 @@ class AdEx(model_template):
             "a : siemens",
             "Vp : mV"
         ]
-        # tm = self.def_inits["C"]/self.def_inits["gL"]
-        # aa = self.def_inits["a"]/self.def_inits["gL"]
-        # print "C/gL", tm
-        # print "a/gL", aa
-        # print "tm/tw", tm/self.def_inits["tau"]
         self._threshold = 'V > Vp'
         self._reset = 'V = Vr; w+=b'
 

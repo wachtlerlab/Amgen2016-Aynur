@@ -26,6 +26,7 @@ class model_template:
     _reset = None
     def __init__(self):
         self.name = "template"
+        self.id = "temp"
         self.equations = []
         self.params = {}
         self.def_inits = {}

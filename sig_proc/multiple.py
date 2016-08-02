@@ -1,10 +1,10 @@
 import nix_utilities.rawDataAnalyse as rd
-import os
 import sig_proc.signals
 from nix_utilities.neoNIXIO import tag2AnalogSignal
 import quantities as q, numpy as np
 import plot as pl
 import signals as ss
+import nix_utilities.filesystem as nx
 
 import neo
 default = ["Trial", "PredictedInput"]
@@ -12,11 +12,9 @@ labels = default
 YesDict = labels
 
 def ReadExperiment(ename):
-    HOME=os.path.expanduser('~')
-    dirname = os.path.join(HOME, "NIXFiles", "reorg")
     freqs = [265]
     try:
-        analyser=rd.RawDataAnalyser(ename, dirname)
+        analyser=rd.RawDataAnalyser(ename, nx.reorg)
     except:
         print "analyser=rd.RawDataAnalyser(i, dirname)"
     data = [t for t in analyser.getContResps(freqs)[freqs[0]] if len(t)>0]

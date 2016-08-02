@@ -2,6 +2,8 @@ from brian_test.NeuronModels.model_template import *
 
 class Izhikevich(model_template):
     def __init__(self, inits={}):
+        self.name = "Izhikevich model"
+        self.id = "izhi"
         self.params = {}
         self.def_inits = {
             "U":0*uA,
