@@ -1,1 +1,1 @@
-import brian_test, nix_utilities
+import BrianUtils, NixUtils, Tests, NeoUtils
