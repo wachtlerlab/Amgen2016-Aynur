@@ -6,6 +6,8 @@ reorg = os.path.join(DATA, "reorg")
 INPUT = os.path.join(DATA, "INPUT")
 OUTPUT = os.path.join(DATA, "OUTPUT")
 FITTING = os.path.join(DATA, "FITTING")
+TRACES = os.path.join(DATA, "TRACES")
+pickle = os.path.join(FITTING, "pickle")
 
 def nixName(exp):
     return str(exp)+".h5"
@@ -28,6 +30,14 @@ def getOutput(exp, fname=False):
 
 def getFitting(exp, fname=False):
     path = os.path.join(FITTING, exp)
+    if not os.path.exists(path):
+        os.makedirs(path)
+    if fname:
+        path = os.path.join(path, fname)
+    return path
+
+def getTraces(exp, fname=False):
+    path = os.path.join(TRACES, exp)
     if not os.path.exists(path):
         os.makedirs(path)
     if fname:

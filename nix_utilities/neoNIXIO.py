@@ -20,8 +20,10 @@ def addAnalogSignal2Block(blk, analogSignal):
     '''
 
     assert hasattr(analogSignal, 'name'), 'Analog signal has no name'
+    stri = analogSignal.description
+    if stri==None: stri = 'nix.regular_sampled'
 
-    data = blk.create_data_array(analogSignal.name, 'nix.regular_sampled', data=analogSignal.magnitude)
+    data = blk.create_data_array(analogSignal.name, stri, data=analogSignal.magnitude)
 
     data.unit = quUnitStr(analogSignal)
     data.label = analogSignal.name
@@ -164,7 +166,9 @@ def tag2AnalogSignal(tag, refInd):
     analogSignal = neo.AnalogSignal(signal=trace,
                                     units=ref.unit,
                                     sampling_period=qu.Quantity(ts, units=dim.unit),
-                                    t_start=qu.Quantity(offset + startInd * ts, units=dim.unit))
+                                    t_start=qu.Quantity(offset + startInd * ts, units=dim.unit),
+                                    name=tag.name,
+                                    description=tag.type)
 
     # trace = tag.retrieve_data(refInd)[:]
     # tVec = tag.position[0] + np.linspace(0, tag.extent[0], trace.shape[0])

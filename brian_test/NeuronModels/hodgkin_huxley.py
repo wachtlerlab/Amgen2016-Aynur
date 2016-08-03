@@ -1,6 +1,6 @@
-from brian_test.NeuronModels.model_template import *
+from brian_test.NeuronModels.Models import ModelTemplate
 
-class hodgkin_huxley(model_template):
+class hodgkin_huxley(ModelTemplate):
     def __init__(self, inits = {}):
         self.name = "Hodgkin-Huxley model"
         self.id = "hohu"

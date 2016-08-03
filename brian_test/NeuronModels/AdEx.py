@@ -1,6 +1,6 @@
-from brian_test.NeuronModels.model_template import *
+from Models import ModelTemplate
 
-class AdEx(model_template):
+class AdEx(ModelTemplate):
     def __init__(self, inits={}):
         self.name = "AdEx model"
         self.id = "adex"

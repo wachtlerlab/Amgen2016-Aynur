@@ -43,9 +43,9 @@ def ReadExperiment(ename):
         for j in myExpSect:
             if "Fitting"!=j.name[:7]: continue
             myFitTag = [t for t in analyser.nixFile.blocks["FittingTraces"].tags if t.metadata == myExpSect[j.name]]
+            print "nyFirTag", myFitTag
             res = tag2AnalogSignal(myFitTag[0], 0)
             res = res[res.times<1*q.s]
-            print "times:", res.times
             res.name = labels[1]+j.name[7:]
             res.description = "voltage"
             seg.analogsignals.append(res)
@@ -61,7 +61,6 @@ def ReadExperiment(ename):
 
     block.segments.append(seg)
     return block
-
 
 def YesName(stri):
     for i in YesDict:
@@ -84,6 +83,9 @@ def PlotSets(sigs=[], spks=[], timeunit=q.ms, spikelines="--"):
     pl.plt.legend(loc=2)
     pl.plt.grid(True)
     pl.show()
+
+def Extract_Inputs(exp):
+    pass
 
 if __name__=="__main__":
     blk = ReadExperiment("130322-1LY")

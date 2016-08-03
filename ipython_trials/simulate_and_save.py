@@ -1,8 +1,11 @@
-from brian_test import simulation as sim, NeuronModels as NM
-from sig_proc import multiple as mp, plot as pt, signals as sg
-import quantities as q
-import brian as b
 import numpy as np
+
+import brian as b
+import quantities as q
+
+import brian_test.Simulator
+from brian_test import NeuronModels as NM
+from sig_proc import multiple as mp, plot as pt, signals as sg
 
 blk = mp.ReadExperiment("130322-1LY")
 
@@ -12,7 +15,7 @@ output = []#[f for f in blk.segments[0].analogsignals if "Trial"in f.name and f.
 spikes =  [f for f in blk.segments[0].spiketrains if "Trial" in f.name]
 
 model = NM.AdEx()
-simul = sim.Simulator(model)
+simul = brian_test.Simulator.Simulator(model)
 
 duration = 0.3*b.second
 shift = 200*q.ms

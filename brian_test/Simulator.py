@@ -1,6 +1,7 @@
-from sig_proc import  signals as ss
-import json
 import brian as b
+
+from sig_proc import signals as ss
+
 
 class Simulator(object):
     def __init__(self, model):

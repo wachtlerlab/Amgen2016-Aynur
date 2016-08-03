@@ -1,6 +1,6 @@
-from brian_test.NeuronModels.model_template import *
+from brian_test.NeuronModels.Models import ModelTemplate
 
-class Izhikevich(model_template):
+class Izhikevich(ModelTemplate):
     def __init__(self, inits={}):
         self.name = "Izhikevich model"
         self.id = "izhi"
