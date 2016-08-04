@@ -35,8 +35,11 @@ class ModelTemplate:
 
     def get_opt_params(self):
         res = {k: np.array(self.opt_params[k][:-1], dtype=float)*self.opt_params[k][-1] for k in self.opt_params}
-        #res.update({"scaleFactor":[1e-7, 1e-6, 1e+6, 1e+7]})
+        # res.update({"scaleFactor":[1e-7, 1e-6, 1e+6, 1e+7]})
         return res
+
+    def update_opt_params(self, newopt):
+        self.opt_params.update(newopt)
 
     def get_params(self):
         return self.params

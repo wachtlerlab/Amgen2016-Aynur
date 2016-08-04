@@ -6,6 +6,7 @@ from NixUtils import ModelfittingIO as MIO
 from NixUtils import ProjectFileStructure as FS
 from NeoUtils import NeoPlot as PL
 import datetime as dt
+import os
 
 class NixModelFitter(object):
     def __init__(self, expname):
@@ -49,13 +50,32 @@ class NixModelFitter(object):
             self.file.closeNixFile()
 
     def PlotSimulation(self, fname, expsig = False, expspk = False):
-        res = self.file.GetSim(fname)
+        self.file.openNixFile()
         spks = []
         sigs = []
-        if expsig or expspk:
-            sigs, spks = self.file.GetOut(res["output"])
-        sigs += res["monitors"]
+        try:
+            res = self.file.GetSim(fname)
+            if expsig or expspk:
+                sig, spk = self.file.GetOut(res["output"])
+                if expsig: sigs.append(sig)
+                if expspk: spks.append(spk)
+            sigs += res["monitors"]
+        finally:
+            self.file.closeNixFile()
         PL.PlotSets(sigs, spks)
+
+    def PlotFitness(self, name):
+        self.file.openNixFile()
+        res = self.file.GetFit(name)
+        obj = MIO.pickle.load(open(os.path.join(FS.FITTING, self.file.exp, res["pickle"])))
+        arr = obj.result[0][2][0]['best_fitness']
+        print arr
+        PL.plt.plot(arr, "bo-")
+        PL.plt.xlabel("Iteration number")
+        PL.plt.ylabel("Fitness")
+        PL.plt.title("Neuron : {0}, fitting : {1}".format(self.file.exp, name))
+        PL.plt.show()
+        self.file.closeNixFile()
 
     def GetFittingNames(self):
         self.file.openNixFile()

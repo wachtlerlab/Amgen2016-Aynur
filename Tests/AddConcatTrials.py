@@ -44,7 +44,8 @@ for ename in mio.GetAvaliableIds():
                 for i in xrange(count)]
 
     for i in xrange(count):
-        f.AddOut(conn[i], conn_spk[i])
+        f.AddOut(sg.ShiftSignalNull(conn[i], iTime), sg.ShiftSpikeTrain(conn_spk[i], iTime))
+        f.AddOut(conn[i], conn_spk[i], name=conn[i].name+"-unshifted")
 
 
     iTime = 200*q.ms
@@ -59,7 +60,7 @@ for ename in mio.GetAvaliableIds():
     for i in inputs:
         input = sg.ShiftSignalNull(sg.Join_Shifted([i]*count, dTime, name=i.name+"-"+sig.name), iTime)
         f.AddIn(input, description="repeated signal")
-        input = sg.ExpandNull(i, conn[0].duration)
+        input = sg.ShiftSignalNull(sg.ExpandNull(i, conn[0].duration), iTime)
         input.name = input.name+"-DuringAfterStimulus"
         f.AddIn(input, description="expanded input")
 
