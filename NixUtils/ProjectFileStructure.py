@@ -1,6 +1,9 @@
 import os
+import socket
 
 HOME = os.path.expanduser('~')
+if socket.gethostname()=="sapphire": HOME = os.path.join(HOME, "Public", "atlas")
+
 DATA = os.path.join(HOME, "DATA")
 reorg = os.path.join(DATA, "reorg")
 INPUT = os.path.join(DATA, "INPUT")

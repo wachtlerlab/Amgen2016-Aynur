@@ -197,7 +197,7 @@ class ModelfittingIO(object):
         res = {}
         sigs = []
         for i in v.sections["monitors"].sections:
-            arr = [a for a in self.blocks[self.simulations].tags if a.metadata == i]
+            arr = [a for a in self.nixFile.blocks[self.simulations].tags if a.metadata == i]
             if len(arr)>0:
                 ns = nio.tag2AnalogSignal(arr[0], 0)
                 ns.name = i.name

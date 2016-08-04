@@ -1,8 +1,10 @@
 from NixUtils import ModelfittingIO as mio
 from NixUtils import ProjectFileStructure as fs
 from NeoUtils import NeoPlot as plt
+import quantities as q
 #"130322-1LY"
 
+inp_curr_max = 1*q.nA
 
 for ename in mio.GetAvaliableIds():
     f = mio.ModelfittingIO(ename, fs.FITTING)
@@ -26,6 +28,9 @@ for ename in mio.GetAvaliableIds():
     if len(sig)>0:
         sig = sig[0]
         sig.name = "derivative"
+        smax = sig.units*sig.magnitude.max()
+        koef = inp_curr_max/smax
+        sig = sig * koef
         f.AddIn(sig)
 
     names = plt.GetNames(aft)
