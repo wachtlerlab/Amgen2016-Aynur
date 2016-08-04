@@ -39,7 +39,8 @@ class SignalBuilder(object):
             self.props = neo.AnalogSignal([1]*len(x), t_start = x[0], sampling_period=(x[1]-x[0]))
         elif "length" in kwargs:
             sp = kwargs["sampling_period"]
-            ts = kwargs["t_start"]
+            ts = kwargs.get("t_start")
+            if ts is None: ts = 0*q.s
             l = kwargs["length"]
             un = kwargs.get("units")
             if un==None: un=q.dimensionless
@@ -135,9 +136,19 @@ def ConcatSequential(sig1, sig2, t_start = None, name=None, description = None):
     if t_start is None: t_start = sig1.t_start
     if Compare(sig1.sampling_period.simplified.magnitude, sig2.sampling_period.simplified.magnitude):
         units = sig1.units
-        signal = np.concatenate(sig1.magnitude, sig2.rescale(units).magnitude)
-        return neo.AnalogSignal(signal, t_start = t_start, sampling_period=sig1.sampling_period, units = units)
+        signal = np.concatenate((sig1.magnitude, sig2.rescale(units).magnitude))
+        return neo.AnalogSignal(signal, name = name, t_start = t_start,
+                                sampling_period = sig1.sampling_period, units = units)
 
+def ExpandNull(sig, time):
+    if time > sig.duration:
+        dtime = time-sig.duration
+        ty = NearestDivident(dtime, sig.sampling_period)
+        length = int(ty/sig.sampling_period)
+        sb = SignalBuilder(length=length, sampling_period=sig.sampling_period)
+        sig2 = sb.get_constant(0*sig.units)
+        return ConcatSequential(sig, sig2)
+    else: return sig
 
 def Join(lst, name=None, description=None):
     an = lst[0]

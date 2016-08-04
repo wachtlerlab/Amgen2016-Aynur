@@ -120,9 +120,9 @@ class RawDataProcessor():
         self.spikesDetected = False
 
         if readOnly:
-            self.nixFile = nix.File.open(os.path.join(dirpath, expName + '.h5'), nix.FileMode.ReadOnly)
+            self.nixFile = nix.File.openNixFile(os.path.join(dirpath, expName + '.h5'), nix.FileMode.ReadOnly)
         else:
-            self.nixFile = nix.File.open(os.path.join(dirpath, expName + '.h5'), nix.FileMode.ReadWrite)
+            self.nixFile = nix.File.openNixFile(os.path.join(dirpath, expName + '.h5'), nix.FileMode.ReadWrite)
 
         rawDataBlock = self.nixFile.blocks['RawDataTraces']
 
@@ -628,7 +628,7 @@ class RawDataProcessor():
 
     def close(self):
         if self.nixFile.is_open():
-            self.nixFile.close()
+            self.nixFile.closeNixFile()
 
 #***********************************************************************************************************************
 

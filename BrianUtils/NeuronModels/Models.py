@@ -70,6 +70,16 @@ class ModelTemplate:
         for k in init:
             setattr(g, k, init[k])
 
+    def return_signal_scaled(self):
+        res = []
+        for i in self.monitors:
+            qq = bu.BrianToQuantity(self.monitors_un[i])
+            mag = self.monitors[i][0]/self.monitors_un[i]
+            unitq = q.UnitQuantity(str(qq), qq)
+            times = q.s*self.monitors[i].times
+            res.append(ss.AnalogSignalFromTimes(times, mag, unitq, i, "from the model"))
+        return res
+
     def return_signal(self):
         res = []
         for i in self.monitors:

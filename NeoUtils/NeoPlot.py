@@ -5,6 +5,12 @@ from Signals import CutFirst
 import numpy as np
 import quantities as q
 
+# class NeoPlotter:
+#     signals = []
+#     spiketrains = []
+#     def PlotSignal(signal):
+#         pass
+
 def __plot_single_analog_signal(signal, color=None, plotlabel = False, timeunit = q.ms, valunit = None):
     if valunit==None: valunit = signal.units
     dims = ", ["+str(valunit.dimensionality)+"]"
