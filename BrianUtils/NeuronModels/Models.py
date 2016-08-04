@@ -19,6 +19,7 @@ class ModelTemplate:
         self.def_inits = {}
         self.opt_params = {}
         self.monitors_list = {}
+        self.units = {}
     	pass
 
     def __str__(self):
@@ -83,6 +84,7 @@ class ModelTemplate:
     def return_signal(self):
         res = []
         for i in self.monitors:
+            i.plot()
             qq = bu.BrianToQuantity(self.monitors_un[i])
             mag = self.monitors[i][0]/self.monitors_un[i]
             unitq = q.UnitQuantity(str(qq), qq)
