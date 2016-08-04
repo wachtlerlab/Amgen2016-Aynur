@@ -2,7 +2,7 @@ from brian.library import modelfitting as m
 import brian
 
 
-def FitModel(NModel, input, output, popsize=10000, maxiter=100, dt=0.02*brian.ms, method="RK"):
+def FitModel(NModel, input, output, popsize=10000, maxiter=100, method="RK"):
 
     input_raw = input.simplified.magnitude
     output_spk = output.times

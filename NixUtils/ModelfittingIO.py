@@ -49,7 +49,7 @@ class ModelfittingIO(object):
             self.file.create_block(self.simulations, "signals,spiketrains,spiketimes")
 
 
-    def add_input(self, sig, name = None, description = None, safe = False):
+    def add_input(self, sig, name = None, description = None, safe = True):
         '''
         Adds experimental input current to nix file
         :param sig: neo.AnalogSignal
@@ -73,7 +73,7 @@ class ModelfittingIO(object):
         nio.addTag("whole "+name, "whole signal tag", float(sig.t_start.simplified.magnitude),
                          blk, [asig], sec, float(sig.duration.simplified.magnitude))
 
-    def add_exp_output(self, sig, spk, name = None, description = None, safe = False):
+    def add_exp_output(self, sig, spk, name = None, description = None, safe = True):
         '''
         Adds experimental output to nix file
         :param sig: neo.AnalogSignal
@@ -94,14 +94,15 @@ class ModelfittingIO(object):
         nio.addTag("whole "+name, "whole signal tag", float(sig.t_start.simplified.magnitude),
                    blk, [dsig], sec, float(sig.duration.simplified.magnitude))
 
-    def add_fitting(self, name, results, initials={}, input_name="", output_name="", description ="", safe = False):
+    def add_fitting(self, name, model, results, initials={}, in_name="", out_name="", description ="", safe = True):
         b1=b2=b3=False
-        if not input_name in self.get_input_names(): b1 = True
-        if not output_name in self.get_output_names(): b2 = True
+        name = name.replace(" ", "_")
+        if not in_name in self.get_input_names(): b1 = True
+        if not out_name in self.get_output_names(): b2 = True
         if name in self.get_fitting_names(): b3 = True
         if safe:
-            if b1: raise Exception("Input '{0}' not found".format(output_name))
-            if b2: raise Exception("Input '{0}' not found".format(input_name))
+            if b1: raise Exception("Input '{0}' not found".format(in_name))
+            if b2: raise Exception("Output '{0}' not found".format(out_name))
             if b3: raise Exception("Fitting '{0}' already exists".format(name))
         elif b1 or b2 or b3: return False
         sec = self.file.sections[self.modelFittings].create_section(name, "fitting trial")
@@ -114,14 +115,17 @@ class ModelfittingIO(object):
         fp = sec.create_section(self.inits, "other parameters")
         for k in initials:
             fp[k] = nix.Value(initials[k])
-        pickle.dump(results, open(os.path.join(self.__pickle, name + self.fpickle_suff)))
+        pickle.dump(results, open(os.path.join(self.__pickle, name + self.fpickle_suff), "w"))
         sec["pickle"] = nix.Value(str(name+self.fpickle_suff))
-        sec["pickle"].definition = "Pickle filename for results of fitting"
-        sec["input"] = nix.Value(str(input_name))
-        sec["output"] = nix.Value(str(output_name))
-        sec["input"].definition = "Name of input signal used for fitting;" \
+        sec.props["pickle"].definition = "Pickle filename for results of fitting"
+        sec["model"] = nix.Value(str(model))
+        sec.props["model"].definition = "model id"
+        sec["input"] = nix.Value(str(in_name))
+        sec["output"] = nix.Value(str(out_name))
+        sec["input_var"] = nix.Value(str(results.args[-1]["input_var"]))
+        sec.props["input"].definition = "Name of input signal used for fitting;" \
                                   " look to the section '{0}'".format(self.fittingInputs)
-        sec["output"].definition = "Name of output signal used for fitting;" \
+        sec.props["output"].definition = "Name of output signal used for fitting;" \
                                   " look to the section '{0}'".format(self.expectedOutputs)
         sec.definition = description
 
@@ -161,7 +165,19 @@ class ModelfittingIO(object):
         g = [v for v in self.file.sections[self.modelFittings].sections if v.name==name]
         if len(g)==0: return None
         g = g[0]
+        di = {}
+        di["input"] = str(g.props["input"].values[0].value)
+        di["output"] = str(g.props["output"].values[0].value)
+        di["pickle"] = str(g.props["pickle"].values[0].value)
+        di["model"] = str(g.props["model"].values[0].value)
+        di["inits"] = {k.name:k.values[0].value for k in g.sections[self.inits].props}
+        # di["inits"].update({k:g.section[self.inits_i][k] for k in g.section[self.inits_i].props})
+        di["inits"].update({k.name: k.values[0].value for k in g.sections[self.best_pos].props})
+        di["input_var"] = str(g.props["input_var"].values[0].value)
+        return di
 
+    def add_simulation(self, fname, res):
+        pass
 
     def get_input_names(self):
         return [n.name for n in self.file.sections[self.fittingInputs].sections]

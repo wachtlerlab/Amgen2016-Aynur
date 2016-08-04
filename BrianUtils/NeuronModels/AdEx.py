@@ -1,9 +1,10 @@
 from Models import ModelTemplate
+from brian import mV, mA, uA, nA, ms, uS, nS, uF, nF, pF
 
 class AdEx(ModelTemplate):
+    name = "AdEx model"
+    id = "adex"
     def __init__(self, inits={}):
-        self.name = "AdEx model"
-        self.id = "adex"
         self.opt_params = {
             # "Vr":[-55., -52., -45., -42., mV],
             # "Vt":[-59., -56., -45., -43., mV],

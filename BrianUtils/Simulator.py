@@ -11,6 +11,9 @@ class Simulator(object):
         signal = ss.TimedArray_from_AnalogSignal(input)
         self.model.update_inits({name: signal})
 
+    def set_time(self, time):
+        b.defaultclock.t = time
+
     def run(self, time=200*b.ms, dtime = 0.02*b.ms, inits={}, monitors=None):
         b.defaultclock.dt = dtime
         eqs = self.model.get_model()

@@ -68,6 +68,7 @@ def SaveSpikeTrain(spk, filename):
     json.dump(SpikeTrainToDict(spk), open(filename, "w"))
 
 def SaveResults(fname, sigs, spks):
+    print "sigs, spks:", sigs, spks
     res = {}
     res["signals"]=[AnalogSignalToDict(sig) for sig in sigs]
     res["spikes"]=[SpikeTrainToDict(spk) for spk in spks]
@@ -77,17 +78,17 @@ def LoadJson(fname):
     inp = json.load(open(fname))
     sigs = inp.get("signals")
     spks = inp.get("spikes")
-    if sigs!=None:
+    if not sigs is None:
         sigs = [DictToAnalogSignal(sig) for sig in sigs]
     else: sigs = []
     signal = inp.get("signal")
-    if signal!=None:
+    if not signal is None:
         sigs.append(DictToAnalogSignal(inp))
-    if spks!=None:
+    if not spks is None:
         spks = [DictToSpikeTrain(spk) for spk in spks]
     else: spks = []
     times = inp.get("times")
-    if times!=None:
+    if not times is None:
         spks.append(DictToSpikeTrain(inp))
     return [sigs, spks]
 

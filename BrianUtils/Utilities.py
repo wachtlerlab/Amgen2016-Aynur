@@ -1,6 +1,7 @@
 import json
 import time
 import quantities as q
+import brian as b
 
 class timer(object):
     def __init__(self):
@@ -39,6 +40,9 @@ def QuantityFromString(stri):
     spl = stri.split(" ")
     if len(spl)==1: spl = ["1"]+spl
     return q.Quantity(float(spl[0]), units=spl[1])
+
+def TimeToBrian(time):
+    return float(time.simplified.magnitude)*b.second
 
 
 def one_layer_fromdict(stri, d, a, dolists = True):

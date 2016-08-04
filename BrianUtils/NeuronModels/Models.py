@@ -8,7 +8,7 @@ from BrianUtils import Utilities as bu
 from NeoUtils import Signals as ss
 
 class ModelTemplate:
-
+    name = ""
     _threshold = None
     _reset = None
     def __init__(self):
@@ -22,6 +22,9 @@ class ModelTemplate:
     	pass
 
     def __str__(self):
+        return self.id
+
+    def __repr__(self):
         return self.name
 
     def get_inits(self):
@@ -66,9 +69,6 @@ class ModelTemplate:
         init.update(kwargs)
         for k in init:
             setattr(g, k, init[k])
-
-    # def return_results(self):
-    #     return {i:Foo(i, self.monitors[i].times, self.monitors[i][0], ms, self.monitors_un[i]) for i in self.monitors}
 
     def return_signal(self):
         res = []

@@ -1,9 +1,10 @@
-from BrianUtils.NeuronModels.Models import ModelTemplate
+from Models import ModelTemplate
+from brian import mV, mA, uA, nA, ms, uS, nS, uF, nF, pF
 
 class Izhikevich(ModelTemplate):
+    name = "Izhikevich model"
+    id = "izhi"
     def __init__(self, inits={}):
-        self.name = "Izhikevich model"
-        self.id = "izhi"
         self.params = {}
         self.def_inits = {
             "U":0*uA,

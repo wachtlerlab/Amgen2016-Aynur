@@ -17,7 +17,7 @@ ishift = shift
 input = sp.Signals.ShiftSignalNull(sp.Signals.Join_Shifted(sigs, shift), ishift)
 output = sp.Signals.ShiftSpikeTrain(sp.Signals.JoinSpikeTrainsShifted(spks, shift), ishift)
 
-model = NM.Models.AdEx()
+model = NM.AdEx.AdEx()
 t.record()
 results, inits = Ft.FitModel(model, input=input, output=output, popsize=1000, maxiter=5)
 t.record()
