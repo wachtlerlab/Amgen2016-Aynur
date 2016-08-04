@@ -84,10 +84,9 @@ class ModelTemplate:
         res = []
         for i in self.monitors:
             qq = bu.BrianToQuantity(self.monitors_un[i])
-            mag = self.monitors[i][0]/self.monitors_un[i]
-            unitq = q.UnitQuantity(str(qq), qq)
+            mag = self.monitors[i][0]/float(qq.magnitude)
             times = q.s*self.monitors[i].times
-            res.append(ss.AnalogSignalFromTimes(times, mag, unitq, i, "from the model"))
+            res.append(ss.AnalogSignalFromTimes(times, mag, qq.units, i, "from the model"))
         return res
 
 class DummyModel(ModelTemplate):

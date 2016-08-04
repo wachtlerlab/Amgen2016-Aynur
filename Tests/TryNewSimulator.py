@@ -5,7 +5,7 @@ f = NixModelFitter("130322-1LY")
 
 
 # for i in xrange(1, 11, 21, 31, 41, 51)
-f.FitSomething("adex", input="derivative-DuringAfterStimulus", output="Trial4-DuringAfterSimiulus", maxiter=10)
+#f.FitSomething("adex", input="derivative-DuringAfterStimulus", output="Trial4-DuringAfterSimiulus", maxiter=10)
 
 lst = f.GetFittingNames()
 
