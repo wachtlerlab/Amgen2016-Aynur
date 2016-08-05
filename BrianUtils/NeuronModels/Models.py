@@ -87,7 +87,6 @@ class ModelTemplate:
     def return_signal(self):
         res = []
         for i in self.monitors:
-            i.plot()
             qq = bu.BrianToQuantity(self.monitors_un[i])
             mag = self.monitors[i][0]/float(qq.magnitude)
             times = q.s*self.monitors[i].times

@@ -13,17 +13,19 @@ class NixModelFitter(object):
         self.file = MIO.ModelfittingIO(expname, FS.FITTING)
         self.file.closeNixFile()
 
-    def FitSomething(self, model, input, output, popsize=1000, maxiter=2):
+    def FitSomething(self, model, input, output, inits = {}, popsize=1000, maxiter=100, optparams = {}, algo = "CMAES"):
         self.file.openNixFile()
         si = self.file.GetIn(input)
         sig, spk = self.file.GetOut(output)
         model_str = str(model)
         print "ModelStr = ",model_str
         model = NM.GetModelById(model_str)
-        results, inits = MF.FitModel(model(), si, spk, popsize=popsize, maxiter=maxiter)
+        results, inits = MF.FitModel(model(inits), si, spk, popsize=popsize, maxiter=maxiter, algo_params=optparams,
+                                     algorithm=algo)
         ctime = str(dt.datetime.now())
         self.file.AddFit(name = ctime, results=results, initials=inits, model = model_str,
                          in_name=input, out_name=output, description="fitting", safe=True)
+        print "initials:", inits
         try:
             pass
         finally:
@@ -62,7 +64,8 @@ class NixModelFitter(object):
             sigs += res["monitors"]
         finally:
             self.file.closeNixFile()
-        PL.PlotSets(sigs, spks)
+        title = "Neuron : {0}, fitting : {1}".format(self.file.exp, fname)
+        PL.PlotSets(sigs, spks, title=title)
 
     def PlotFitness(self, name):
         self.file.openNixFile()
@@ -70,6 +73,7 @@ class NixModelFitter(object):
         obj = MIO.pickle.load(open(os.path.join(FS.FITTING, self.file.exp, res["pickle"])))
         arr = obj.result[0][2][0]['best_fitness']
         print arr
+        print obj.best_pos
         PL.plt.plot(arr, "bo-")
         PL.plt.xlabel("Iteration number")
         PL.plt.ylabel("Fitness")

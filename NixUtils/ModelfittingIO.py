@@ -216,10 +216,10 @@ class ModelfittingIO(object):
         return [n.name for n in self.nixFile.sections[self.expectedOutputs].sections]
 
     def GetFitNames(self):
-        return [n.name for n in self.nixFile.sections[self.modelFittings].sections]
+        return sorted([n.name for n in self.nixFile.sections[self.modelFittings].sections])
 
     def GetSimNames(self):
-        return [n.name for n in self.nixFile.sections[self.simulations].sections]
+        return sorted([n.name for n in self.nixFile.sections[self.simulations].sections])
 
     def flt(self, q):
         return float(q.simplified.magnitude)

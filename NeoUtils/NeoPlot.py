@@ -87,7 +87,7 @@ def plot_segment(seg, timeunit=q.ms, func = None):
 def PlotExperiment(block, subplots=True, func = lambda x:True):
     plot_block(block, subplots, func)
 
-def PlotSets(sigs=[], spks=[], timeunit=q.ms, spikelines="--"):
+def PlotSets(sigs=[], spks=[], timeunit=q.ms, spikelines="--", title = ""):
     if sigs!=None:
         for s in sigs:
             __plot_single_analog_signal(s, timeunit=timeunit)
@@ -98,4 +98,5 @@ def PlotSets(sigs=[], spks=[], timeunit=q.ms, spikelines="--"):
     plt.ylabel("Value, unit")
     plt.legend(loc=2)
     plt.grid(True)
+    plt.title(title)
     show()
