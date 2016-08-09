@@ -89,10 +89,10 @@ class NeoPlotter(object):
             plt.ylabel(i[2][5])
         plt.show()
 
-def PlotLists(lst, title = ""):
+def PlotLists(lst, title = "", legend = True):
     f = NeoPlotter()
     for i in xrange(len(lst)):
-        f.Subplot(1, len(lst), i+1, title=title)
+        f.Subplot(1, len(lst), i+1, title=title, legend = legend)
         cl = 0
         for k in lst[i]:
             f.PlotSignal(k[0], colorgroup=cl)
