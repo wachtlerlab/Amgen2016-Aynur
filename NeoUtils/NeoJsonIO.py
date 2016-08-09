@@ -19,6 +19,7 @@ def AnalogSignalToDict(sig):
     return res
 
 def DictToAnalogSignal(dic):
+    if dic is None: return None
     signal = dic.get("signal")
     units = dic.get("units")
     t_start = dic.get("t_start")
@@ -45,6 +46,7 @@ def SpikeTrainToDict(spk):
     res["description"] = spk.description
 
 def DictToSpikeTrain(dic):
+    if dic is None: return None
     times = dic.get("times")
     units = dic.get("units")
     t_stop = dic.get("t_start")

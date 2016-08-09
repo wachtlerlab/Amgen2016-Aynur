@@ -16,7 +16,7 @@ def printlst(lst):
 
 np = NeoPlotter()
 m = sys.argv[1:]
-f = mio.ModelfittingIO("140917-1Al", pstr.FITTING)
+f = mio.ModelfittingIO("130322-1LY", pstr.FITTING)
 inputs = f.GetInNames()
 outputs = f.GetOutNames()
 sims = f.GetSimNames()
@@ -90,7 +90,12 @@ for k in m:
         else: res = sim.run(inits = par)
         fname = str(dt.datetime.now())+"_SIM"
         filename = pstr.os.path.join(pstr.TRACES, fname)
-        SaveResults(filename, res, [])
+        spks = []
+        if (out_name in outputs):
+            outs = f.GetOut(out_name)
+            res += [outs[0]]
+            spks += [outs[1]]
+        SaveResults(filename, res, spks)
         PlotJsonAnalogSignals(filename)
         # f.AddFit(fname, model, None, sim.afterInits, in_name, out_name)
         # f.AddSim(fname, res)

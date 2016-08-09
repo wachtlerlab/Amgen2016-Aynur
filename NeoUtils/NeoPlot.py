@@ -73,7 +73,8 @@ class NeoPlotter(object):
             a = self.GetScale(*sp)
             for j in xrange(len(a)):
                 sig = i[0][j]
-                name = str(sig.name) + "[" + str((sig.units/a[j])) + "]"
+                nquant = (1.*sig.units/a[j])
+                name = str(sig.name) + "[" + str(nquant) + "]"
                 if sig.description: name+=" : " + str(sig.description)
                 x = sig.times.rescale(i[2][3])
                 y = sig.magnitude * a[j]

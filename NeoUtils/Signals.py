@@ -56,7 +56,7 @@ class SignalBuilder(object):
 
     def get_sine(self, period, shift, amplitude = 1.*q.dimensionless):
         signal = amplitude.magnitude*np.sin(2*np.pi*(self.props.times - shift)/period)
-        return self.__return_signal__(signal, amplitude.units)
+        return self.__return_signal__(signal.magnitude, amplitude.units)
 
     def get_rect(self, start, stop, amplitude = 1.*q.dimensionless):
         signal = amplitude.magnitude*np.array((self.props.times <= stop)*(self.props.times >= start), dtype=float)
