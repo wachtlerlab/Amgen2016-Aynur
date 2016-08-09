@@ -5,11 +5,23 @@ from Signals import CutFirst
 import numpy as np
 import quantities as q
 
-# class NeoPlotter:
-#     signals = []
-#     spiketrains = []
-#     def PlotSignal(signal):
-#         pass
+class NeoPlotter:
+    subplots = []
+    def PlotSignal(self, signal):
+        if self.subplots:
+            self.subplots[-1][0].append(signal)
+        else: self.subplots.append(([signal], [], 111))
+    def PlotSpiketrain(self, spkt):
+        if self.subplots:
+            self.subplots[-1][1].append(spkt)
+        else: self.subplots.append(([spkt], [], 111))
+    def Subplot(self, w, h, n):
+        self.subplots.append(([], [], w * 10 + h * 100 + n))
+    def __Rescale(self):
+        for i in self.subplots:
+            a = i[0]
+            b = i[1]
+
 
 def __plot_single_analog_signal(signal, color=None, plotlabel = False, timeunit = q.ms, valunit = None):
     if valunit==None: valunit = signal.units

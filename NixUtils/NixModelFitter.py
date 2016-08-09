@@ -86,3 +86,20 @@ class NixModelFitter(object):
         lst = self.file.GetFitNames()
         self.file.closeNixFile()
         return lst
+
+    def GetInputNames(self):
+        self.file.openNixFile()
+        lst = self.file.GetInNames()
+        self.file.closeNixFile()
+        return lst
+
+    def GetOutputNames(self):
+        self.file.openNixFile()
+        lst = self.file.GetOutNames()
+        self.file.closeNixFile()
+        return lst
+
+    def PlotInput(self, name):
+        self.file.openNixFile()
+        inp = self.file.GetIn(name)
+        PL.PlotSets([inp])
