@@ -5,33 +5,25 @@ import brian as b
 
 class timer(object):
     def __init__(self):
-        self.prev = time.time()
-        self.times = []
+        self.zero = time.time()
+        self.times = [self.zero]
 
     def now(self):
-        return time.time()
+        return time.time() - self.zero
 
     def dt(self):
         now = time.time()
-        return now - self.prev
+        return now - self.times[-1]
 
     def record(self):
-        now = time.time()
-        self.times.append(now - self.prev)
+        self.times.append(self.now())
         return self.times[-1]
 
     def flush(self):
-        now = time.time()
-        self.times.append(now - self.prev)
+        self.times.append(self.now())
         times = self.times
-        self.times = []
+        self.times = [self.now()]
         return times
-
-    def reset(self):
-        now = time.time()
-        dt = now - self.prev
-        self.prev = now
-        return dt
 
 def BrianToQuantity(bq):
     return QuantityFromString(str(bq))

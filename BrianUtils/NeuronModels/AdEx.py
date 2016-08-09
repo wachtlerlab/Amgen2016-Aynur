@@ -76,6 +76,9 @@ class AdEx(ModelTemplate):
         self._threshold = 'V > Vp'
         self._reset = 'V = Vr; w+=b'
 
+    def get_init_template(self, stri):
+        return getattr(self, stri, {})
+
     resonator = {
         "b": 0.0805 * nA,
         "V":-70.4*mV,

@@ -9,4 +9,4 @@ lst = f.GetFittingNames()
 
 print lst
 
-if lst: f.PlotSimulation(lst[n], expspk=True, expsig=False)
+if lst: f.PlotSimulation(lst[n], expspk=True, expsig=True)

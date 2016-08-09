@@ -4,7 +4,7 @@ import numpy as np
 import quantities as q
 import neo
 from .Signals import CutFirst
-from NeoUtils.NeoPlot import PlotSets
+from NeoUtils.NeoPlot import PlotSets, PlotLists
 
 
 def AnalogSignalToDict(sig):
@@ -92,6 +92,10 @@ def LoadJson(fname):
         spks.append(DictToSpikeTrain(inp))
     return [sigs, spks]
 
-def PlotJson(fname):
+def PlotJsonO(fname):
     di = LoadJson(fname)
     PlotSets(*di)
+
+def PlotJsonAnalogSignals(fname):
+    di = LoadJson(fname)
+    PlotLists([zip(di[0], [None]*len(di[0]))])

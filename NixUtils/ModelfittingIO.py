@@ -32,26 +32,29 @@ class ModelfittingIO(object):
         self.__pickle = str(os.path.join(self.__nixLocation, exp))
         self.exp = str(exp)
         self.nixFilePath = str(os.path.join(self.__nixLocation, exp + ".h5"))
-        self.openNixFile()
+        self.__initNixFile()
 
-    def openNixFile(self):
+    def __initNixFile(self):
         if not os.path.exists(self.__pickle): os.makedirs(self.__pickle)
-        self.nixFile = nix.File.open(self.nixFilePath, nix.FileMode.ReadWrite)
-        blks = [(self.fittingInputs, "analogsignals"),
-                (self.expectedOutputs, "signals,spiketrains,spiketimes"),
-                (self.simulations, "signals,spiketrains,spiketimes")]
-        scs = [(self.modelFittings, "All fittings' list"),
-               (self.fittingInputs, "About inputs"),
-               (self.expectedOutputs, "About outputs"),
-               (self.simulations, "Simulations' list")]
-        for b in blks:
-            if not b[0] in [i.name for i in self.nixFile.blocks]:
-                self.nixFile.create_block(b[0], b[1])
-        for s in scs:
-            if not s[0] in self.nixFile.sections:
-                self.nixFile.create_section(s[0], s[1])
+        if os.path.exists(self.nixFilePath):
+            self.nixFile = nix.File.open(self.nixFilePath, nix.FileMode.ReadWrite)
+            blks = [(self.fittingInputs, "analogsignals"),
+                    (self.expectedOutputs, "signals,spiketrains,spiketimes"),
+                    (self.simulations, "signals,spiketrains,spiketimes")]
+            scs = [(self.modelFittings, "All fittings' list"),
+                   (self.fittingInputs, "About inputs"),
+                   (self.expectedOutputs, "About outputs"),
+                   (self.simulations, "Simulations' list")]
+            for b in blks:
+                if not b[0] in [i.name for i in self.nixFile.blocks]:
+                    self.nixFile.create_block(b[0], b[1])
+            for s in scs:
+                if not s[0] in self.nixFile.sections:
+                    self.nixFile.create_section(s[0], s[1])
+        else: self.nixFile = nix.File.open(self.nixFilePath, nix.FileMode.ReadWrite)
 
-
+    def openNixFile(self, mode = nix.FileMode.ReadWrite):
+        self.nixFile = nix.File.open(self.nixFilePath, mode)
 
     def AddIn(self, sig, name = None, description = None, safe = True):
         '''
@@ -61,6 +64,7 @@ class ModelfittingIO(object):
         :param description: str
         :return:
         '''
+        if not self.nixFile.is_open(): self.openNixFile()
         if name is None: name = sig.name
         if description is None: description = sig.description
         if name in self.GetInNames():
@@ -84,6 +88,7 @@ class ModelfittingIO(object):
         :param spk: neo.SpikeTrain
         :return:
         '''
+        if not self.nixFile.is_open(): self.openNixFile()
         if name is None: name = sig.name
         if description is None: description = sig.description
         if self.EoR(name in self.GetOutNames(), "Output '{0}' already exists".format(name), safe): return False
@@ -97,11 +102,18 @@ class ModelfittingIO(object):
         nio.addTag("whole " + name, "whole signal tag", self.flt(sig.t_start),
                    blk, [dsig], sec, self.flt(sig.duration))
 
-    def AddFit(self, name, model, results, initials={}, in_name="", out_name="", description ="", safe = True):
+    def AddFit(self, name, model, results = None, initials={}, in_name="", out_name="", description ="", safe = True):
+        if not self.nixFile.is_open(): self.openNixFile()
         name = name.replace(" ", "_")
         if self.EoR(not in_name in self.GetInNames(), "Input '{0}' not found".format(in_name), safe): return False
         if self.EoR(not out_name in self.GetOutNames(), "Output '{0}' not found".format(out_name), safe): return False
         if self.EoR(name in self.GetFitNames(), "Fitting '{0}' already exists".format(name), safe): return False
+        if results==None:
+            results = object()
+            results.best_pos = {}
+            results.parameters = object()
+            results.parameters.params = {}
+            if description=="": description = "Not-A-Fitting"
         sec = self.nixFile.sections[self.modelFittings].create_section(name, "fitting trial")
         fp = sec.create_section(self.best_pos, "parameters after fitting")
         for v in results.best_pos:
@@ -132,6 +144,7 @@ class ModelfittingIO(object):
         :param name: name of input signal
         :return: neo.AnalogSignal
         '''
+        if not self.nixFile.is_open(): self.openNixFile()
         g = [v for v in self.nixFile.sections[self.fittingInputs].sections if v.name == name]
         if len(g)==0: return None
         g = g[0]
@@ -147,6 +160,7 @@ class ModelfittingIO(object):
         :param name: name of output
         :return: neo.Analogsignal, neo.SpikeTrain
         '''
+        if not self.nixFile.is_open(): self.openNixFile()
         g = [v for v in self.nixFile.sections[self.expectedOutputs].sections if v.name == name]
         if len(g)==0: return None, None
         g = g[0]
@@ -159,6 +173,7 @@ class ModelfittingIO(object):
         return sig, spk
 
     def GetFit(self, name):
+        if not self.nixFile.is_open(): self.openNixFile()
         g = [v for v in self.nixFile.sections[self.modelFittings].sections if v.name == name]
         if len(g)==0: return None
         g = g[0]
@@ -174,6 +189,7 @@ class ModelfittingIO(object):
         return di
 
     def AddSim(self, fname, res, safe = True):
+        if not self.nixFile.is_open(): self.openNixFile()
         if self.EoR(not fname in self.GetFitNames(), "Fitting '{0}' not found".format(fname), safe): return False
         if self.EoR(fname in self.GetSimNames(), "Simulation '{0}' already exists".format(fname), safe): return False
         sec = self.nixFile.sections[self.simulations].create_section(fname, "simulation metadata")
@@ -190,6 +206,7 @@ class ModelfittingIO(object):
             nio.addTag(tagname, "analogsignal", self.flt(i.t_start), blk, [da], ns, self.flt(i.duration))
 
     def GetSim(self, fname, safe = True):
+        if not self.nixFile.is_open(): self.openNixFile()
         v = [s for s in self.nixFile.sections[self.simulations].sections if s.name == fname]
         if self.EoR(len(v)==0, "Simulation {0} doesn't exist".format(fname), safe): return False
         v = v[0]
@@ -210,15 +227,19 @@ class ModelfittingIO(object):
         return res
 
     def GetInNames(self):
-        return [n.name for n in self.nixFile.sections[self.fittingInputs].sections]
+        if not self.nixFile.is_open(): self.openNixFile()
+        return sorted([n.name for n in self.nixFile.sections[self.fittingInputs].sections])
 
     def GetOutNames(self):
-        return [n.name for n in self.nixFile.sections[self.expectedOutputs].sections]
+        if not self.nixFile.is_open(): self.openNixFile()
+        return sorted([n.name for n in self.nixFile.sections[self.expectedOutputs].sections])
 
     def GetFitNames(self):
+        if not self.nixFile.is_open(): self.openNixFile()
         return sorted([n.name for n in self.nixFile.sections[self.modelFittings].sections])
 
     def GetSimNames(self):
+        if not self.nixFile.is_open(): self.openNixFile()
         return sorted([n.name for n in self.nixFile.sections[self.simulations].sections])
 
     def flt(self, q):

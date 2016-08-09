@@ -60,12 +60,15 @@ class NixModelFitter(object):
             if expsig or expspk:
                 sig, spk = self.file.GetOut(res["output"])
                 if expsig: sigs.append(sig)
+                else: sigs.append(None)
                 if expspk: spks.append(spk)
+                else: spks.append(None)
             sigs += res["monitors"]
+            spks += [None]*len(res["monitors"])
         finally:
             self.file.closeNixFile()
         title = "Neuron : {0}, fitting : {1}".format(self.file.exp, fname)
-        PL.PlotSets(sigs, spks, title=title)
+        PL.PlotLists([zip(sigs, spks)], title = title)
 
     def PlotFitness(self, name):
         self.file.openNixFile()
@@ -100,6 +103,5 @@ class NixModelFitter(object):
         return lst
 
     def PlotInput(self, name):
-        self.file.openNixFile()
         inp = self.file.GetIn(name)
-        PL.PlotSets([inp])
+        PL.PlotLists([[inp, None]])
