@@ -73,7 +73,7 @@ class SignalBuilder(object):
         return self.__return_signal__(signal, amplitude.units)
 
 def get_signal(sampling_period, t_start, duration, val=q.Quantity(0)):
-    n = int(duration/sampling_period)
+    n = int((duration/sampling_period).simplified)
     return neo.AnalogSignal([val]*n, units=val.units, t_start=t_start, sampling_period=sampling_period)
 
 def TimedArray_from_AnalogSignal(sig):

@@ -7,6 +7,16 @@ import numpy as np
 import quantities as q
 from matplotlib import rcParams
 
+plParams = {'text.usetex': False,
+           'axes.labelsize': 'large',
+           'font.size': 24,
+           'font.family': 'sans-serif',
+           'font.sans-serif': 'computer modern roman',
+           'xtick.labelsize': 20,
+           'ytick.labelsize': 20,
+           'legend.fontsize': 20,
+           }
+rcParams.update(plParams)
 
 class NeoPlotter(object):
     def __init__(self):
@@ -60,10 +70,14 @@ class NeoPlotter(object):
         if not self.subplots:
             self.Subplot(1, 1, 1, "")
         self.subplots[-1][1].append(spkt)
-    def Subplot(self, w, h, n, title = "", legend = True, timeunit = "ms", xlabel = None, ylabel = None):
+    def XRange(self, Xrange):
+        if not self.subplots:
+            self.Subplot(1, 1, 1)
+        self.subplots[-1][2][6] = Xrange
+    def Subplot(self, w, h, n, title = "", legend = True, timeunit = "ms", xlabel = None, ylabel = None, Xrange=None):
         if xlabel==None: xlabel = "Time, ${0}$".format(timeunit)
         if ylabel==None: ylabel = "Value, Unit"
-        self.subplots.append(([], [], [w * 10 + h * 100 + n, title, legend, timeunit, xlabel, ylabel]))
+        self.subplots.append(([], [], [w * 10 + h * 100 + n, title, legend, timeunit, xlabel, ylabel, Xrange]))
     def Show(self):
         colors = rcParams['axes.color_cycle']
         for i in self.subplots:
@@ -74,7 +88,7 @@ class NeoPlotter(object):
             for j in xrange(len(a)):
                 sig = i[0][j]
                 nquant = (1.*sig.units/a[j])
-                name = str(sig.name) + "[" + str(nquant) + "]"
+                name = str(sig.name ) + "[" + str(nquant) + "]"
                 if sig.description: name+=" : " + str(sig.description)
                 x = sig.times.rescale(i[2][3])
                 y = sig.magnitude * a[j]
@@ -87,6 +101,8 @@ class NeoPlotter(object):
             if i[2][2]: plt.legend()
             plt.xlabel(i[2][4])
             plt.ylabel(i[2][5])
+            if not i[2][6] is None: plt.xlim(i[2][6])
+        #plt.tight_layout()
         plt.show()
 
 def PlotLists(lst, title = "", legend = True):

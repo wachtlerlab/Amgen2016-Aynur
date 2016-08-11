@@ -29,7 +29,7 @@ def DictToAnalogSignal(dic):
     if signal!=None: signal = np.array(signal)
     if units!=None:
         units = QuantityFromString(units)
-        units = q.UnitQuantity(str(units), units)
+        units = units.units
     if t_start!=None:
         t_start = QuantityFromString(t_start)
     if sampling_period!=None:

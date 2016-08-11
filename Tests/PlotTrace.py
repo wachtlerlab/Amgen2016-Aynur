@@ -66,7 +66,7 @@ for k in m:
         in_name = ""
         out_name = outputs[-1]
         for i in o[1:]:
-            a = i.split(":")
+            a = i.split("=")
             if a[0][0] == "p":
                 par[a[0][1:]] = float(a[1])
             elif a[0][0] == "i":
