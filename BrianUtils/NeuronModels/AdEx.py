@@ -4,39 +4,20 @@ from brian import mV, mA, uA, nA, ms, uS, nS, uF, nF, pF
 class AdEx(ModelTemplate):
     name = "AdEx model"
     id = "adex"
-    def __init__(self, inits={}):
+    def __init__(self, inits={}, from_perc = False):
         self.opt_params = {
             "Vr":[-85., -35., mV],
             "Vt":[-56., -45., mV],
-            "b": [0.002, 0.4, nA],
-            "sF": [1., 3., mV],
-            "tau": [7., 990., ms],
-            "gL": [1., 460., nS],
-            "C": [1., 1e6, pF],
-            "a": [1., 25., nS]
+            "b": [0.0002, 4, nA],
+            "sF": [0.1, 13., mV],
+            "tau": [7., 1220., ms],
+            "gL": [0.1, 760., nS],
+            "C": [0.1, 1e6, pF],
+            "scaleFactor": [1e-3, 1e+3, 1.],
+            "a": [.1, 75., nS]
         }
-        # self.opt_params = {
-        #     # "Vr":[-90, -85., -35., -32., mV],
-        #     # "Vt":[-59., -56., -45., -43., mV],
-        #     "b": [0.02, 0.4, nA],
-        #     # "sF": [0.99, 1., 2.99, 3., mV],
-        #     "tau": [21., 290., ms],
-        #     # "gL": [1., 1.1, 460., 462., nS],
-        #     "C": [5.1, 1e2, pF],
-        #     # "a": [1., 1.1, 25., 25.2, nS]
-        # }
-        # self.opt_params = {
-        #     "Vr":[-55., -52., -45., -42., mV],
-        #     "Vt":[-59., -56., -45., -43., mV],
-        #     "b": [0.01, 0.02, 0.16, 0.17, nA],
-        #     "sF": [0.99, 1., 2.99, 3., mV],
-        #     "tau": [130., 132., 158., 160., ms],
-        #     "tau": [600., 602., 158., 160., ms],
-        #     "EL": [-80., -79., -60., -59., mV],
-        #     "gL": [15., 17.1, 60., 62., nS],
-        #     "C": [200., 204., 360, 366, pF],
-        #     "a": [3., 3.1, 5., 5.2, nS]
-        # }
+
+        self.what_to_opt = set(["Vr", "sF", "tau", "b"])
 
         self.def_inits = {
             "w": 0*uA,
@@ -45,6 +26,7 @@ class AdEx(ModelTemplate):
             "b": 0.0805 * nA,
             "V":-70.4 * mV,
             "sF": 2 * mV,
+            "scaleFactor": [1e-3, 1e+3, 1.],
             "tau": 144 * ms,
             "EL": -70.6 * mV,
             "gL": 30 * nS,
@@ -55,6 +37,8 @@ class AdEx(ModelTemplate):
         self.params = {
         }
         self.def_inits.update(inits)
+        if from_perc:
+            self.calc_opt_from_perc()
         self.monitors_list = {"V": mV, "I": nA, "w":0.1*nA}
         self.equations = [
             "Ex = gL*sF*exp( (V - Vt)/sF ) : mA",
@@ -129,20 +113,6 @@ class AdEx(ModelTemplate):
         "a": 4 * nS
     }
 
-    rebound = {
-        "w": 0 * uA,
-        "Vr": -60 * mV,  # -48.5*mV,
-        "Vt": -50.4 * mV,
-        "b": 0.0805 * nA,
-        "V": -60 * mV,
-        "sF": 2 * mV,
-        "tau": 720 * ms,
-        "EL": -60 * mV,
-        "gL": 30 * nS,
-        "C": 281 * pF,
-        "a": 80 * nS
-    }
-
     bursting_rebound = {
         "w": 0 * uA,
         "Vr": -47.4 * mV,
@@ -155,4 +125,15 @@ class AdEx(ModelTemplate):
         "gL": 30 * nS,
         "C": 281 * pF,
         "a": 80 * nS
+    }
+
+    perc = {
+        "Vr": 0.1,
+        "Vt": 0.1,
+        "b": 0.99,
+        "sF": 0.2,
+        "tau": 0.6,
+        "gL": 0.01,
+        "C": 0.2,
+        "a": 0.4
     }

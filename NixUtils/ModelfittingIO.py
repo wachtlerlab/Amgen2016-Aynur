@@ -33,6 +33,7 @@ class ModelfittingIO(object):
         self.exp = str(exp)
         self.nixFilePath = str(os.path.join(self.__nixLocation, exp + ".h5"))
         self.__initNixFile()
+        print "Experiment {0} from {1} is open".format(exp, nixLocation)
 
     def __initNixFile(self):
         if not os.path.exists(self.__pickle): os.makedirs(self.__pickle)

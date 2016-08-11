@@ -11,6 +11,8 @@ class ModelTemplate:
     name = ""
     _threshold = None
     _reset = None
+    what_to_opt = set()
+    perc = {}
     def __init__(self):
         self.name = "template"
         self.id = "temp"
@@ -21,6 +23,9 @@ class ModelTemplate:
         self.monitors_list = {}
         self.units = {}
     	pass
+
+    def update_perc(self, di):
+        self.perc.update(di)
 
     def __str__(self):
         return self.id
@@ -35,9 +40,24 @@ class ModelTemplate:
         self.def_inits.update(upd)
 
     def get_opt_params(self):
-        res = {k: np.array(self.opt_params[k][:-1], dtype=float)*self.opt_params[k][-1] for k in self.opt_params}
+        res = {k: np.array(self.opt_params[k][:-1], dtype=float)*self.opt_params[k][-1]
+                    for k in self.opt_params if k in self.what_to_opt}
         # res.update({"scaleFactor":[1e-7, 1e-6, 1e+6, 1e+7]})
         return res
+
+    def add_opt_params(self, *params):
+        self.what_to_opt.update(set(params))
+
+    def set_opt_params(self, *params):
+        self.what_to_opt = set(params).copy()
+
+    def calc_opt_from_perc(self):
+        self.opt_params = {}
+        for k in self.what_to_opt:
+            init = self.def_inits[k]
+            f1 = (1-self.perc[k])*init
+            f2 = (1+self.perc[k])*init
+            self.opt_params[k] = [min(f1, f2), max(f1, f2), init/float(init)]
 
     def update_opt_params(self, newopt):
         self.opt_params.update(newopt)
@@ -69,7 +89,6 @@ class ModelTemplate:
 
     def set_start_params(self, g, **kwargs):
         init = self.def_inits.copy()
-        init.update({"scaleFactor":1.})
         init.update(kwargs)
         for k in init:
             setattr(g, k, init[k])

@@ -13,18 +13,24 @@ class NixModelFitter(object):
         self.file = MIO.ModelfittingIO(expname, FS.FITTING)
         self.file.closeNixFile()
 
-    def FitSomething(self, model, input, output, inits = {}, popsize=1000, maxiter=100, optparams = {}, algo = "CMAES"):
+    def FitSomething(self, model, input, output, inits = {}, popsize=1000, maxiter=100, algoptparams = {}, algo ="CMAES",
+                     from_perc = True, optparams = None):
         self.file.openNixFile()
         si = self.file.GetIn(input)
         sig, spk = self.file.GetOut(output)
         model_str = str(model)
         print "ModelStr = ",model_str
         model = NM.GetModelById(model_str)
-        results, inits = MF.FitModel(model(inits), si, spk, popsize=popsize, maxiter=maxiter, algo_params=optparams,
+        modelInst = model(inits, from_perc=from_perc)
+        if not optparams is None:
+            modelInst.set_opt_params(optparams)
+        results, inits = MF.FitModel(modelInst, si, spk,
+                                     popsize=popsize, maxiter=maxiter, algo_params=algoptparams,
                                      algorithm=algo)
         ctime = str(dt.datetime.now())
         self.file.AddFit(name = ctime, results=results, initials=inits, model = model_str,
                          in_name=input, out_name=output, description="fitting", safe=True)
+        print results.best_pos
         print "initials:", inits
         try:
             pass

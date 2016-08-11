@@ -7,6 +7,6 @@ f = NF.NixModelFitter("130322-1LY")
 
 lst = f.GetFittingNames()
 
-print lst
+print lst[n]
 
-if lst: f.PlotSimulation(lst[n], expspk=True, expsig=True)
+if lst: f.PlotSimulation(lst[n], expspk=True, expsig=False)

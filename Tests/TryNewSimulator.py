@@ -20,10 +20,11 @@ f = NixModelFitter("130322-1LY")
 #         }
 inits = AdEx.AdEx.bursting_rebound
 # for i in xrange(1, 11, 21, 31, 41, 51)
-optparams = {"proportion_selective":0.3}
+algoptparams = {"proportion_selective": 0.5}
+optparams = ["b", "a", "sF", "Vr", "gL", "C", "Vt", "tau", "scaleFactor"]
 
-f.FitSomething("adex", input="derivative-DuringAfterStimulus", output="Trial4-DuringAfterSimiulus", maxiter=100,
-               inits = inits, optparams=optparams)
+f.FitSomething("adex", input="subthreshold-DuringAfterStimulus-e-7", output="Trial4-DuringAfterSimiulus", maxiter=100000,
+               inits = inits, algoptparams=algoptparams, from_perc=False)
 
 lst = f.GetFittingNames()
 
