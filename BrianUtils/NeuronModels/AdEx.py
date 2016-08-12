@@ -29,7 +29,7 @@ class AdEx(Model):
             "b": 0.0805 * nA,
             "V":-70.4 * mV,
             "sF": 2 * mV,
-            "scaleFactor": [1e-3, 1e+3, 1.],
+            "scaleFactor": 1.,
             "tau": 144 * ms,
             "EL": -70.6 * mV,
             "gL": 30 * nS,
