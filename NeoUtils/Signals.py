@@ -4,6 +4,13 @@ import numpy as np
 import quantities as q
 
 def CutFirst(stri):
+    '''
+    When using custom quantities.UnitQuantity, cuts first part from string representation.
+    Example: "1.0 0.1 mV" -> "0.1 mV"
+    Do not use!
+    :param stri: string representation of UnitQuantity
+    :return: string, first part cut
+    '''
     stri = str(stri)
     spl = stri.split(" ")
     if len(spl)>2:
@@ -11,23 +18,60 @@ def CutFirst(stri):
     else: return stri
 
 def Compare(a, b, precision=1e-9):
+    '''
+    Compares float values a and b with given precision
+    :param a: float
+    :param b: float
+    :param precision: float
+    :return: True, if |a-b| < |a+b|*percision, else False
+    '''
     sum = abs(a)+abs(b)
     if abs(a-b)<precision*sum:
         return True
     else: return False
 
 def NearestDivident(a, d):
+    '''
+    Finds nearest to a value val, so that val/d is int
+    :param a: float
+    :param d: float
+    :return: val
+    '''
     n = int((a/d).simplified)
     return n*d
 
 def QuantityFromString(stri):
+    '''
+    Just converts given string to quantities.Quantity
+    :param stri: string
+    :return: quantities.Quantity
+    '''
     spl = stri.split(" ")
     if len(spl)==1: spl = ["1"]+spl
     elif len(spl)>2: raise Exception("Unsupported quantity format: {0}".format(stri))
     return q.Quantity(float(spl[0]), units=str(spl[1]))
 
 class SignalBuilder(object):
+    '''
+    Class for building different signals
+    '''
     def __init__(self, *args, **kwargs):
+        '''
+        Creates instance of SignalBuilder object
+        :param args: if non-null, args[0] = neo.AnalogSignal
+        :param kwargs: parameters
+        Usage:
+        three options.
+
+        1)  signal = neo.AnalogSignal(arr, t_start, sampling_period, units)
+            sb = SignalBuilder(signal)
+            or
+            sb = SignalBuilder(signal=signal)
+
+        2)  sb = SignalBuilder(times = times, units = units)
+
+        3)  sb =
+        '''
         if len(args)>0:
             self.props = args[0]
         elif "signal" in kwargs:

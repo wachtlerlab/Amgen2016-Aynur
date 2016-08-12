@@ -1,5 +1,5 @@
 import AdEx, HodgkinHuxley, Izhikevich
-from Models import DummyModel, ModelTemplate
+from Models import DummyModel, Model
 
 def GetModelById(id):
     AllModels = [AdEx.AdEx, HodgkinHuxley.HodgkinHuxley, Izhikevich.Izhikevich]

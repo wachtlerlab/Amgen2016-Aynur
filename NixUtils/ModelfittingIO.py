@@ -185,7 +185,7 @@ class ModelfittingIO(object):
         di["model"] = str(g.props["model"].values[0].value)
         di["inits"] = {k.name:k.values[0].value for k in g.sections[self.inits].props}
         # di["inits"].update({k:g.section[self.inits_i][k] for k in g.section[self.inits_i].props})
-        di["inits"].update({k.name: k.values[0].value for k in g.sections[self.best_pos].props})
+        di["fitted"] = {k.name: k.values[0].value for k in g.sections[self.best_pos].props}
         di["input_var"] = str(g.props["input_var"].values[0].value)
         return di
 

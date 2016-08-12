@@ -2,7 +2,7 @@ from NixUtils.NixModelFitter import NixModelFitter
 from brian import nA, uA, mV, pF, nS, ms
 from BrianUtils.NeuronModels import AdEx
 
-f = NixModelFitter("130322-1LY")
+f = NixModelFitter("140930-1Al")
 
 # inits = {
 #             "w": 0*uA,
@@ -19,12 +19,12 @@ f = NixModelFitter("130322-1LY")
 #             "Vp": -25 * mV
 #         }
 inits = AdEx.AdEx.bursting_rebound
-# for i in xrange(1, 11, 21, 31, 41, 51)
+
 algoptparams = {"proportion_selective": 0.5}
 optparams = ["b", "a", "sF", "Vr", "gL", "C", "Vt", "tau", "scaleFactor"]
 
-f.FitSomething("adex", input="subthreshold-DuringAfterStimulus-e-7", output="Trial4-DuringAfterSimiulus", maxiter=100000,
-               inits = inits, algoptparams=algoptparams, from_perc=False)
+f.FitSomething("adex", input="subthreshold-DuringAfterStimulus-e-7", output="Trial4-DuringAfterSimiulus", maxiter=5,
+               inits = inits, algoptparams=algoptparams, from_perc=False, popsize=10000)
 
 lst = f.GetFittingNames()
 

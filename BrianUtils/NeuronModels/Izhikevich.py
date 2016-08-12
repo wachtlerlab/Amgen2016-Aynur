@@ -1,7 +1,10 @@
-from Models import ModelTemplate
+from Models import Model
 from brian import mV, mA, uA, nA, ms, uS, nS, uF, nF, pF
 
-class Izhikevich(ModelTemplate):
+class Izhikevich(Model):
+    '''
+    Class for Izhikevich model. Inherits from BrianUtils.NeuronModels.Models.Model
+    '''
     name = "Izhikevich model"
     id = "izhi"
     def __init__(self, inits={}):

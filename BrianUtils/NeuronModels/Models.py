@@ -7,7 +7,10 @@ import BrianUtils.Utilities
 from BrianUtils import Utilities as bu
 from NeoUtils import Signals as ss
 
-class ModelTemplate:
+class Model:
+    '''
+    Parent class for all neuronal models
+    '''
     name = ""
     _threshold = None
     _reset = None
@@ -25,6 +28,11 @@ class ModelTemplate:
     	pass
 
     def update_perc(self, di):
+        '''
+        Updates percentage dict with di dict
+        :param di: dict
+        :return: None
+        '''
         self.perc.update(di)
 
     def __str__(self):
@@ -34,24 +42,52 @@ class ModelTemplate:
         return self.name
 
     def get_inits(self):
+        '''
+        Returns initial values for this model, defined so far
+        :return: dict
+        '''
         return self.def_inits
 
     def update_inits(self, upd):
+        '''
+        Updates inits with given dict
+        :param upd: dict
+        :return: None
+        '''
         self.def_inits.update(upd)
 
     def get_opt_params(self):
+        '''
+        Gives parameters from model and their limits for optimization.
+        Only used for modelfitting
+        :return: dict {key : [left, right]}
+        '''
         res = {k: np.array(self.opt_params[k][:-1], dtype=float)*self.opt_params[k][-1]
                     for k in self.opt_params if k in self.what_to_opt}
         # res.update({"scaleFactor":[1e-7, 1e-6, 1e+6, 1e+7]})
         return res
 
     def add_opt_params(self, *params):
+        '''
+        Updates optimization parameter for fitting
+        :param params: names of parameters, list of string
+        :return: None
+        '''
         self.what_to_opt.update(set(params))
 
     def set_opt_params(self, *params):
+        '''
+        Reset optimization parameters with new values.
+        :param params: list of string
+        :return: None
+        '''
         self.what_to_opt = set(params).copy()
 
     def calc_opt_from_perc(self):
+        '''
+        Calculates limits for optimization parameters from percentages
+        :return: None
+        '''
         self.opt_params = {}
         for k in self.what_to_opt:
             init = self.def_inits[k]
@@ -60,40 +96,71 @@ class ModelTemplate:
             self.opt_params[k] = [min(f1, f2), max(f1, f2), init/float(init)]
 
     def update_opt_params(self, newopt):
+        '''
+        Updates limits of optimization parameters with givan dict
+        :param newopt: dict {key: [float left, float right, brian.Units]}
+        :return: None
+        '''
         self.opt_params.update(newopt)
 
     def get_params(self):
+        '''
+        Depricated. Do not use.
+        :return: ~
+        '''
         return self.params
 
     def get_threshold(self):
+        '''
+        Returns threshold condition for model
+        :return: string
+        '''
         return self._threshold
 
     def get_reset(self):
+        '''
+        Returns reset expression for model
+        :return:
+        '''
         return self._reset
 
     def get_model(self):
+        '''
+        Converts BrianUtils.NeuronModel.Model to brian.Equations
+        :return: brian.Equations
+        '''
         new_dic = {}
         BrianUtils.Utilities.one_layer_fromdict("", self.params, new_dic)
         model = Equations("\n".join(self.equations+["scaleFactor: 1\nI: mA\ni = scaleFactor*I : mA"]), **new_dic)
         return model
 
-    def simulate(self, time, g, d = None):
-        if d==None:
-            d = self.monitors_list
-        self.monitors = {}
-        self.monitors_un = d
-        for k in d:
-            self.monitors[k] = StateMonitor(g, k, record=[0])
-        run(time, threads=2)
-        return self.monitors
-
-    def set_start_params(self, g, **kwargs):
+    def simulate(self, time, neurongroup, monitors = None, **kwargs):
+        '''
+        Simulates model for given period of time and neurongruop
+        :param time: brian.Quantity [second] - duration of simulation
+        :param neurongroup: brian.NeuronGroup, neurons to simulate
+        :param monitors: dict { key: brian.Units } - monitors to use
+        :param kwargs: additional initial parameters for simulation
+        :return: dict of brian.StateMonitor
+        '''
         init = self.def_inits.copy()
         init.update(kwargs)
         for k in init:
-            setattr(g, k, init[k])
+            setattr(neurongroup, k, init[k])
+        if monitors==None:
+            monitors = self.monitors_list
+        self.monitors = {}
+        self.monitors_un = monitors
+        for k in monitors:
+            self.monitors[k] = StateMonitor(neurongroup, k, record=[0])
+        run(time, threads=2)
+        return self.monitors
 
     def return_signal_scaled(self):
+        '''
+        Do not use!
+        :return:
+        '''
         res = []
         for i in self.monitors:
             qq = bu.BrianToQuantity(self.monitors_un[i])
@@ -104,6 +171,10 @@ class ModelTemplate:
         return res
 
     def return_signal(self):
+        '''
+        Returns monitored values for last simulation as list of analogsignals
+        :return: list of neo.AnalogSignal
+        '''
         res = []
         for i in self.monitors:
             qq = bu.BrianToQuantity(self.monitors_un[i])
@@ -112,21 +183,15 @@ class ModelTemplate:
             res.append(ss.AnalogSignalFromTimes(times, mag, qq.units, i, "from the model"))
         return res
 
-class DummyModel(ModelTemplate):
+
+class DummyModel(Model):
+    '''
+    Just to check how simulation works
+    '''
     def __init__(self):
         self.params = {}
         self.equations = ["dV/dt = 1*mV/ms : mV"]
         self.monitors_list = ['V']
-
-
-class Foo(object):
-    def __init__(self, name, x, y, xunits, yunits):
-        self.name = name
-        self.label = name
-        self.x = x
-        self.y = y
-        self.xunits = xunits
-        self.yunits = yunits
 
     def __str__(self):
         return "%name: {0}; x: {1}; y: {2}%".format(self.name, self.x, self.y)

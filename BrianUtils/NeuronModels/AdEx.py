@@ -1,7 +1,10 @@
-from Models import ModelTemplate
+from Models import Model
 from brian import mV, mA, uA, nA, ms, uS, nS, uF, nF, pF
 
-class AdEx(ModelTemplate):
+class AdEx(Model):
+    '''
+    Class for Adaptive Exponential Integrate-and-Fire model. Inherits from BrianUtils.NeuronModels.Models.Model
+    '''
     name = "AdEx model"
     id = "adex"
     def __init__(self, inits={}, from_perc = False):

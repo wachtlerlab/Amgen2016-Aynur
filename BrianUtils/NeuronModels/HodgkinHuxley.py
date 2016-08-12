@@ -1,7 +1,10 @@
-from Models import ModelTemplate
+from Models import Model
 from brian import mV, mA, uA, nA, ms, uS, nS, uF, nF, pF
 
-class HodgkinHuxley(ModelTemplate):
+class HodgkinHuxley(Model):
+    '''
+    Class for Hodgkin - Huxley model. Inherits from BrianUtils.NeuronModels.Models.Model
+    '''
     name = "Hodgkin-Huxley model"
     id = "hohu"
     def __init__(self, inits = {}):

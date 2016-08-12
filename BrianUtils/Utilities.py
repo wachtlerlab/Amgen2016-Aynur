@@ -4,6 +4,9 @@ import quantities as q
 import brian as b
 
 class timer(object):
+    '''
+    Class for convinient recording of duration of program
+    '''
     def __init__(self):
         self.zero = time.time()
         self.times = [self.zero]
@@ -26,18 +29,34 @@ class timer(object):
         return times
 
 def BrianToQuantity(bq):
+    '''
+    Converts brian.Quantity to quantities.Quantity
+    :param bq: brian.Quantity
+    :return: quantities.Quantity
+    '''
     return QuantityFromString(str(bq))
 
 def QuantityFromString(stri):
+    '''
+    Converts string to quantities.Quantity
+    :param stri: string
+    :return: quantities.Quantity
+    '''
     spl = stri.split(" ")
     if len(spl)==1: spl = ["1"]+spl
     return q.Quantity(float(spl[0]), units=spl[1])
 
 def TimeToBrian(time):
+    '''
+    converts quantity.Quantity to brian.second
+    :param time: quantity.Quantity
+    :return: brian.Quantity [brian.second]
+    '''
     return float(time.simplified.magnitude)*b.second
 
 
 def one_layer_fromdict(stri, d, a, dolists = True):
+    '''do not use'''
     for k in d:
         nstr = stri+"_"+k if stri!='' else k
         if type(d[k])==dict:
@@ -50,6 +69,7 @@ def one_layer_fromdict(stri, d, a, dolists = True):
 
 
 def one_layer_fromlist(stri, l, a):
+    '''do not use'''
     for i in xrange(len(l)):
         nstr = stri+"_" + str(i) if stri!='' else str(i)
         if type(l[i])==dict:
@@ -60,6 +80,7 @@ def one_layer_fromlist(stri, l, a):
 
 
 def one_layer_fromfile(filename, name, dolists=True):
+    '''do not use'''
     a = {}
     with open(filename) as f:
         d = json.load(f)

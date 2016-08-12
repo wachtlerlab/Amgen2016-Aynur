@@ -46,6 +46,7 @@ class NixModelFitter(object):
                 model = NM.GetModelById(fitting["model"])
                 print fitting["model"], model, type(model)
                 inits = fitting["inits"]
+                inits.update(fitting["fitted"])
                 inp_var = fitting["input_var"]
                 time = TimeToBrian(input.t_start)
                 duration = TimeToBrian(input.duration)
