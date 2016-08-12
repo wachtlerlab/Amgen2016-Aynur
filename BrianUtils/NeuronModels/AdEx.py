@@ -13,11 +13,11 @@ class AdEx(Model):
             "Vt":[-56., -45., mV],
             "b": [0.0002, 4, nA],
             "sF": [0.1, 13., mV],
-            "tau": [7., 1220., ms],
+            "tau": [5., 1220., ms],
             "gL": [0.1, 760., nS],
             "C": [0.1, 1e6, pF],
             "scaleFactor": [1e-3, 1e+3, 1.],
-            "a": [.1, 75., nS]
+            "a": [.1, 1755., nS]
         }
 
         self.what_to_opt = set(["Vr", "sF", "tau", "b"])
@@ -140,3 +140,66 @@ class AdEx(Model):
         "C": 0.2,
         "a": 0.4
     }
+
+    hopf_resonator = {
+        "w": 0 * uA,
+        "Vr": -47.4 * mV,
+        "Vt": -50.4 * mV,
+        "b": 0.0805 * nA,
+        "V": -60 * mV,
+        "sF": 2 * mV,
+        "tau": 120 * ms,
+        "EL": -60 * mV,
+        "gL": 30 * nS,
+        "C": 681 * pF,
+        "a": 80 * nS
+    }
+
+    saddle_resonator = {
+        "w": 0 * uA,
+        "Vr": -47.4 * mV,
+        "Vt": -50.4 * mV,
+        "b": 0.0805 * nA,
+        "V": -60 * mV,
+        "sF": 2 * mV,
+        "tau": 12 * ms,
+        "EL": -60 * mV,
+        "gL": 30 * nS,
+        "C": 800 * pF,
+        "a": 30 * nS
+    }
+
+    saddle_integrator = {
+        "w": 0 * uA,
+        "Vr": -47.4 * mV,
+        "Vt": -50.4 * mV,
+        "b": 0.0805 * nA,
+        "V": -60 * mV,
+        "sF": 2 * mV,
+        "tau": 12 * ms,
+        "EL": -60 * mV,
+        "gL": 40 * nS,
+        "C": 1200 * pF,
+        "a": 3 * nS
+    }
+
+    saddle_mixed = {
+        "w": 0 * uA,
+        "Vr": -47.4 * mV,
+        "Vt": -50.4 * mV,
+        "b": 0.0805 * nA,
+        "V": -60 * mV,
+        "sF": 2 * mV,
+        "tau": 12 * ms,
+        "EL": -60 * mV,
+        "gL": 80 * nS,
+        "C": 300 * pF,
+        "a": 10 * nS
+    }
+
+def ActType(inits):
+    tw = inits["tau"]
+    tm = inits["C"] / inits["gL"]
+    f2 = inits["a"] / inits["gL"]
+    f1 = tm / tw
+    return f1, f2

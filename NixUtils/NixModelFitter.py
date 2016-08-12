@@ -19,16 +19,19 @@ class NixModelFitter(object):
         si = self.file.GetIn(input)
         sig, spk = self.file.GetOut(output)
         model_str = str(model)
-        print "ModelStr = ",model_str
         model = NM.GetModelById(model_str)
         modelInst = model(inits, from_perc=from_perc)
+        print "ModelStr = ",model_str
+        print "Optimizing ",
         if not optparams is None:
-            modelInst.set_opt_params(optparams)
+            modelInst.set_optparams_list(optparams)
+            print optparams
+        else: print modelInst.get_optparams_list()
         results, inits = MF.FitModel(modelInst, si, spk,
                                      popsize=popsize, maxiter=maxiter, algo_params=algoptparams,
                                      algorithm=algo)
         ctime = str(dt.datetime.now())
-        self.file.AddFit(name = ctime, results=results, initials=inits, model = model_str,
+        name = self.file.AddFit(name = ctime, results=results, initials=inits, model = model_str,
                          in_name=input, out_name=output, description="fitting", safe=True)
         print results.best_pos
         print "initials:", inits
@@ -36,6 +39,7 @@ class NixModelFitter(object):
             pass
         finally:
             self.file.closeNixFile()
+        return name
 
     def SimulateFitting(self, fname):
         self.file.openNixFile()
@@ -87,6 +91,20 @@ class NixModelFitter(object):
         PL.plt.plot(arr, "bo-")
         PL.plt.xlabel("Iteration number")
         PL.plt.ylabel("Fitness")
+        PL.plt.title("Neuron : {0}, fitting : {1}".format(self.file.exp, name))
+        PL.plt.show()
+        self.file.closeNixFile()
+
+    def PlotStd(self, name):
+        self.file.openNixFile()
+        res = self.file.GetFit(name)
+        obj = MIO.pickle.load(open(os.path.join(FS.FITTING, self.file.exp, res["pickle"])))
+        arr = obj.result[0][2][0]['dist_std']
+        print arr
+        print obj.best_pos
+        PL.plt.plot(arr, "bo-")
+        PL.plt.xlabel("Iteration number")
+        PL.plt.ylabel("Dist Std")
         PL.plt.title("Neuron : {0}, fitting : {1}".format(self.file.exp, name))
         PL.plt.show()
         self.file.closeNixFile()

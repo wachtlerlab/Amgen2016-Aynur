@@ -56,7 +56,7 @@ class Model:
         '''
         self.def_inits.update(upd)
 
-    def get_opt_params(self):
+    def get_optparams_dict(self):
         '''
         Gives parameters from model and their limits for optimization.
         Only used for modelfitting
@@ -67,7 +67,10 @@ class Model:
         # res.update({"scaleFactor":[1e-7, 1e-6, 1e+6, 1e+7]})
         return res
 
-    def add_opt_params(self, *params):
+    def get_optparams_list(self):
+        return self.what_to_opt
+
+    def add_optparams_list(self, *params):
         '''
         Updates optimization parameter for fitting
         :param params: names of parameters, list of string
@@ -75,7 +78,7 @@ class Model:
         '''
         self.what_to_opt.update(set(params))
 
-    def set_opt_params(self, *params):
+    def set_optparams_list(self, *params):
         '''
         Reset optimization parameters with new values.
         :param params: list of string
@@ -95,7 +98,7 @@ class Model:
             f2 = (1+self.perc[k])*init
             self.opt_params[k] = [min(f1, f2), max(f1, f2), init/float(init)]
 
-    def update_opt_params(self, newopt):
+    def update_optparams_dict(self, newopt):
         '''
         Updates limits of optimization parameters with givan dict
         :param newopt: dict {key: [float left, float right, brian.Units]}

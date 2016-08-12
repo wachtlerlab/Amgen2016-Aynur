@@ -138,6 +138,14 @@ class ModelfittingIO(object):
         sec.props["output"].definition = "Name of output signal used for fitting;" \
                                   " look to the section '{0}'".format(self.expectedOutputs)
         sec.definition = description
+        return name
+
+    def RmFit(self, name, safe = True):
+        if not self.nixFile.is_open(): self.openNixFile()
+        if self.EoR(not name in self.GetFitNames(), "Fitting '{0}' not found".format(name), safe): return False
+        path = os.path.join(self.__pickle, name + self.fpickle_suff)
+        if os.path.exists(path): os.remove(path)
+        del self.nixFile.sections[self.modelFittings].sections[name]
 
     def GetIn(self, name):
         '''

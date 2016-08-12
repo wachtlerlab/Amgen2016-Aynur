@@ -30,7 +30,7 @@ def FitModel(NModel, input, output, popsize=10000, maxiter=100, method="RK", alg
     model = NModel.get_model()
     reset = NModel.get_reset()
     threshold = NModel.get_threshold()
-    opt_params = NModel.get_opt_params()
+    opt_params = NModel.get_optparams_dict()
     initial_params = NModel.get_inits()
     result = m.modelfitting(model, reset, threshold,
                             data=output_spk, input_var="I", input=input_raw,
