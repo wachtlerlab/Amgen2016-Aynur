@@ -9,13 +9,14 @@ from NeoUtils.NeoPlot import PlotSets, PlotLists
 
 def AnalogSignalToDict(sig):
     res = {}
-    res["signal"] = list(sig.magnitude)
-    res["units"] = CutFirst(str(sig.units))
-    res["t_start"] = str(sig.t_start)
-    res["sampling_period"] = str(sig.sampling_period)
-    print "sampling_period", sig.sampling_period, res["sampling_period"]
-    res["name"] = sig.name
-    res["description"] = sig.description
+    if not sig is None:
+        res["signal"] = list(sig.magnitude)
+        res["units"] = str(sig.units)
+        res["t_start"] = str(sig.t_start)
+        res["sampling_period"] = str(sig.sampling_period)
+        print "sampling_period", sig.sampling_period, res["sampling_period"]
+        res["name"] = sig.name
+        res["description"] = sig.description
     return res
 
 def DictToAnalogSignal(dic):
@@ -39,27 +40,27 @@ def DictToAnalogSignal(dic):
 
 def SpikeTrainToDict(spk):
     res = {}
-    res["times"] = list(spk.times)
-    res["units"] = str(spk.units)
-    res["t_stop"] = str(spk.t_stop)
-    res["name"] = spk.name
-    res["description"] = spk.description
+    if not spk is None:
+        res["times"] = list(spk.times.magnitude)
+        res["units"] = str(spk.units)
+        res["t_stop"] = str(spk.t_stop)
+        res["name"] = spk.name
+        res["description"] = spk.description
+    return res
 
 def DictToSpikeTrain(dic):
     if dic is None: return None
     times = dic.get("times")
     units = dic.get("units")
-    t_stop = dic.get("t_start")
+    t_stop = dic.get("t_stop")
     name = dic.get("name")
     description = dic.get("description")
-    if times!=None: times = np.array(times)
-    if units!=None:
-        units = QuantityFromString(units)
-        units = q.UnitQuantity(str(units), units)
-    if t_stop!=None:
-        t_stop = QuantityFromString(t_stop)
-        t_stop = q.UnitQuantity(str(t_stop), t_stop)
-    return neo.SpikeTrain(times, t_stop, units, name=name, description=description)
+    if times is None or units is None or t_stop is None: return None
+    times = np.array(times)
+    units = QuantityFromString(units)
+    units = units.units
+    t_stop = QuantityFromString(t_stop)
+    return neo.SpikeTrain(times*units, t_stop, units, name=name, description=description)
 
 
 def SaveSignal(sig, filename):

@@ -134,7 +134,7 @@ class Model:
         '''
         new_dic = {}
         BrianUtils.Utilities.one_layer_fromdict("", self.params, new_dic)
-        model = Equations("\n".join(self.equations+["scaleFactor: 1\nI: mA\ni = scaleFactor*I : mA"]), **new_dic)
+        model = Equations("\n".join(self.equations), **new_dic)
         return model
 
     def simulate(self, time, neurongroup, monitors = None, **kwargs):

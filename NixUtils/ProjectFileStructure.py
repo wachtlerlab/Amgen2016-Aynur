@@ -3,7 +3,7 @@ import socket
 
 HOME = os.path.expanduser('~')
 if socket.gethostname()=="sapphire": HOME = os.path.join(HOME, "Public", "atlas")
-elif socket.gethostname()=="green": HOME = os.path.join(HOME, "atlas")
+elif socket.gethostname()=="green": pass
 
 DATA = os.path.join(HOME, "DATA")
 reorg = os.path.join(DATA, "reorg")

@@ -17,6 +17,7 @@ class AdEx(Model):
             "gL": [0.1, 760., nS],
             "C": [0.1, 1e3, pF],
             "scaleFactor": [1e-2, 1e+2, 1.],
+            "scaleFactor2": [-1e-1, 1e-1, 1.],
             "a": [.1, 1755., nS]
         }
 
@@ -30,6 +31,7 @@ class AdEx(Model):
             "V":-70.4 * mV,
             "sF": 2 * mV,
             "scaleFactor": 1.,
+            "scaleFactor2": 0.,
             "tau": 144 * ms,
             "EL": -70.6 * mV,
             "gL": 30 * nS,
@@ -42,13 +44,19 @@ class AdEx(Model):
         self.def_inits.update(inits)
         if from_perc:
             self.calc_opt_from_perc()
-        self.monitors_list = {"V": mV, "I": nA, "w":0.1*nA}
+        self.monitors_list = {"V": mV, "i": nA, "w":0.1*nA, "I": 1*nA}
         self.equations = [
             "Ex = gL*sF*exp( (V - Vt)/sF ) : mA",
             "IL = gL*(EL - V) : mA",
             "dV/dt = (i + IL + Ex - w)/C : mV",
-
             "dw/dt = (a*(V - EL) - w)/tau : mA",
+
+            "scaleFactor: 1",
+            "scaleFactor2: 1",
+            "I: mA",
+            "Izero = nA*(I != 0) : mA",
+            "i = scaleFactor*(I + scaleFactor2*Izero) : mA",
+
             "Vt : mV",
             "Vr : mV",
             "b : mA",

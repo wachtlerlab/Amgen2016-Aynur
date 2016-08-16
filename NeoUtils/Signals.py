@@ -224,3 +224,8 @@ def Zip(spkl):
     for i in xrange(len(spkl)):
         lst = lst+zip([i]*len(spkl[i].times), spkl[i].times)
     return lst
+
+def GetNonZeroMask(sig):
+    a = (sig.magnitude != 0)
+    return neo.AnalogSignal(a, sig.units, t_start=sig.t_start, sampling_period=sig.sampling_period,
+                            name=sig.name, description=sig.description)

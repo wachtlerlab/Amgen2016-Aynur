@@ -10,16 +10,18 @@ import datetime as dt
 import os
 
 class NixModelFitter(object):
-    def __init__(self, expname, dir = None):
+    def __init__(self, expname, dir = None, mode = "w"):
         if dir is None: dir = FS.FITTING
-        self.file = MIO.ModelfittingIO(expname, dir)
-        self.file.closeNixFile()
-
+        if mode == "w":
+            self.file = MIO.ModelfittingIO(expname, dir, mode = MIO.nix.FileMode.ReadWrite)
+        else:
+            self.file = MIO.ModelfittingIO(expname, dir, mode = MIO.nix.FileMode.ReadOnly)
     def FitSomething(self, model, input, output, inits = {}, popsize=1000, maxiter=100, algoptparams = {}, algo ="CMAES",
-                     from_perc = True, optparams = None, returninfo = True):
+                     from_perc = True, optparams = None, returninfo = True, logstr = None):
         self.file.openNixFile()
         si = self.file.GetIn(input)
         sig, spk = self.file.GetOut(output)
+        self.file.closeNixFile()
         model_str = str(model)
         model = NM.GetModelById(model_str)
         modelInst = model(inits, from_perc=from_perc)
@@ -33,8 +35,14 @@ class NixModelFitter(object):
                                      popsize=popsize, maxiter=maxiter, algo_params=algoptparams,
                                      algorithm=algo, returninfo=returninfo)
         ctime = str(dt.datetime.now())
+        self.file.openNixFile()
         name = self.file.AddFit(name = ctime, results=results, initials=inits, model = model_str,
                          in_name=input, out_name=output, description="fitting", safe=True, returninfo=returninfo)
+        self.file.closeNixFile()
+        if not logstr is None:
+            f = open(os.path.join(FS.OUTPUT, name), "w")
+            f.write(logstr)
+            f.close()
         print results.best_pos
         print "initials:", inits
         try:
@@ -47,6 +55,7 @@ class NixModelFitter(object):
         self.file.openNixFile()
         try:
             fitting = self.file.GetFit(fname)
+            self.file.closeNixFile()
             if fitting!=None:
                 input = self.file.GetIn(fitting["input"])
                 model = NM.GetModelById(fitting["model"])
@@ -60,21 +69,25 @@ class NixModelFitter(object):
                 sim.set_time(time)
                 sim.set_input(inp_var, input)
                 res = sim.run(duration, dtime = 0.1*S.b.ms, inits=inits)
+                self.file.openNixFile()
                 self.file.AddSim(fname, res)
         finally:
             self.file.closeNixFile()
 
     def SimulateAndPlotFitting(self, fname, legend = True):
-        self.file.openNixFile()
+        self.file.openNixFile(mode=MIO.nix.FileMode.ReadOnly)
         try:
             fitting = self.file.GetFit(fname)
             if fitting != None:
+                self.file.closeNixFile()
                 path = os.path.join(FS.TRACES, fname+".plot.json")
                 if os.path.exists(path):
                     obj = nio.LoadJson(path)
                     PL.PlotLists([zip(obj[0], obj[1])])
                 else:
                     input = self.file.GetIn(fitting["input"])
+                    output = self.file.GetOut(fitting["output"])
+                    self.file.closeNixFile()
                     model = NM.GetModelById(fitting["model"])
                     print fitting["model"], model, type(model)
                     inits = fitting["inits"]
@@ -86,17 +99,16 @@ class NixModelFitter(object):
                     sim.set_time(time)
                     sim.set_input(inp_var, input)
                     res = sim.run(duration, dtime=0.1 * S.b.ms, inits=inits)
-                    output = self.file.GetOut(fitting["output"])
                     spks = [None]*len(res)+[output[1]]
                     sigs = res + [output[0]]
                     title = "Fitting {0} for neuron {1}".format(fname, self.file.exp)
                     PL.PlotLists([zip(sigs, spks)], legend = legend, title = title)
-                    nio.SaveResults(sigs, spks)
+                    nio.SaveResults(path, sigs, spks)
         finally:
             self.file.closeNixFile()
 
     def PlotSimulation(self, fname, expsig = False, expspk = False):
-        self.file.openNixFile()
+        self.file.openNixFile(MIO.nix.FileMode.ReadOnly)
         spks = []
         sigs = []
         try:
@@ -115,7 +127,7 @@ class NixModelFitter(object):
         PL.PlotLists([zip(sigs, spks)], title = title)
 
     def PlotFitness(self, name):
-        self.file.openNixFile()
+        self.file.openNixFile(MIO.nix.FileMode.ReadOnly)
         res = self.file.GetFit(name)
         obj = MIO.pickle.load(open(os.path.join(FS.FITTING, self.file.exp, res["pickle"])))
         arr = obj.result[0][2][0]['best_fitness']
@@ -129,7 +141,7 @@ class NixModelFitter(object):
         self.file.closeNixFile()
 
     def PlotStd(self, name):
-        self.file.openNixFile()
+        self.file.openNixFile(MIO.nix.FileMode.ReadOnly)
         res = self.file.GetFit(name)
         obj = MIO.pickle.load(open(os.path.join(FS.FITTING, self.file.exp, res["pickle"])))
         arr = obj.result[0][2][0]['dist_std']
@@ -143,19 +155,19 @@ class NixModelFitter(object):
         self.file.closeNixFile()
 
     def GetFittingNames(self):
-        self.file.openNixFile()
+        self.file.openNixFile(MIO.nix.FileMode.ReadOnly)
         lst = self.file.GetFitNames()
         self.file.closeNixFile()
         return lst
 
     def GetInputNames(self):
-        self.file.openNixFile()
+        self.file.openNixFile(MIO.nix.FileMode.ReadOnly)
         lst = self.file.GetInNames()
         self.file.closeNixFile()
         return lst
 
     def GetOutputNames(self):
-        self.file.openNixFile()
+        self.file.openNixFile(MIO.nix.FileMode.ReadOnly)
         lst = self.file.GetOutNames()
         self.file.closeNixFile()
         return lst

@@ -23,7 +23,7 @@ class ModelfittingIO(object):
     inits_i = "initial_intervals"
     inits = "initials"
     fpickle_suff = ".fitting.pickle"
-    def __init__(self, exp, nixLocation):
+    def __init__(self, exp, nixLocation, mode = nix.FileMode.ReadWrite):
         '''
         :param exp:
         :param nixLocation:
@@ -33,7 +33,6 @@ class ModelfittingIO(object):
         self.exp = str(exp)
         self.nixFilePath = str(os.path.join(self.__nixLocation, exp + ".h5"))
         self.__initNixFile()
-        print "Experiment {0} from {1} is open".format(exp, nixLocation)
 
     def __initNixFile(self):
         if not os.path.exists(self.__pickle): os.makedirs(self.__pickle)
@@ -52,7 +51,7 @@ class ModelfittingIO(object):
             for s in scs:
                 if not s[0] in self.nixFile.sections:
                     self.nixFile.create_section(s[0], s[1])
-        else: self.nixFile = nix.File.open(self.nixFilePath, nix.FileMode.ReadWrite)
+            self.closeNixFile()
 
     def openNixFile(self, mode = nix.FileMode.ReadWrite):
         self.nixFile = nix.File.open(self.nixFilePath, mode)

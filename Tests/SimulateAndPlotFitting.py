@@ -1,13 +1,13 @@
 import  NixUtils.NixModelFitter as NF
 import sys
 
-n = -1 if len(sys.argv)<2 else int(sys.argv[1])
-
-f = NF.NixModelFitter("130322-1LY")
+f = NF.NixModelFitter("130322-1LY", mode="r")
 
 lst = f.GetFittingNames()
 
-if len(sys.argv)<2: print lst
-else: print lst[n]
+n = lst[-1] if len(sys.argv)<2 else lst[int(sys.argv[1][1:])] if sys.argv[1][0]=="%" else sys.argv[1]
 
-if lst: f.SimulateAndPlotFitting(lst[n], legend = True)
+if len(sys.argv)<2: print lst
+else: print n
+
+f.SimulateAndPlotFitting(n, legend = True)
