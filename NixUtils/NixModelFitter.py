@@ -5,16 +5,18 @@ from BrianUtils.Utilities import TimeToBrian
 from NixUtils import ModelfittingIO as MIO
 from NixUtils import ProjectFileStructure as FS
 from NeoUtils import NeoPlot as PL
+from NeoUtils import NeoJsonIO as nio
 import datetime as dt
 import os
 
 class NixModelFitter(object):
-    def __init__(self, expname):
-        self.file = MIO.ModelfittingIO(expname, FS.FITTING)
+    def __init__(self, expname, dir = None):
+        if dir is None: dir = FS.FITTING
+        self.file = MIO.ModelfittingIO(expname, dir)
         self.file.closeNixFile()
 
     def FitSomething(self, model, input, output, inits = {}, popsize=1000, maxiter=100, algoptparams = {}, algo ="CMAES",
-                     from_perc = True, optparams = None):
+                     from_perc = True, optparams = None, returninfo = True):
         self.file.openNixFile()
         si = self.file.GetIn(input)
         sig, spk = self.file.GetOut(output)
@@ -24,15 +26,15 @@ class NixModelFitter(object):
         print "ModelStr = ",model_str
         print "Optimizing ",
         if not optparams is None:
-            modelInst.set_optparams_list(optparams)
+            modelInst.set_optparams_list(*optparams)
             print optparams
         else: print modelInst.get_optparams_list()
         results, inits = MF.FitModel(modelInst, si, spk,
                                      popsize=popsize, maxiter=maxiter, algo_params=algoptparams,
-                                     algorithm=algo)
+                                     algorithm=algo, returninfo=returninfo)
         ctime = str(dt.datetime.now())
         name = self.file.AddFit(name = ctime, results=results, initials=inits, model = model_str,
-                         in_name=input, out_name=output, description="fitting", safe=True)
+                         in_name=input, out_name=output, description="fitting", safe=True, returninfo=returninfo)
         print results.best_pos
         print "initials:", inits
         try:
@@ -57,8 +59,39 @@ class NixModelFitter(object):
                 sim = S.Simulator(model())
                 sim.set_time(time)
                 sim.set_input(inp_var, input)
-                res = sim.run(duration, inits=inits)
+                res = sim.run(duration, dtime = 0.1*S.b.ms, inits=inits)
                 self.file.AddSim(fname, res)
+        finally:
+            self.file.closeNixFile()
+
+    def SimulateAndPlotFitting(self, fname, legend = True):
+        self.file.openNixFile()
+        try:
+            fitting = self.file.GetFit(fname)
+            if fitting != None:
+                path = os.path.join(FS.TRACES, fname+".plot.json")
+                if os.path.exists(path):
+                    obj = nio.LoadJson(path)
+                    PL.PlotLists([zip(obj[0], obj[1])])
+                else:
+                    input = self.file.GetIn(fitting["input"])
+                    model = NM.GetModelById(fitting["model"])
+                    print fitting["model"], model, type(model)
+                    inits = fitting["inits"]
+                    inits.update(fitting["fitted"])
+                    inp_var = fitting["input_var"]
+                    time = TimeToBrian(input.t_start)
+                    duration = TimeToBrian(input.duration)
+                    sim = S.Simulator(model())
+                    sim.set_time(time)
+                    sim.set_input(inp_var, input)
+                    res = sim.run(duration, dtime=0.1 * S.b.ms, inits=inits)
+                    output = self.file.GetOut(fitting["output"])
+                    spks = [None]*len(res)+[output[1]]
+                    sigs = res + [output[0]]
+                    title = "Fitting {0} for neuron {1}".format(fname, self.file.exp)
+                    PL.PlotLists([zip(sigs, spks)], legend = legend, title = title)
+                    nio.SaveResults(sigs, spks)
         finally:
             self.file.closeNixFile()
 

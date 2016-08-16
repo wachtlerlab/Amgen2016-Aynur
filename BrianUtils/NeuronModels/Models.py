@@ -84,7 +84,7 @@ class Model:
         :param params: list of string
         :return: None
         '''
-        self.what_to_opt = set(params).copy()
+        self.what_to_opt = (set(params)).copy()
 
     def calc_opt_from_perc(self):
         '''

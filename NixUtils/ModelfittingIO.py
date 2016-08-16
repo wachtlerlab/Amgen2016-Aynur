@@ -103,7 +103,8 @@ class ModelfittingIO(object):
         nio.addTag("whole " + name, "whole signal tag", self.flt(sig.t_start),
                    blk, [dsig], sec, self.flt(sig.duration))
 
-    def AddFit(self, name, model, results = None, initials={}, in_name="", out_name="", description ="", safe = True):
+    def AddFit(self, name, model, results = None, initials={}, in_name="", out_name="", description ="",
+               safe = True, returninfo = True):
         if not self.nixFile.is_open(): self.openNixFile()
         name = name.replace(" ", "_")
         if self.EoR(not in_name in self.GetInNames(), "Input '{0}' not found".format(in_name), safe): return False
@@ -146,6 +147,17 @@ class ModelfittingIO(object):
         path = os.path.join(self.__pickle, name + self.fpickle_suff)
         if os.path.exists(path): os.remove(path)
         del self.nixFile.sections[self.modelFittings].sections[name]
+        if name in self.GetSimNames():
+            sec = [v for v in self.nixFile.sections[self.simulations] if v.name==name][0]
+            blk = self.nixFile.blocks[self.simulations]
+            for i in sec:
+                tag = [t for t in blk.tags if t.metadata==i]
+                for j in tag:
+                    ar = [a for a in blk.data_arrays if j.references[0]==a]
+                    for k in ar:
+                        del k
+                    del j
+            del sec
 
     def GetIn(self, name):
         '''

@@ -9,14 +9,14 @@ class AdEx(Model):
     id = "adex"
     def __init__(self, inits={}, from_perc = False):
         self.opt_params = {
-            "Vr":[-85., -35., mV],
+            "Vr":[-85., -30., mV],
             "Vt":[-56., -45., mV],
             "b": [0.0002, 4, nA],
             "sF": [0.1, 13., mV],
             "tau": [5., 1220., ms],
             "gL": [0.1, 760., nS],
-            "C": [0.1, 1e6, pF],
-            "scaleFactor": [1e-3, 1e+3, 1.],
+            "C": [0.1, 1e3, pF],
+            "scaleFactor": [1e-2, 1e+2, 1.],
             "a": [.1, 1755., nS]
         }
 
@@ -155,6 +155,20 @@ class AdEx(Model):
         "a": 80 * nS
     }
 
+    hopf_resonator2 = {
+        "w": 0 * uA,
+        "Vr": -47.4 * mV,
+        "Vt": -50.4 * mV,
+        "b": 0.0805 * nA,
+        "V": -60 * mV,
+        "sF": 2 * mV,
+        "tau": 120 * ms,
+        "EL": -60 * mV,
+        "gL": 6 * nS,
+        "C": 1200 * pF,
+        "a": 80 * nS
+    }
+
     saddle_resonator = {
         "w": 0 * uA,
         "Vr": -47.4 * mV,
@@ -165,6 +179,20 @@ class AdEx(Model):
         "tau": 12 * ms,
         "EL": -60 * mV,
         "gL": 30 * nS,
+        "C": 800 * pF,
+        "a": 30 * nS
+    }
+
+    saddle_resonator2 = {
+        "w": 0 * uA,
+        "Vr": -47.4 * mV,
+        "Vt": -50.4 * mV,
+        "b": 0.0805 * nA,
+        "V": -60 * mV,
+        "sF": 2 * mV,
+        "tau": 12 * ms,
+        "EL": -60 * mV,
+        "gL": 3 * nS,
         "C": 800 * pF,
         "a": 30 * nS
     }
@@ -195,6 +223,20 @@ class AdEx(Model):
         "gL": 80 * nS,
         "C": 300 * pF,
         "a": 10 * nS
+    }
+
+    result13 = {
+        "w": 0 * uA,
+        "Vr": -62.8 * mV,
+        "Vt": -49.2 * mV,
+        "b": 1.41 * nA,
+        "V": -60 * mV,
+        "sF": 7.2 * mV,
+        "tau": 600 * ms,
+        "EL": -60 * mV,
+        "gL": 80 * nS,
+        "C": 276 * pF,
+        "a": 1037 * nS
     }
 
 def ActType(inits):

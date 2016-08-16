@@ -2,7 +2,8 @@ from brian.library import modelfitting as m
 import brian
 
 
-def FitModel(NModel, input, output, popsize=10000, maxiter=100, method="RK", algorithm = "CMAES", algo_params = None):
+def FitModel(NModel, input, output, popsize=10000, maxiter=100, method="RK", algorithm = "CMAES", algo_params = None,
+             returninfo = True):
     '''
     Fits model for given model and parameters
     :param NModel: instance for BrianUtils.NeuronModel.Models.Model
@@ -36,7 +37,7 @@ def FitModel(NModel, input, output, popsize=10000, maxiter=100, method="RK", alg
                             data=output_spk, input_var="I", input=input_raw,
                             dt = input_dt, popsize=popsize,
                             maxiter=maxiter, initial_values=initial_params,
-                            method=method, returninfo=True, algorithm=algo_in,
+                            method=method, returninfo=returninfo, algorithm=algo_in,
                             optparams=algo_params,
                             **opt_params
                             )

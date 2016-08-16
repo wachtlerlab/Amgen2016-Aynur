@@ -23,7 +23,7 @@ func2 = lambda x: 0.25 * x * (1 - (1 / x)) ** 2
 
 pos = 1
 for i in map(int, sys.argv[1:]):
-    print lst[n]
+    print lst[i]
     if lst:
         g = f.GetFit(lst[i])
         inits = g["inits"]
@@ -52,7 +52,7 @@ for i in map(int, sys.argv[1:]):
             plabel += "Saddle-node, " if f_f2 < func1(f_f1) else "Hopf, "
             plabel += "Resonator" if f_f2 > func2(f_f1) else "Integrator" if f_f1 > 1 else "Mixed"
             plt.plot(f_f1, f_f2, "ro-", label=plabel)
-            plt.title("Regeme for modelfitting {0}, neuron {1}".format(lst[n], expname))
+            plt.title("Regeme for modelfitting {0}, neuron {1}".format( lst[i], expname))
             plt.xlabel("$\\tau_m / \\tau_w$")
             plt.ylabel("$a / g_L$")
             plt.legend()
