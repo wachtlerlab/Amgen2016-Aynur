@@ -13,6 +13,7 @@ FITTING = os.path.join(DATA, "FITTING")
 TRACES = os.path.join(DATA, "TRACES")
 fpickle = os.path.join(FITTING, "pickle")
 nxpickle = os.path.join(reorg, "pickle")
+scripts = os.path.join(HOME, "Amgen2016-Aynur")
 
 
 def nixName(exp):
