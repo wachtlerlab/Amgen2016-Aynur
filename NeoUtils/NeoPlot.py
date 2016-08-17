@@ -105,14 +105,16 @@ class NeoPlotter(object):
         #plt.tight_layout()
         plt.show()
 
-def PlotLists(lst, title = "", legend = True):
+def PlotLists(lst, title = "", legend = True, sigfilter = lambda x:True, spkfilter = lambda x:True):
     f = NeoPlotter()
     for i in xrange(len(lst)):
         f.Subplot(1, len(lst), i+1, title=title, legend = legend)
         cl = 0
         for k in lst[i]:
-            f.PlotSignal(k[0], colorgroup=cl)
-            f.PlotSpiketrain(k[1], colorgroup=cl)
+            if sigfilter(k[0]):
+                f.PlotSignal(k[0], colorgroup=cl)
+            if spkfilter(k[1]):
+                f.PlotSpiketrain(k[1], colorgroup=cl)
             cl+=1
     f.Show()
 

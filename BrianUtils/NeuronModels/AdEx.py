@@ -8,6 +8,11 @@ class AdEx(Model):
     name = "AdEx model"
     id = "adex"
     def __init__(self, inits={}, from_perc = False):
+        '''
+        Creates AdEx Model
+        :param inits: dict, initial values
+        :param from_perc: don't use
+        '''
         self.opt_params = {
             "Vr":[-85., -30., mV],
             "Vt":[-56., -45., mV],
@@ -15,9 +20,9 @@ class AdEx(Model):
             "sF": [0.1, 13., mV],
             "tau": [5., 1220., ms],
             "gL": [0.1, 760., nS],
-            "C": [0.1, 1e3, pF],
+            "C": [0.1, 1e4, pF],
             "scaleFactor": [1e-2, 1e+2, 1.],
-            "scaleFactor2": [-1e-1, 1e-1, 1.],
+            "scaleFactor2": [-3e-1, 3e-1, 1.],
             "a": [.1, 1755., nS]
         }
 

@@ -10,4 +10,6 @@ n = lst[-1] if len(sys.argv)<2 else lst[int(sys.argv[1][1:])] if sys.argv[1][0]=
 if len(sys.argv)<2: print lst
 else: print n
 
-f.SimulateAndPlotFitting(n, legend = True)
+
+
+f.SimulateAndPlotFitting(n, legend = True, sigfilter = lambda x: True if x.description=="from the model" else False)

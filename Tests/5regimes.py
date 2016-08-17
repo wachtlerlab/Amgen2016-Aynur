@@ -1,23 +1,27 @@
 from NixUtils.NixModelFitter import NixModelFitter
 from brian import nA, uA, mV, pF, nS, ms
 from BrianUtils.NeuronModels import AdEx
+from datetime import datetime
 
 f = NixModelFitter("130322-1LY")
 
 # regimes = ["bursting_rebound", "saddle_integrator", "saddle_resonator", "saddle_resonator2", "saddle_mixed", "hopf_resonator", "hopf_resonator2"]
 # regimes = ["saddle_integrator", "hopf_resonator2", "saddle_mixed"]
-regimes = ["saddle_integrator"]
+# regimes = ["saddle_mixed", "saddle_resonator2", "hopf_resonator2"]
+regimes = ["bursting_rebound"]
 
 
 names = []
 
 for i in regimes:
 
+    t = datetime.now()
+
     inits = getattr(AdEx.AdEx, i)
 
-    iters = 5000
+    iters = 63000
 
-    logstr = "Initial point is " + str(i) + "\n" + str(iters) + " iterations"
+    logstr = "Starting time is "+str(t)+"\nInitial point is " + str(i) + "\n" + str(iters) + " iterations\n"
 
     print i
 

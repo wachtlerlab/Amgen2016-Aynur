@@ -35,6 +35,10 @@ class ModelfittingIO(object):
         self.__initNixFile()
 
     def __initNixFile(self):
+        '''
+        Initializes NIX File, adds sections if they are absent
+        :return: None
+        '''
         if not os.path.exists(self.__pickle): os.makedirs(self.__pickle)
         if os.path.exists(self.nixFilePath):
             self.nixFile = nix.File.open(self.nixFilePath, nix.FileMode.ReadWrite)
@@ -54,6 +58,11 @@ class ModelfittingIO(object):
             self.closeNixFile()
 
     def openNixFile(self, mode = nix.FileMode.ReadWrite):
+        '''
+        Opens NIX file
+        :param mode: nix.FileMode
+        :return: None
+        '''
         self.nixFile = nix.File.open(self.nixFilePath, mode)
 
     def AddIn(self, sig, name = None, description = None, safe = True):
@@ -62,7 +71,7 @@ class ModelfittingIO(object):
         :param sig: neo.AnalogSignal
         :param name: str
         :param description: str
-        :return:
+        :return: None
         '''
         if not self.nixFile.is_open(): self.openNixFile()
         if name is None: name = sig.name
@@ -86,7 +95,7 @@ class ModelfittingIO(object):
         Adds experimental output to nix file
         :param sig: neo.AnalogSignal
         :param spk: neo.SpikeTrain
-        :return:
+        :return: None
         '''
         if not self.nixFile.is_open(): self.openNixFile()
         if name is None: name = sig.name
@@ -104,6 +113,19 @@ class ModelfittingIO(object):
 
     def AddFit(self, name, model, results = None, initials={}, in_name="", out_name="", description ="",
                safe = True, returninfo = True):
+        '''
+        Adds info about fitting into NIX file
+        :param name: str, name of fitting (should be uniq)
+        :param model: str, id of model or BrianUtils.Model
+        :param results: brian.modelfitting.ModelFittingResults, results of fitting
+        :param initials: dict, initial values, used for fitting
+        :param in_name: str, input name
+        :param out_name: str, output name
+        :param description: str, add description to fitting info
+        :param safe: bool, throw error or not (see EoR)
+        :param returninfo: does results object have additional info (see brian.modelfitting.modelfitting)
+        :return: name of fitting
+        '''
         if not self.nixFile.is_open(): self.openNixFile()
         name = name.replace(" ", "_")
         if self.EoR(not in_name in self.GetInNames(), "Input '{0}' not found".format(in_name), safe): return False
@@ -141,6 +163,12 @@ class ModelfittingIO(object):
         return name
 
     def RmFit(self, name, safe = True):
+        '''
+        Removes fitting by givrn name. DOESN'T WORK, DON'T USE!!!
+        :param name: str, name of fitting
+        :param safe: bool
+        :return: None
+        '''
         if not self.nixFile.is_open(): self.openNixFile()
         if self.EoR(not name in self.GetFitNames(), "Fitting '{0}' not found".format(name), safe): return False
         path = os.path.join(self.__pickle, name + self.fpickle_suff)
@@ -193,6 +221,11 @@ class ModelfittingIO(object):
         return sig, spk
 
     def GetFit(self, name):
+        '''
+        To given fitting returns information, stored in this NIX File
+        :param name: string, name of fitting
+        :return: {"input":str, "output":str, "pickle":str, "model":str, "inits":dict, "fitted":dict, "input_var":str}
+        '''
         if not self.nixFile.is_open(): self.openNixFile()
         g = [v for v in self.nixFile.sections[self.modelFittings].sections if v.name == name]
         if len(g)==0: return None
@@ -209,6 +242,13 @@ class ModelfittingIO(object):
         return di
 
     def AddSim(self, fname, res, safe = True):
+        '''
+        Adds info about simulation to a fitting
+        :param fname: fitting name
+        :param res: results of simulation
+        :param safe: if safe, will throw Exceptions, else only return False
+        :return: None
+        '''
         if not self.nixFile.is_open(): self.openNixFile()
         if self.EoR(not fname in self.GetFitNames(), "Fitting '{0}' not found".format(fname), safe): return False
         if self.EoR(fname in self.GetSimNames(), "Simulation '{0}' already exists".format(fname), safe): return False
@@ -226,6 +266,12 @@ class ModelfittingIO(object):
             nio.addTag(tagname, "analogsignal", self.flt(i.t_start), blk, [da], ns, self.flt(i.duration))
 
     def GetSim(self, fname, safe = True):
+        '''
+        Returns simulation info
+        :param fname: name of fitting (same to simulation name)
+        :param safe: if safe, will throw Exceptions, else only return False
+        :return: {"monitors":list of neo.AnalogSignal, "input":str, "output":str, "name":str}
+        '''
         if not self.nixFile.is_open(): self.openNixFile()
         v = [s for s in self.nixFile.sections[self.simulations].sections if s.name == fname]
         if self.EoR(len(v)==0, "Simulation {0} doesn't exist".format(fname), safe): return False
@@ -247,31 +293,65 @@ class ModelfittingIO(object):
         return res
 
     def GetInNames(self):
+        '''
+        Returns input's names available in NIX File
+        :return: list of str
+        '''
         if not self.nixFile.is_open(): self.openNixFile()
         return sorted([n.name for n in self.nixFile.sections[self.fittingInputs].sections])
 
     def GetOutNames(self):
+        '''
+        Returns output's names available in NIX File
+        :return: list of str
+        '''
         if not self.nixFile.is_open(): self.openNixFile()
         return sorted([n.name for n in self.nixFile.sections[self.expectedOutputs].sections])
 
     def GetFitNames(self):
+        '''
+        Returns fitting's names available in NIX File
+        :return: list of str
+        '''
         if not self.nixFile.is_open(): self.openNixFile()
         return sorted([n.name for n in self.nixFile.sections[self.modelFittings].sections])
 
     def GetSimNames(self):
+        '''
+        Returns simulation's names available in NIX File
+        :return: list of str
+        '''
         if not self.nixFile.is_open(): self.openNixFile()
         return sorted([n.name for n in self.nixFile.sections[self.simulations].sections])
 
     def flt(self, q):
+        '''
+        gives float representation of given quantity
+        :param q: quantities.Quantity
+        :return: float
+        '''
         return float(q.simplified.magnitude)
 
     def EoR(self, condition, text, safe = True):
+        '''
+        Internal function, for shorter code. If condition is True, throws Exception or returns True, depending on safe
+        :param condition: bool
+        :param text: str, Exception message
+        :param safe: bool
+        :return:
+        '''
         if condition:
             if safe: raise Exception(text)
             else: return True
         else: return False
 
     def GetUniqName(self, pref, arr):
+        '''
+        Returns uniq name for given array of existing names and prefix, adds only number at the end
+        :param pref: str
+        :param arr: list of str
+        :return: str
+        '''
         for i in xrange(123456):
             name = pref+str(i)
             if not name in arr:
@@ -279,12 +359,24 @@ class ModelfittingIO(object):
         raise Exception("No suitable option")
 
     def closeNixFile(self):
+        '''
+        Closes NIX file
+        :return:
+        '''
         self.nixFile.close()
 
     def __del__(self):
         self.nixFile.close()
 
 def ReadExperiment(ename, default = ["Trial", "PredictedInput"], labels = None):
+    '''
+    Reads initial Ajay's NIX Files and makes neo.Block from it
+    :param ename: str, experiment name
+    :param default: default for label. Itself by default is equal to ["Trial", "PredictedInput"]
+    :param labels: it's better not to use, but here you can specify, whether you want to read Trials
+        and PredictedInputs or not. By default os equal to default
+    :return: neo.Block
+    '''
     labels = default if labels==None else None
     freqs = [265]
     analyser=rd.RawDataAnalyser(ename, fs.reorg)
@@ -351,17 +443,33 @@ def ReadExperiment(ename, default = ["Trial", "PredictedInput"], labels = None):
     return block
 
 def PickleExp(ename, default = ["Trial", "PredictedInput"], labels = None):
+    '''
+    Pickles experiment, readen from NIX File, to pickle file.
+    :param ename: name of experiment
+    :param default: defaults, see ReadExperiment function
+    :param labels: labels, see ReadExperiment function
+    :return: None
+    '''
     blk = ReadExperiment(ename, default, labels)
     if not os.path.exists(fs.nxpickle):
         os.makedirs(fs.nxpickle)
     pickle.dump(blk, open(os.path.join(fs.nxpickle, ename+".pickle"), "w"))
 
 def UnpickleExp(ename):
+    '''
+    Unpickles pickled experiment
+    :param ename: name of experiment
+    :return: neo.Block
+    '''
     path = os.path.join(fs.nxpickle, ename+".pickle")
     blk = pickle.load(open(path)) if os.path.exists(path) else None
     return blk
 
 def GetAvaliableIds():
+    '''
+    Returns experiment names, for which we want to make fittings, simulations, add new Inputs and Outputs and e.t.c.
+    :return: list of str
+    '''
     path = os.path.join(fs.DATA, "ids_with_input")
     if os.path.exists(path):
         di = json.load(open(path))

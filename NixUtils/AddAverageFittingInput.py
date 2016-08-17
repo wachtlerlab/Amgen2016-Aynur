@@ -9,6 +9,11 @@ import quantities as qs
 import rawDataProcess as rd
 import os
 
+
+"Adds subthreshold inputs for each of neuron NIX file, using parameters of double exponents from bestPars.json"
+
+
+
 def doubleExpFun(xSig, Ar, Ad, t0, itaur, itaud):
 
     expd = Ad * np.exp(-itaud * (xSig - t0))
@@ -80,4 +85,5 @@ for i in j["bestPars"].keys():
 plt.legend()
 plt.xlabel("time, ms")
 plt.ylabel("voltage, mV")
-plt.show()'''
+plt.show()
+'''
