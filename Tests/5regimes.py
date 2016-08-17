@@ -1,5 +1,4 @@
 from NixUtils.NixModelFitter import NixModelFitter
-from brian import nA, uA, mV, pF, nS, ms
 from BrianUtils.NeuronModels import AdEx
 from datetime import datetime
 

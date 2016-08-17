@@ -16,6 +16,7 @@ class NixModelFitter(object):
             self.file = MIO.ModelfittingIO(expname, dir, mode = MIO.nix.FileMode.ReadWrite)
         else:
             self.file = MIO.ModelfittingIO(expname, dir, mode = MIO.nix.FileMode.ReadOnly)
+
     def FitSomething(self, model, input, output, inits = {}, popsize=1000, maxiter=100, algoptparams = {}, algo ="CMAES",
                      from_perc = True, optparams = None, returninfo = True, logstr = None):
         self.file.openNixFile()
