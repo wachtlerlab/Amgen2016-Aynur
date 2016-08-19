@@ -5,7 +5,7 @@ import brian as b
 
 class timer(object):
     '''
-    Class for convinient recording of duration of program
+    Class for convinient recording of duration of program. You can use your own, it is just my implementation
     '''
     def __init__(self):
         self.zero = time.time()

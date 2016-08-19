@@ -2,8 +2,8 @@ from brian.library import modelfitting as m
 import brian
 
 
-def FitModel(NModel, input, output, popsize=10000, maxiter=100, method="RK", algorithm = "CMAES", algo_params = None,
-             returninfo = True):
+def FitSingleCompartmentalModel(NModel, input, output, popsize=10000, maxiter=100, method="RK", algorithm ="CMAES", algo_params = None,
+                                returninfo = True):
     '''
     Fits model for given model and parameters
     :param NModel: instance for BrianUtils.NeuronModel.Models.Model

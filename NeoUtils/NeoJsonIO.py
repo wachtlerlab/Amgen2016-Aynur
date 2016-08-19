@@ -1,9 +1,7 @@
 import json
 from NeoUtils.Signals import QuantityFromString
 import numpy as np
-import quantities as q
 import neo
-from .Signals import CutFirst
 from NeoUtils.NeoPlot import PlotSets, PlotLists
 
 

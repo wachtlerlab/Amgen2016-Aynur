@@ -35,10 +35,10 @@ logstr += "Algorithm parameters: " + str(algoptparams) + "\n"
 print "///---------------///"
 print logstr
 
-res = nixMF.FitSomething(model, input=input,
-                         output=output, maxiter=iters,
-                         inits=inits, algoptparams=algoptparams, from_perc=False,
-                         popsize=1000, optparams=optparams, returninfo=True)
+res = nixMF.FitModel(model, input=input,
+                     output=output, maxiter=iters,
+                     inits=inits, algoptparams=algoptparams, from_perc=False,
+                     popsize=1000, optparams=optparams, returninfo=True)
 
 t = datetime.now()
 logstr += "Finished at " + str(t) + "\n"

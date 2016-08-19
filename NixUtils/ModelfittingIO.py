@@ -25,8 +25,9 @@ class ModelfittingIO(object):
     fpickle_suff = ".fitting.pickle"
     def __init__(self, exp, nixLocation, mode = nix.FileMode.ReadWrite):
         '''
-        :param exp:
-        :param nixLocation:
+        :param exp: experiment name (neuron name)
+        :param nixLocation: directory, where corresponding file stored. Will be created new file with
+        suitable structure, if not exists and mode allows write access
         '''
         self.__nixLocation = str(os.path.expanduser(nixLocation))
         self.__pickle = str(os.path.join(self.__nixLocation, exp))

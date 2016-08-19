@@ -28,10 +28,10 @@ for i in regimes:
     optparams = ["b", "a", "sF", "Vr", "gL", "C", "Vt", "tau", "scaleFactor", "scaleFactor2"]
 
 
-    res = f.FitSomething("adex", input="subthreshold-DuringAfterStimulus-e-7",
-                         output="Trial1-DuringAfterSimiulus", maxiter=iters,
-                         inits = inits, algoptparams=algoptparams, from_perc=False,
-                         popsize=1000, optparams=optparams, returninfo = True, logstr = logstr)
+    res = f.FitModel("adex", input="subthreshold-DuringAfterStimulus-e-7",
+                     output="Trial1-DuringAfterSimiulus", maxiter=iters,
+                     inits = inits, algoptparams=algoptparams, from_perc=False,
+                     popsize=1000, optparams=optparams, returninfo = True, logstr = logstr)
     names.append(res)
 
 print names

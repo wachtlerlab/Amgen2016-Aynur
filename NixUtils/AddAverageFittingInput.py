@@ -10,7 +10,8 @@ import rawDataProcess as rd
 import os
 
 
-"Adds subthreshold inputs for each of neuron NIX file, using parameters of double exponents from bestPars.json"
+INFO_ABOUT_SCRIPT: "Adds subthreshold inputs for each of neuron NIX file, using parameters of double exponents from bestPars.json
+                    and copies modified file into reorg directory from exp_data"
 
 
 
