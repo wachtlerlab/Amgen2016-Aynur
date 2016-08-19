@@ -143,6 +143,35 @@ class AdEx(Model):
         "a": 80 * nS
     }
 
+    bursting_rebound_low = {
+        "w": 0 * uA,
+        "Vr": -47.4 * mV,
+        "Vt": -50.4 * mV,
+        "b": 0.0805 * nA,
+        "V": -60 * mV,
+        "sF": 2 * mV,
+        "tau": 720 * ms,
+        "EL": -60 * mV,
+        "gL": 30 * nS,
+        "C": 281 * pF,
+        "a": 30 * nS
+    }
+
+    bursting_rebound_high = {
+        "w": 0 * uA,
+        "Vr": -47.4 * mV,
+        "Vt": -50.4 * mV,
+        "b": 0.0805 * nA,
+        "V": -60 * mV,
+        "sF": 2 * mV,
+        "tau": 720 * ms,
+        "EL": -60 * mV,
+        "gL": 30 * nS,
+        "C": 281 * pF,
+        "a": 150 * nS
+    }
+
+
     perc = {
         "Vr": 0.1,
         "Vt": 0.1,

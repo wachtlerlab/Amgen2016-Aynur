@@ -75,7 +75,8 @@ class NixModelFitter(object):
         finally:
             self.file.closeNixFile()
 
-    def SimulateAndPlotFitting(self, fname, legend = True, sigfilter = lambda x:True, spkfilter = lambda x:True):
+    def SimulateAndPlotFitting(self, fname, legend = True, sigfilter = lambda x:True, spkfilter = lambda x:True,
+                               savesize = None, savename = None):
         self.file.openNixFile(mode=MIO.nix.FileMode.ReadOnly)
         try:
             fitting = self.file.GetFit(fname)
@@ -84,7 +85,7 @@ class NixModelFitter(object):
                 path = os.path.join(FS.TRACES, fname+".plot.json")
                 if os.path.exists(path):
                     obj = nio.LoadJson(path)
-                    PL.PlotLists([zip(obj[0], obj[1])], sigfilter = sigfilter)
+                    PL.PlotLists([zip(obj[0], obj[1])], sigfilter = sigfilter, savesize=savesize, savename=savename)
                 else:
                     input = self.file.GetIn(fitting["input"])
                     output = self.file.GetOut(fitting["output"])
@@ -104,7 +105,8 @@ class NixModelFitter(object):
                     sigs = res + [output[0]]
                     title = "Fitting {0} for neuron {1}".format(fname, self.file.exp)
                     pltlst = [zip(sigs, spks)]
-                    PL.PlotLists(pltlst, legend = legend, title = title, sigfilter = sigfilter, spkfilter = spkfilter)
+                    PL.PlotLists(pltlst, legend = legend, title = title, sigfilter = sigfilter, spkfilter = spkfilter,
+                                 savesize = savesize, savename=savename)
                     nio.SaveResults(path, sigs, spks)
         finally:
             self.file.closeNixFile()

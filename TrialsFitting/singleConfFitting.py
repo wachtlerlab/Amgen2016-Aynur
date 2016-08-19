@@ -11,8 +11,8 @@ import ast
 task = ast.literal_eval(sys.argv[1])
 #print task
 
-nixMF = NixModelFitter(str(task["neuron"]))
 neuron = str(task["neuron"])
+nixMF = NixModelFitter(neuron)
 model = str(task["model"])
 regime = str(task["regime"])
 iters = int(task["iters"])
@@ -25,6 +25,7 @@ inits = getattr(AdEx.AdEx, regime)
 
 t = datetime.now()
 logstr = "Fitting started at "+ str(t) + "\n"
+logstr = "Neuron: "+neuron+"\n"
 logstr += "Model: " + model + "\n"
 logstr += "Initial point: " + str(regime) + "\n"
 logstr += "Optimized parameters: " + str(optparams) + "\n"

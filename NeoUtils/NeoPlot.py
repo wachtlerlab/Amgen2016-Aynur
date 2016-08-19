@@ -105,8 +105,11 @@ class NeoPlotter(object):
         #plt.tight_layout()
         plt.show()
 
-def PlotLists(lst, title = "", legend = True, sigfilter = lambda x:True, spkfilter = lambda x:True):
+def PlotLists(lst, title = "", legend = True, sigfilter = lambda x:True, spkfilter = lambda x:True,
+              savesize = None, savename = None):
+    print "SAVESIZE = ", savesize
     f = NeoPlotter()
+    if savesize: plt.figure(figsize=savesize)
     for i in xrange(len(lst)):
         f.Subplot(1, len(lst), i+1, title=title, legend = legend)
         cl = 0
@@ -116,8 +119,11 @@ def PlotLists(lst, title = "", legend = True, sigfilter = lambda x:True, spkfilt
             if spkfilter(k[1]):
                 f.PlotSpiketrain(k[1], colorgroup=cl)
             cl+=1
-    f.Show()
-
+    if savesize is None:
+        f.Show()
+    else:
+        plt.draw()
+        plt.savefig(savename)
 
 def _plot_single_spike_train(spk, color = None, timeunit=q.ms, linestyle="--"):
     if color==None: color = np.random.rand(3, 1)

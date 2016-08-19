@@ -2,7 +2,7 @@ import  NixUtils.NixModelFitter as NF
 import sys
 
 # f = NF.NixModelFitter("130523-3LY", mode="r")
-f = NF.NixModelFitter("130501-2Rh", mode="r")
+f = NF.NixModelFitter("130523-3LY", mode="r")
 
 lst = f.GetFittingNames()
 

@@ -9,7 +9,8 @@ import sys
 if len(sys.argv)<2: n = None
 else: n = True
 
-expname = "130322-1LY"
+# expname = "130322-1LY"
+expname = "130523-3LY"
 
 f = mio.ModelfittingIO(expname,fs.FITTING)
 
