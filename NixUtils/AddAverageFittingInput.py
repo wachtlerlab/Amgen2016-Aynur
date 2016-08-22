@@ -1,4 +1,4 @@
-'''from matplotlib import pylab as plt
+from matplotlib import pylab as plt
 import numpy as np
 import neo
 import json
@@ -6,13 +6,13 @@ import nixio as nix
 import neoNIXIO as nx
 from quantities import Hz
 import quantities as qs
-import rawDataProcess as rd
+import ProjectFileStructure as FS
 import os
 
 
-INFO_ABOUT_SCRIPT: "Adds subthreshold inputs for each of neuron NIX file, using parameters of double exponents from bestPars.json
-                    and copies modified file into reorg directory from exp_data"
-
+INFO_ABOUT_SCRIPT =  "Adds subthreshold inputs for each of neuron NIX file, using parameters of double exponents from bestPars.json" \
+                    "and copies modified file into reorg directory from exp_data"
+new_neurons = ["130705-1LY", "140813-3Al"]
 
 
 def doubleExpFun(xSig, Ar, Ad, t0, itaur, itaud):
@@ -42,20 +42,19 @@ def twoDoubleExps(xSig, A1, A2, t1, t2, taur1, taud1, taur2, taud2, offset):
         # else:
         return d1 - d2 + offset
 
-olddir = "/home/maksutov/NIXFiles/exp_data/"
-fdir = "/home/maksutov/NIXFiles/reorg/"
+olddir = FS.nixFiles
+fdir = FS.reorg
 
-os.system("rm -rf "+fdir)
-os.system("cp -r "+olddir+" "+fdir)
-
-toAdd = "/home/maksutov/NIXFiles/bestPars.json"
+toAdd =  os.path.join(FS.DATA, "bestPars.json")
 j = json.load(open(toAdd))
 x = np.array(j["xData"])
-for i in j["bestPars"].keys():
+for i in [k for k in j["bestPars"].keys() if k in new_neurons]:
+    fname = os.path.join(fdir, i+".h5")
+    oldfname = os.path.join(olddir, i+".h5")
+    os.system("cp {0} {1}".format(oldfname, fname))
     params = j["bestPars"][i]
     y = twoDoubleExps(x, *list(params))
     plt.plot(x, y, label = i)
-    fname = fdir+i+".h5"
     print fname
     f = nix.File.open(str(fname), nix.FileMode.ReadWrite)
     try:
@@ -87,4 +86,3 @@ plt.legend()
 plt.xlabel("time, ms")
 plt.ylabel("voltage, mV")
 plt.show()
-'''

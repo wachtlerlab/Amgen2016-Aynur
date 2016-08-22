@@ -1,11 +1,12 @@
 from NixUtils import ModelfittingIO as mio
 from NixUtils import ProjectFileStructure as fs
 import quantities as q
-import NeoUtils as nu
 import NeoUtils.Signals as sg
 
 
-for ename in mio.GetAvaliableIds():
+new_neurons = ["130705-1LY", "140813-3Al"]
+
+for ename in [k for k in mio.GetAvaliableIds() if k in new_neurons]:
     f = mio.ModelfittingIO(ename, fs.FITTING)
 
     inp = f.GetInNames()

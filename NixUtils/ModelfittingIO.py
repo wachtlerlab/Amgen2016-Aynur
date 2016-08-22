@@ -10,6 +10,7 @@ import neoNIXIO as nio
 
 from NixUtils import rawDataAnalyse as rd, ProjectFileStructure as fs
 from NeoUtils import Signals as ss
+import sys
 
 class ModelfittingIO(object):
     '''
@@ -41,22 +42,21 @@ class ModelfittingIO(object):
         :return: None
         '''
         if not os.path.exists(self.__pickle): os.makedirs(self.__pickle)
-        if os.path.exists(self.nixFilePath):
-            self.nixFile = nix.File.open(self.nixFilePath, nix.FileMode.ReadWrite)
-            blks = [(self.fittingInputs, "analogsignals"),
-                    (self.expectedOutputs, "signals,spiketrains,spiketimes"),
-                    (self.simulations, "signals,spiketrains,spiketimes")]
-            scs = [(self.modelFittings, "All fittings' list"),
-                   (self.fittingInputs, "About inputs"),
-                   (self.expectedOutputs, "About outputs"),
-                   (self.simulations, "Simulations' list")]
-            for b in blks:
-                if not b[0] in [i.name for i in self.nixFile.blocks]:
-                    self.nixFile.create_block(b[0], b[1])
-            for s in scs:
-                if not s[0] in self.nixFile.sections:
-                    self.nixFile.create_section(s[0], s[1])
-            self.closeNixFile()
+        self.nixFile = nix.File.open(self.nixFilePath, nix.FileMode.ReadWrite)
+        blks = [(self.fittingInputs, "analogsignals"),
+                (self.expectedOutputs, "signals,spiketrains,spiketimes"),
+                (self.simulations, "signals,spiketrains,spiketimes")]
+        scs = [(self.modelFittings, "All fittings' list"),
+               (self.fittingInputs, "About inputs"),
+               (self.expectedOutputs, "About outputs"),
+               (self.simulations, "Simulations' list")]
+        for b in blks:
+            if not b[0] in [i.name for i in self.nixFile.blocks]:
+                self.nixFile.create_block(b[0], b[1])
+        for s in scs:
+            if not s[0] in self.nixFile.sections:
+                self.nixFile.create_section(s[0], s[1])
+        self.closeNixFile()
 
     def openNixFile(self, mode = nix.FileMode.ReadWrite):
         '''
@@ -478,5 +478,10 @@ def GetAvaliableIds():
     else: return []
 
 if __name__=="__main__":
-    for k in GetAvaliableIds():
+    new_neurons = ["130705-1LY", "140813-3Al"]
+    if len(sys.argv)>1:
+        lst = [k for k in GetAvaliableIds() if k in new_neurons]
+    else:
+        lst = GetAvaliableIds()
+    for k in lst:
         PickleExp(str(k))

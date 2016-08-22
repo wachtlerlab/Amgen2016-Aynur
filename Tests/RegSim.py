@@ -1,14 +1,18 @@
 from NixUtils import NixModelFitter as NF
 from BrianUtils.NeuronModels import AdEx
 from matplotlib import pylab as plt
-from NeoUtils import NeoPlot as nep
 import os
 import numpy as np
 import sys
 
 
 expname = sys.argv[1]
-direc = sys.argv[2]
+predirec = sys.argv[2]
+
+direc = os.path.join(predirec, expname)
+
+if not os.path.exists(direc):
+    os.mkdir(direc)
 
 f = NF.NixModelFitter(expname, mode="r")
 lst = f.GetFittingNames()
