@@ -356,6 +356,11 @@ def JoinSpikeTrainsShifted(lst, dtime=0*q.s):
     return JoinSpikeTrains([ShiftSpikeTrain(lst[i], i*dtime) for i in xrange(len(lst))])
 
 def Zip(spkl):
+    '''
+    Converts spiketrains to understandable by brian.modelfitting spiking info
+    :param spkl: list of neo.SpikeTrain
+    :return: list of tuple [(Number of neuron, Spike time), ...]
+    '''
     lst = []
     for i in xrange(len(spkl)):
         lst = lst+zip([i]*len(spkl[i].times), spkl[i].times)

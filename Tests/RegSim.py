@@ -23,7 +23,6 @@ func2 = lambda x: 0.25 * x * (1 - (1 / x)) ** 2
 pos = 1
 for i in map(int, sys.argv[3:]):
     print lst[i]
-
     g = f.file.GetFit(lst[i])
     inits = g["inits"]
     print inits
@@ -58,6 +57,6 @@ for i in map(int, sys.argv[3:]):
         plt.savefig(filename1)
         sigfilter = lambda x: True if x.description == "from the model" and x.name != "w" else False
         filename2 = os.path.join(direc, lst[i]+"_SIM.png")
-        f.SimulateAndPlotFitting(lst[i], legend=True, sigfilter=sigfilter, savesize=(16, 12), savename=filename2)
+        f.SimulateAndPlotFitting(lst[i], legend=True, sigfilter=sigfilter, savesize=(24, 18), savename=filename2)
     else:
         print "Model {0} is not AdEx model".format(g["model"])

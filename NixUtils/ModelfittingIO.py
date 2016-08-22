@@ -112,8 +112,8 @@ class ModelfittingIO(object):
         nio.addTag("whole " + name, "whole signal tag", self.flt(sig.t_start),
                    blk, [dsig], sec, self.flt(sig.duration))
 
-    def AddFit(self, name, model, results = None, initials={}, in_name="", out_name="", description ="",
-               safe = True, returninfo = True):
+    def AddFit(self, name, model, results = None, initials={}, in_name="", out_name="", description="",
+               safe = True, returninfo = True, best_pos = {}, input_var = None):
         '''
         Adds info about fitting into NIX file
         :param name: str, name of fitting (should be uniq)
@@ -133,11 +133,17 @@ class ModelfittingIO(object):
         if self.EoR(not out_name in self.GetOutNames(), "Output '{0}' not found".format(out_name), safe): return False
         if self.EoR(name in self.GetFitNames(), "Fitting '{0}' already exists".format(name), safe): return False
         if results==None:
-            results = object()
-            results.best_pos = {}
-            results.parameters = object()
-            results.parameters.params = {}
+            class B(object):
+                def __init__(self):
+                    self.params = {}
+            class A(object):
+                def __init__(self):
+                    self.best_pos = best_pos
+                    self.parameters = B()
+                    self.args = [{"input_var":input_var}]
+            results = A()
             if description=="": description = "Not-A-Fitting"
+        else: pickle.dump(results, open(os.path.join(self.__pickle, name + self.fpickle_suff), "w"))
         sec = self.nixFile.sections[self.modelFittings].create_section(name, "fitting trial")
         fp = sec.create_section(self.best_pos, "parameters after fitting")
         for v in results.best_pos:
@@ -148,7 +154,6 @@ class ModelfittingIO(object):
         fp = sec.create_section(self.inits, "other parameters")
         for k in initials:
             fp[k] = nix.Value(initials[k])
-        pickle.dump(results, open(os.path.join(self.__pickle, name + self.fpickle_suff), "w"))
         sec["pickle"] = nix.Value(str(name+self.fpickle_suff))
         sec.props["pickle"].definition = "Pickle filename for results of fitting"
         sec["model"] = nix.Value(str(model))
@@ -162,6 +167,27 @@ class ModelfittingIO(object):
                                   " look to the section '{0}'".format(self.expectedOutputs)
         sec.definition = description
         return name
+
+    def GetFit(self, name):
+        '''
+        To given fitting returns information, stored in this NIX File
+        :param name: string, name of fitting
+        :return: {"input":str, "output":str, "pickle":str, "model":str, "inits":dict, "fitted":dict, "input_var":str}
+        '''
+        if not self.nixFile.is_open(): self.openNixFile()
+        g = [v for v in self.nixFile.sections[self.modelFittings].sections if v.name == name]
+        if len(g)==0: return None
+        g = g[0]
+        di = {}
+        di["input"] = str(g.props["input"].values[0].value)
+        di["output"] = str(g.props["output"].values[0].value)
+        di["pickle"] = str(g.props["pickle"].values[0].value)
+        di["model"] = str(g.props["model"].values[0].value)
+        di["inits"] = {k.name:k.values[0].value for k in g.sections[self.inits].props}
+        # di["inits"].update({k:g.section[self.inits_i][k] for k in g.section[self.inits_i].props})
+        di["fitted"] = {k.name: k.values[0].value for k in g.sections[self.best_pos].props}
+        di["input_var"] = str(g.props["input_var"].values[0].value)
+        return di
 
     def RmFit(self, name, safe = True):
         '''
@@ -220,27 +246,6 @@ class ModelfittingIO(object):
         sig.name = name
         spk = nio.multiTag2SpikeTrain(spks[0], sig.t_start, sig.t_start+sig.duration) if len(spks)>0 else None
         return sig, spk
-
-    def GetFit(self, name):
-        '''
-        To given fitting returns information, stored in this NIX File
-        :param name: string, name of fitting
-        :return: {"input":str, "output":str, "pickle":str, "model":str, "inits":dict, "fitted":dict, "input_var":str}
-        '''
-        if not self.nixFile.is_open(): self.openNixFile()
-        g = [v for v in self.nixFile.sections[self.modelFittings].sections if v.name == name]
-        if len(g)==0: return None
-        g = g[0]
-        di = {}
-        di["input"] = str(g.props["input"].values[0].value)
-        di["output"] = str(g.props["output"].values[0].value)
-        di["pickle"] = str(g.props["pickle"].values[0].value)
-        di["model"] = str(g.props["model"].values[0].value)
-        di["inits"] = {k.name:k.values[0].value for k in g.sections[self.inits].props}
-        # di["inits"].update({k:g.section[self.inits_i][k] for k in g.section[self.inits_i].props})
-        di["fitted"] = {k.name: k.values[0].value for k in g.sections[self.best_pos].props}
-        di["input_var"] = str(g.props["input_var"].values[0].value)
-        return di
 
     def AddSim(self, fname, res, safe = True):
         '''

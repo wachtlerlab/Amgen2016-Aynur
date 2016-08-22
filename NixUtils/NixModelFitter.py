@@ -130,7 +130,8 @@ class NixModelFitter(object):
                 path = os.path.join(FS.TRACES, fname+".plot.json")
                 if os.path.exists(path):
                     obj = nio.LoadJson(path)
-                    PL.PlotLists([zip(obj[0], obj[1])], sigfilter = sigfilter, savesize=savesize, savename=savename)
+                    PL.PlotLists([zip(obj[0], obj[1])], sigfilter = sigfilter, spkfilter = spkfilter,
+                                 savesize=savesize, savename=savename)
                 else:
                     input = self.file.GetIn(fitting["input"])
                     output = self.file.GetOut(fitting["output"])
