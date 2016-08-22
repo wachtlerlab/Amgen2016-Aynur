@@ -5,8 +5,14 @@ import os
 import numpy as np
 import sys
 
+path = sys.argv[1]
+if path[0]==":":
+    expname = os.path.basename(path[1:]).split(".")[0]
+    path = os.path.dirname(path[1:])
+else:
+    expname = path
+    path = None
 
-expname = sys.argv[1]
 predirec = sys.argv[2]
 
 direc = os.path.join(predirec, expname)
@@ -14,7 +20,7 @@ direc = os.path.join(predirec, expname)
 if not os.path.exists(direc):
     os.mkdir(direc)
 
-f = NF.NixModelFitter(expname, mode="r")
+f = NF.NixModelFitter(expname, mode="r", dir=path)
 lst = f.GetFittingNames()
 
 func1 = lambda x: x

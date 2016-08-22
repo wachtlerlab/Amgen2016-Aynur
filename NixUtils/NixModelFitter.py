@@ -128,10 +128,11 @@ class NixModelFitter(object):
             if fitting != None:
                 self.file.closeNixFile()
                 path = os.path.join(FS.TRACES, fname+".plot.json")
+                title = "Neuron: {0}, modelfitting: {1}".format(self.file.exp, fname)
                 if os.path.exists(path):
                     obj = nio.LoadJson(path)
                     PL.PlotLists([zip(obj[0], obj[1])], sigfilter = sigfilter, spkfilter = spkfilter,
-                                 savesize=savesize, savename=savename)
+                                 savesize=savesize, savename=savename, title = title)
                 else:
                     input = self.file.GetIn(fitting["input"])
                     output = self.file.GetOut(fitting["output"])
@@ -149,7 +150,6 @@ class NixModelFitter(object):
                     res = sim.run(duration, dtime=0.1 * S.b.ms, inits=inits)
                     spks = [None]*len(res)+[output[1]]
                     sigs = res + [output[0]]
-                    title = "Fitting {0} for neuron {1}".format(fname, self.file.exp)
                     pltlst = [zip(sigs, spks)]
                     PL.PlotLists(pltlst, legend = legend, title = title, sigfilter = sigfilter, spkfilter = spkfilter,
                                  savesize = savesize, savename=savename)
