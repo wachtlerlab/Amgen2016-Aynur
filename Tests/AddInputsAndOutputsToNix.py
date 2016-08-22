@@ -2,11 +2,12 @@ from NixUtils import ModelfittingIO as mio
 from NixUtils import ProjectFileStructure as fs
 from NeoUtils import NeoPlot as plt
 import quantities as q
-#"130322-1LY"
+
+new_neurons = ["130705-1LY", "140813-3Al"]
 
 inp_curr_max = 1*q.nA
 
-for ename in mio.GetAvaliableIds():
+for ename in [k for k in mio.GetAvaliableIds() if k in new_neurons]:
     f = mio.ModelfittingIO(ename, fs.FITTING)
     exp = mio.UnpickleExp(ename)
 
