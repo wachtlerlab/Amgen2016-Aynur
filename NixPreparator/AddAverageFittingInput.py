@@ -3,10 +3,10 @@ import numpy as np
 import neo
 import json
 import nixio as nix
-import neoNIXIO as nx
+import NixUtils.neoNIXIO as nx
 from quantities import Hz
 import quantities as qs
-import ProjectFileStructure as FS
+import NixUtils.ProjectFileStructure as FS
 import os
 
 
