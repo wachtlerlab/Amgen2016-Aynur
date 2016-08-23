@@ -5,6 +5,7 @@ from BrianUtils import ModelFitter as MF
 from BrianUtils import NeuronModels as NM
 from BrianUtils import Simulator as S
 from BrianUtils.Utilities import TimeToBrian
+from BrianUtils.Utilities import GammaFactor
 from NeoUtils import NeoJsonIO as nio
 from NeoUtils import NeoPlot as PL
 from NixPreparator import ProjectFileStructure as FS
@@ -113,7 +114,7 @@ class NixModelFitter(object):
             self.file.closeNixFile()
 
     def SimulateAndPlotFitting(self, fname, legend = True, sigfilter = lambda x:True, spkfilter = lambda x:True,
-                               savesize = None, savename = None):
+                               savesize = None, savename = None, calculGamma = False):
         '''
         Use instead of SimulateFitting. Will take parameters from modelfitting, simulate, plot and save as json file.
         :param fname: str, name of fitting
@@ -124,7 +125,9 @@ class NixModelFitter(object):
         :param savename: filename, where to save figure (if savesize is not None)
         :return: None
         '''
-        self.file.openNixFile(mode=MIO.nix.FileMode.ReadOnly)
+        gamma = None
+        mode = MIO.nix.FileMode.ReadOnly
+        self.file.openNixFile(mode=mode)
         try:
             fitting = self.file.GetFit(fname)
             if fitting != None:
@@ -136,28 +139,39 @@ class NixModelFitter(object):
                     PL.PlotLists([zip(obj[0], obj[1])], sigfilter = sigfilter, spkfilter = spkfilter,
                                  savesize=savesize, savename=savename, title = title)
                 else:
-                    input = self.file.GetIn(fitting["input"])
-                    output = self.file.GetOut(fitting["output"])
-                    self.file.closeNixFile()
-                    model = NM.GetModelById(fitting["model"])
-                    print fitting["model"], model, type(model)
-                    inits = fitting["inits"]
-                    inits.update(fitting["fitted"])
-                    inp_var = fitting["input_var"]
-                    time = TimeToBrian(input.t_start)
-                    duration = TimeToBrian(input.duration)
-                    sim = S.Simulator(model())
-                    sim.set_time(time)
-                    sim.set_input(inp_var, input)
-                    res = sim.run(duration, dtime=0.1 * S.b.ms, inits=inits)
-                    spks = [None]*len(res)+[output[1]]
-                    sigs = res + [output[0]]
-                    pltlst = [zip(sigs, spks)]
-                    PL.PlotLists(pltlst, legend = legend, title = title, sigfilter = sigfilter, spkfilter = spkfilter,
-                                 savesize = savesize, savename=savename)
-                    nio.SaveResults(path, sigs, spks)
+                    if not fitting["input"] is None:
+                        input = self.file.GetIn(fitting["input"])
+                        output = self.file.GetOut(fitting["output"])
+                        self.file.closeNixFile()
+                        model = NM.GetModelById(fitting["model"])
+                        print fitting["model"], model, type(model)
+                        inits = fitting["inits"]
+                        inits.update(fitting["fitted"])
+                        inp_var = fitting["input_var"]
+                        time = TimeToBrian(input.t_start)
+                        duration = TimeToBrian(input.duration)
+                        sim = S.Simulator(model())
+                        sim.set_time(time)
+                        sim.set_input(inp_var, input)
+                        res = sim.run(duration, dtime=0.1 * S.b.ms, inits=inits)
+                        if calculGamma:
+                            print "ExpName", self.file.exp
+                            print "File", self.file.nixFilePath
+                            res_spks = sim.results[1]
+                            gamma = GammaFactor(output[1], res_spks)
+                            self.file.openNixFile(mode = MIO.nix.FileMode.ReadWrite)
+                            sec = self.file.nixFile.sections[self.file.modelFittings].sections[fname]
+                            sec["Gamma"] = MIO.nix.Value(gamma)
+                            self.file.closeNixFile()
+                        spks = [None]*len(res)+[output[1]]
+                        sigs = res + [output[0]]
+                        pltlst = [zip(sigs, spks)]
+                        PL.PlotLists(pltlst, legend = legend, title = title, sigfilter = sigfilter, spkfilter = spkfilter,
+                                     savesize = savesize, savename=savename)
+                        nio.SaveResults(path, sigs, spks)
         finally:
             self.file.closeNixFile()
+        return gamma
 
     def PlotSimulation(self, fname, expsig = False, expspk = False):
         '''

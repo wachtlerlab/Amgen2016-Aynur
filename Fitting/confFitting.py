@@ -29,4 +29,4 @@ for filename in sys.argv[1:]:
                     "neuron":str(neuron), "regime":str(regime),
                     "optparams":task["optparams"], "iters":task["iters"],
                     "model":str(task["model"]), "file":os.path.basename(filename)}
-                subprocess.call(["python", os.path.join(fs.scripts, "TrialsFitting", "singleConfFitting.py"), str(tsk)])
+                subprocess.call(["python", os.path.join(fs.scripts, "Fitting", "singleConfFitting.py"), str(tsk)])

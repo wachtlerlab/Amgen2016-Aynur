@@ -180,14 +180,15 @@ class ModelfittingIO(object):
         if len(g)==0: return None
         g = g[0]
         di = {}
-        di["input"] = str(g.props["input"].values[0].value)
-        di["output"] = str(g.props["output"].values[0].value)
-        di["pickle"] = str(g.props["pickle"].values[0].value)
-        di["model"] = str(g.props["model"].values[0].value)
-        di["inits"] = {k.name:k.values[0].value for k in g.sections[self.inits].props}
+        di["input"] = str(g.props["input"].values[0].value) if "input" in g.props else None
+        di["output"] = str(g.props["output"].values[0].value) if "output" in g.props else None
+        di["pickle"] = str(g.props["pickle"].values[0].value) if "pickle" in g.props else None
+        di["model"] = str(g.props["model"].values[0].value) if "model" in g.props else None
+        di["Gamma"] = float(g.props["Gamma"].values[0].value) if "Gamma" in g.props else None
+        di["inits"] = {k.name:k.values[0].value for k in g.sections[self.inits]} if self.inits in g.sections else None
         # di["inits"].update({k:g.section[self.inits_i][k] for k in g.section[self.inits_i].props})
         di["fitted"] = {k.name: k.values[0].value for k in g.sections[self.best_pos].props}
-        di["input_var"] = str(g.props["input_var"].values[0].value)
+        di["input_var"] = str(g.props["input_var"].values[0].value) if "input_var" in g.props else None
         return di
 
     def RmFit(self, name, safe = True):

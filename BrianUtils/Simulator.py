@@ -55,6 +55,7 @@ class Simulator(object):
         self.afterInits = inits
         self.g = b.NeuronGroup(1, model=eqs, threshold=thr, reset=reset, method="RK", clock=b.defaultclock)
         self.model.simulate(time, self.g, monitors=monitors, **inits)
-        di = self.model.return_signal()
-        self.results = di
-        return self.results
+        sigs = self.model.return_signal()
+        spks = self.model.return_spikes()
+        self.results = [sigs, spks]
+        return self.results[0]

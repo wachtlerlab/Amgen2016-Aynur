@@ -32,6 +32,7 @@ saphlist = [k for k in os.listdir(FS.FITTING) if ".h5" in k]
 
 for i in os.listdir(tempFolder):
     if ".h5" in i:
+        print "Merging ", i
         greenNixName = os.path.join(tempFolder, i)
         atlasNixName = os.path.join(mergedFolder, i)
         atlasOldNixName = os.path.join(FS.FITTING, i)

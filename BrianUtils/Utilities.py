@@ -86,3 +86,11 @@ def one_layer_fromfile(filename, name, dolists=True):
         d = json.load(f)
     one_layer_fromdict(name, d, a, dolists)
     return a
+
+from brian.tools.statistics import gamma_factor
+from brian import second
+
+def GammaFactor(source, target, precision=0.004 * second):
+    times1 = [float(n.simplified.magnitude) * second for n in source.times]
+    times2 = [float(n.simplified.magnitude) * second for n in target.times]
+    return gamma_factor(times1, times2, precision)

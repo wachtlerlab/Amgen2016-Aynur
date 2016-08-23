@@ -29,11 +29,18 @@ for configName in sys.argv[2:]:
             params["model"] = fit["model"]
             params["fitting"] = fname
             params["start"] = di["Initial point"]
+            params["Gamma"] = fit["Gamma"]
 
             df0 = df0.append(pd.DataFrame(data = params, index=[df0.shape[0]]))
 
+young = set(["130523-3LY", "130605-1LY", "130605-2LY", "140813-3Al", "140917-1Al", "140930-1Al", "141030-1Al"])
+
+df0["group"] = df0["neuron"].apply(lambda x:"young" if x in young else "forager")
+
 print df0.head()
 
-name = str(dt.datetime.now()).replace(" ", "_").replace(":", "-")
+for s in df0.groupby("neuron"):
+    print s
 
-df0.to_csv(os.path.join(fs.tables, name+".csv"))
+# name = str(dt.datetime.now()).replace(" ", "_").replace(":", "-")
+# df0.to_csv(os.path.join(fs.tables, name+"_FULL.csv"))
