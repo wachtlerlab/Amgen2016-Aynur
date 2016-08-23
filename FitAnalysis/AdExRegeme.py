@@ -1,10 +1,11 @@
-from NixUtils import ModelfittingIO as mio
-from NixUtils import ProjectFileStructure as fs
-from BrianUtils.NeuronModels import AdEx
-from matplotlib import pylab as plt
-from NeoUtils import NeoPlot as nep
 import numpy as np
 import sys
+from matplotlib import pylab as plt
+
+from BrianUtils.NeuronModels import AdEx
+from NeoUtils import NeoPlot as nep
+from NixPreparator import ProjectFileStructure as fs
+from NixUtils import ModelfittingIO as mio
 
 if len(sys.argv)<2: n = None
 else: n = True

@@ -1,18 +1,19 @@
-import ProjectFileStructure as FS
-import os
 import datetime as dt
-import ModelfittingIO as mio
+import os
 import sys
 
+import ModelfittingIO as mio
+from NixPreparator import ProjectFileStructure as FS
 
 tempFolder = "/tmp/nixfiles"
 
 dbool = True
 greenFolder = "/home/maksutov/DATA/FITTING/"
 if len(sys.argv)>1:
-    if sys.argv[1][0]!=":":
+    if sys.argv[1][0]=="!":
+        dbool = False
+    elif sys.argv[1][0]!=":":
         greenFolder = sys.argv[1]
-    else: dbool = False
 
 
 time = str(dt.datetime.now()).replace(" ", "_").replace(":", "-").replace(".", "-")

@@ -15,7 +15,9 @@ fpickle = os.path.join(FITTING, "pickle")
 nxpickle = os.path.join(reorg, "pickle")
 scripts = os.path.join(HOME, "Amgen2016-Aynur")
 nixFiles = os.path.join(DATA, "NIXFiles")
-
+analysis = os.path.join(DATA, "analysis")
+tables = os.path.join(analysis, "tables")
+config = os.path.join(DATA, "config")
 
 def nixName(exp):
     return str(exp)+".h5"

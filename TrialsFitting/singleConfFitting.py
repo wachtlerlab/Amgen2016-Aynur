@@ -1,10 +1,11 @@
-from NixUtils.NixModelFitter import NixModelFitter
-from BrianUtils.NeuronModels import AdEx
-from datetime import datetime
-from NixUtils import ProjectFileStructure as fs
+import ast
 import os
 import sys
-import ast
+from datetime import datetime
+
+from BrianUtils.NeuronModels import AdEx
+from NixPreparator import ProjectFileStructure as fs
+from NixUtils.NixModelFitter import NixModelFitter
 
 #print sys.argv
 

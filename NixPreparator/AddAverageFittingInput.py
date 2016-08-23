@@ -1,14 +1,14 @@
-from matplotlib import pylab as plt
-import numpy as np
-import neo
 import json
-import nixio as nix
-import NixUtils.neoNIXIO as nx
-from quantities import Hz
-import quantities as qs
-import NixUtils.ProjectFileStructure as FS
+import numpy as np
 import os
+from matplotlib import pylab as plt
 
+import NixPreparator.ProjectFileStructure as FS
+import NixUtils.neoNIXIO as nx
+import neo
+import nixio as nix
+import quantities as qs
+from quantities import Hz
 
 INFO_ABOUT_SCRIPT =  "Adds subthreshold inputs for each of neuron NIX file, using parameters of double exponents from bestPars.json" \
                     "and copies modified file into reorg directory from exp_data"

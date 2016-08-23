@@ -1,13 +1,15 @@
+import datetime as dt
+import os
+
 from BrianUtils import ModelFitter as MF
 from BrianUtils import NeuronModels as NM
 from BrianUtils import Simulator as S
 from BrianUtils.Utilities import TimeToBrian
-from NixUtils import ModelfittingIO as MIO
-from NixUtils import ProjectFileStructure as FS
-from NeoUtils import NeoPlot as PL
 from NeoUtils import NeoJsonIO as nio
-import datetime as dt
-import os
+from NeoUtils import NeoPlot as PL
+from NixPreparator import ProjectFileStructure as FS
+from NixUtils import ModelfittingIO as MIO
+
 
 class NixModelFitter(object):
     '''

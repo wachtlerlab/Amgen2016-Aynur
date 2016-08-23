@@ -1,5 +1,5 @@
+from NixPreparator import ProjectFileStructure as fs
 from NixUtils import ModelfittingIO as mio
-from NixUtils import ProjectFileStructure as fs
 
 new_neurons = ["130705-1LY", "140813-3Al"]
 
