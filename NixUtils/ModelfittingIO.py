@@ -213,7 +213,8 @@ class ModelfittingIO(object):
                     for k in ar:
                         del k
                     del j
-            del sec
+            for i in sec:
+                del i
 
     def GetIn(self, name):
         '''

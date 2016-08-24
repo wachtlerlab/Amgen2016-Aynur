@@ -33,7 +33,7 @@ class NixModelFitter(object):
             self.file = MIO.ModelfittingIO(expname, dir, mode = MIO.nix.FileMode.ReadOnly)
 
     def FitModel(self, model, input, output, inits = {}, popsize=1000, maxiter=100, algoptparams = {}, algo ="CMAES",
-                 from_perc = True, optparams = None, returninfo = True, logstr = None):
+                 from_perc = True, optparams = None, returninfo = True, logstr = None, duration=None):
         '''
         Fits model to output recording using given input and model within own NIX File. Writes parameters and fitting
         info into NIX File.
@@ -49,11 +49,16 @@ class NixModelFitter(object):
         :param optparams: list, parameters you would want to optimize
         :param returninfo: whether brian will return info ir not (see brian.modelfitting.modelfitting). Don't use!
         :param logstr: str, text for log file, that will be created after fitting
+        :param duration: float, total duration from start of input to use (in seconds). If None, uses entire input
         :return: str, name of fitting and created section in NIX File, in "modelFittings" section
         '''
         self.file.openNixFile()
         si = self.file.GetIn(input)
         sig, spk = self.file.GetOut(output)
+        if duration:
+            q_dur = duration*MIO.q.s
+            si = si[si.times<q_dur]
+            spk = spk[spk.times<q_dur]
         self.file.closeNixFile()
         model_str = str(model)
         model = NM.GetModelById(model_str)
@@ -157,8 +162,9 @@ class NixModelFitter(object):
                         if calculGamma:
                             print "ExpName", self.file.exp
                             print "File", self.file.nixFilePath
-                            res_spks = sim.results[1]
-                            gamma = GammaFactor(output[1], res_spks)
+                            simulationSpikes = sim.results[1]
+                            recordingSpikes = output[1]
+                            gamma = GammaFactor(recordingSpikes, simulationSpikes)
                             self.file.openNixFile(mode = MIO.nix.FileMode.ReadWrite)
                             sec = self.file.nixFile.sections[self.file.modelFittings].sections[fname]
                             sec["Gamma"] = MIO.nix.Value(gamma)

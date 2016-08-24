@@ -281,6 +281,20 @@ class AdEx(Model):
         "a": 1037 * nS
     }
 
+    mean_24_08_2016 = {
+        "w": 0 * uA,
+        "Vr": -55.56 * mV,
+        "Vt": -49.82 * mV,
+        "b": 1.85 * nA,
+        "V": -60 * mV,
+        "sF": 6.69 * mV,
+        "tau": 617.8 * ms,
+        "EL": -60 * mV,
+        "gL": 411.7 * nS,
+        "C": 5242.8 * pF,
+        "a": 923 * nS
+    }
+
 def ActType(inits):
     tw = inits["tau"]
     tm = inits["C"] / inits["gL"]

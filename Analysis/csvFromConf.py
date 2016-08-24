@@ -3,6 +3,7 @@ from NixUtils import ModelfittingIO as mio
 from NixPreparator import ProjectFileStructure as fs
 import sys, os, json
 import datetime as dt
+import numpy as np
 
 df0 = pd.DataFrame()
 
@@ -37,10 +38,17 @@ young = set(["130523-3LY", "130605-1LY", "130605-2LY", "140813-3Al", "140917-1Al
 
 df0["group"] = df0["neuron"].apply(lambda x:"young" if x in young else "forager")
 
-print df0.head()
+# print df0.head()
 
-for s in df0.groupby("neuron"):
-    print s
+dmax = pd.DataFrame()
 
-# name = str(dt.datetime.now()).replace(" ", "_").replace(":", "-")
-# df0.to_csv(os.path.join(fs.tables, name+"_FULL.csv"))
+for k, s in df0.groupby("neuron"):
+    n = s["Gamma"].idxmax()
+    if not np.isnan(n):
+        dmax = dmax.append(s.loc[[n]])
+
+print dmax
+
+name = str(dt.datetime.now()).replace(" ", "_").replace(":", "-")
+df0.to_csv(os.path.join(fs.tables, name+"_FULL.csv"))
+dmax.to_csv(os.path.join(fs.tables, name+".csv"))

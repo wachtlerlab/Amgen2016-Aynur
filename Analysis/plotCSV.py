@@ -28,6 +28,10 @@ for i in sys.argv[1:]:
     elif mode=="dt":
         print type(df.dtypes)
         print df.dtypes
+    elif mode=="fl":
+        print df.dtypes[df.dtypes=="float64"]
+    elif mode=="mean":
+        print df.mean()
     else:
         sds = mode.split(",")
         numbers = set()
@@ -42,5 +46,5 @@ for i in sys.argv[1:]:
         print names
         sns.set(style="ticks", color_codes=True)
         fig = sns.pairplot(df, hue="group", palette={"young":"red", "forager":"blue"},
-                           vars=list(numbers), diag_kind="kde")
+                           vars=list(numbers))
         plt.show()

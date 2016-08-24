@@ -21,6 +21,7 @@ optparams = map(str, task["optparams"])
 algoptparams = {"proportion_selective": 0.5}
 output = str(task["output"])
 input = str(task["input"])
+duration = task["duration"]
 
 inits = getattr(AdEx.AdEx, regime)
 
@@ -39,7 +40,7 @@ print logstr
 res = nixMF.FitModel(model, input=input,
                      output=output, maxiter=iters,
                      inits=inits, algoptparams=algoptparams, from_perc=False,
-                     popsize=1000, optparams=optparams, returninfo=True)
+                     popsize=1000, optparams=optparams, returninfo=True, duration = duration)
 
 t = datetime.now()
 logstr += "Finished at " + str(t) + "\n"
