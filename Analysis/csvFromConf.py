@@ -43,7 +43,9 @@ df0["group"] = df0["neuron"].apply(lambda x:"young" if x in young else "forager"
 dmax = pd.DataFrame()
 
 for k, s in df0.groupby("neuron"):
-    n = s["Gamma"].idxmax()
+    dd = s.fillna(0.)
+    dd = dd[dd["Gamma"] <= 1.]
+    n = dd["Gamma"].idxmax()
     if not np.isnan(n):
         dmax = dmax.append(s.loc[[n]])
 

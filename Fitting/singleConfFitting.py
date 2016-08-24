@@ -27,7 +27,7 @@ inits = getattr(AdEx.AdEx, regime)
 
 t = datetime.now()
 logstr = "Fitting started at "+ str(t) + "\n"
-logstr = "Neuron: "+neuron+"\n"
+logstr += "Neuron: "+neuron+"\n"
 logstr += "Model: " + model + "\n"
 logstr += "Initial point: " + str(regime) + "\n"
 logstr += "Optimized parameters: " + str(optparams) + "\n"
