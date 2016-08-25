@@ -8,7 +8,7 @@ from BrianUtils.Utilities import TimeToBrian
 from BrianUtils.Utilities import GammaFactor
 from NeoUtils import NeoJsonIO as nio
 from NeoUtils import NeoPlot as PL
-from NixPreparator import ProjectFileStructure as FS
+from Storage import ProjectFileStructure as FS
 from NixUtils import ModelfittingIO as MIO
 
 

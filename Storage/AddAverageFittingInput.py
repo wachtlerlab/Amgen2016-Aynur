@@ -3,7 +3,7 @@ import numpy as np
 import os
 from matplotlib import pylab as plt
 
-import NixPreparator.ProjectFileStructure as FS
+import Storage.ProjectFileStructure as FS
 import NixUtils.neoNIXIO as nx
 import neo
 import nixio as nix

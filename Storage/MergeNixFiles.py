@@ -2,8 +2,8 @@ import datetime as dt
 import os
 import sys
 
-import ModelfittingIO as mio
-from NixPreparator import ProjectFileStructure as FS
+import NixUtils.ModelfittingIO as mio
+from Storage import ProjectFileStructure as FS
 
 tempFolder = "/tmp/nixfiles"
 

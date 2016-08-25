@@ -3,7 +3,7 @@ import os
 import subprocess
 import sys
 
-from NixPreparator import ProjectFileStructure as fs
+from Storage import ProjectFileStructure as fs
 from checkConfFitting import checkConfFitting
 
 for filename in sys.argv[1:]:

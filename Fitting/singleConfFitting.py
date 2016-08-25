@@ -4,7 +4,7 @@ import sys
 from datetime import datetime
 
 from BrianUtils.NeuronModels import AdEx
-from NixPreparator import ProjectFileStructure as fs
+from Storage import ProjectFileStructure as fs
 from NixUtils.NixModelFitter import NixModelFitter
 
 #print sys.argv

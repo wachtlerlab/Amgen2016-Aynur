@@ -9,7 +9,7 @@ import neoNIXIO as nio
 import nixio as nix
 import quantities as q
 from NeoUtils import Signals as ss
-from NixPreparator import ProjectFileStructure as fs
+from Storage import ProjectFileStructure as fs
 from NixUtils import rawDataAnalyse as rd
 
 

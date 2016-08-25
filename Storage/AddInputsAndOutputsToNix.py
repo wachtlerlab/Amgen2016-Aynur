@@ -1,6 +1,6 @@
 import quantities as q
 from NeoUtils import NeoPlot as plt
-from NixPreparator import ProjectFileStructure as fs
+from Storage import ProjectFileStructure as fs
 from NixUtils import ModelfittingIO as mio
 
 new_neurons = ["130705-1LY", "140813-3Al"]

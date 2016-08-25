@@ -2,7 +2,7 @@ from BrianUtils.Utilities import timer
 t = timer()
 import sys
 from NixUtils import ModelfittingIO as mio
-from NixPreparator import ProjectFileStructure as pstr
+from Storage import ProjectFileStructure as pstr
 from NeoUtils.NeoPlot import NeoPlotter
 from NeoUtils.NeoJsonIO import PlotJsonAnalogSignals
 from NeoUtils.NeoJsonIO import SaveResults

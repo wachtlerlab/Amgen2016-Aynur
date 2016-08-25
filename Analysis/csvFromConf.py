@@ -1,6 +1,6 @@
 import pandas as pd
 from NixUtils import ModelfittingIO as mio
-from NixPreparator import ProjectFileStructure as fs
+from Storage import ProjectFileStructure as fs
 import sys, os, json
 import datetime as dt
 import numpy as np
