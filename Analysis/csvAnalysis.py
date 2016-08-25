@@ -3,6 +3,7 @@ import seaborn as sns
 from matplotlib import pyplot as plt
 from matplotlib import rcParams
 from BrianUtils.NeuronModels import AdEx
+from matplotlib import patches
 import numpy as np
 import sys
 
@@ -18,33 +19,63 @@ import sys
 rcParams.update(plParams)'''
 
 
-for i in sys.argv[1:]:
-    lst = i.split(":", 1)
+for csvFilename in sys.argv[1:]:
+    lst = csvFilename.split(":", 1)
     mode = lst[0]
-    i = lst[1]
-    print "Processing", i
-    df = pd.read_csv(i)
+    csvFilename = lst[1]
+    print "Processing", csvFilename
+    df = pd.read_csv(csvFilename)
     names = [t for t in df.dtypes.keys() if df.dtypes[t]=="float64"]
     if mode=="":
         print df
     elif mode=="dtype":
         print type(df.dtypes)
         print df.dtypes
+    elif mode=="stat":
+        print "Calculating stats"
+        from scipy.stats import kruskal
+        dfstat = pd.DataFrame()
+        for i in names:
+            print "Parameter", i
+            v1 = [k[1][i] for k in df.iterrows() if k[1]["group"] == "young"]
+            v2 = [k[1][i] for k in df.iterrows() if k[1]["group"] == "forager"]
+            stat, pval = kruskal(v1, v2)
+            mean1 = np.mean(v1)
+            std1 = np.std(v1)
+            mean2 = np.mean(v2)
+            std2 = np.std(v2)
+            nrow = {"parameter":i, "stat":stat, "pval":pval, "mean_young":mean1, "std_young":std1,
+                    "mean_forager": mean2, "std_forager": std2}
+            print nrow
+            dfstat = dfstat.append(nrow, ignore_index=True)
+            fig1, ax1 = plt.subplots(figsize=(8, 12))
+            # boxprops = prp1, medianprops = prp1, whiskerprops = prp1
+            prp1 = dict(color="r")
+            bp = plt.boxplot([v1, v2], positions=[-1., 1.], bootstrap=True, widths=[0.8, 0.8],
+                             patch_artist=patches.Patch(), labels=["young", "forager"])
+            # prp2 = dict(color="b")
+            # ax.boxplot([1], positions=[1.], bootstrap=True, widths=[0.8], patch_artist=patches.Patch())
+            ax1.plot([-1.]*len(v1), v1, "ro")
+            ax1.plot([1.]*len(v2), v2, "bo")
+            plt.title("DIstribution of parameter "+i)
+            plt.ylabel(i)
+            plt.tight_layout()
+            fig1.savefig(csvFilename+".param."+i+".png")
+        dfstat.to_csv(csvFilename+".stat")
     elif mode=="float":
         print df.dtypes[df.dtypes=="float64"]
     elif mode=="mean":
         print df.mean()
-    elif mode=="regeme":
+    elif mode=="regime":
         xmin = 0
         xmax = 0
         ymin = 0
         ymax = 0
-        young = set(["130523-3LY", "130605-1LY", "130605-2LY", "140813-3Al", "140917-1Al", "140930-1Al", "141030-1Al"])
-        color = lambda x: "r" if x in young else "b"
+        color = lambda x: "r" if x=="young" else "b"
         fig, ax = plt.subplots(figsize=(14, 11.2))
         for k, s in df.iterrows():
             f1, f2 = AdEx.ActType(dict(s))
-            ax.plot(f1, f2, color=color(s["neuron"]), marker='o')
+            ax.plot(f1, f2, color=color(s["group"]), marker='o')
             ax.annotate(s['neuron']+", "+s["start"][17:], (f1, f2), size=10)
             print(k, s["neuron"], s["Gamma"], s['start'])
             xmin = min(xmin, f1)
@@ -82,5 +113,8 @@ for i in sys.argv[1:]:
         sns.set(style="ticks", color_codes=True)
         fig = sns.pairplot(df, hue="group", palette={"young":"red", "forager":"blue"},
                            vars=list(numbers), diag_kind="kde")
+        # fig.map_upper(plt.scatter)
+        # fig.map_lower(plt.scatter)
+        # fig.map_diag(sns.kdeplot, legend = True)
         plt.tight_layout()
         plt.show()
