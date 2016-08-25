@@ -29,24 +29,37 @@ if dbool:
     os.system("scp maksutov@green:" + greenFolder + "*.h5 " + tempFolder)
 
 saphlist = [k for k in os.listdir(FS.FITTING) if ".h5" in k]
+atlasFList = [x for x in os.listdir(FS.FITTING) if ".h5" in x]
+tempFList = os.listdir(tempFolder)
+excl = [x for x in atlasFList if not x in tempFList]
 
-for i in os.listdir(tempFolder):
+for i in excl:
+    print "Copying from atlas: ", i
+    atlasNixName = os.path.join(mergedFolder, i)
+    atlasOldNixName = os.path.join(FS.FITTING, i)
+    os.system("cp {0} {1}".format(atlasOldNixName, atlasNixName))
+
+for i in tempFList:
     if ".h5" in i:
-        print "Merging ", i
         greenNixName = os.path.join(tempFolder, i)
         atlasNixName = os.path.join(mergedFolder, i)
         atlasOldNixName = os.path.join(FS.FITTING, i)
-        os.system("scp {0} {1}".format(atlasOldNixName, atlasNixName))
-        atlasNixFile = mio.ModelfittingIO(i.split(".")[0], mergedFolder)
-        greenNixFile = mio.ModelfittingIO(i.split(".")[0], tempFolder)
-        greenFittings = greenNixFile.GetFitNames()
-        atlasFittings = atlasNixFile.GetFitNames()
-        for fittingName in greenFittings:
-            if not fittingName in atlasFittings:
-                fittingFromGreen = greenNixFile.GetFit(fittingName)
-                atlasNixFile.AddFit(fittingName, fittingFromGreen["model"], None, initials=fittingFromGreen["inits"],
-                                    best_pos=fittingFromGreen["fitted"], in_name = fittingFromGreen["input"],
-                                    out_name = fittingFromGreen["output"], input_var=fittingFromGreen["input_var"],
-                                    description="green")
-        greenNixFile.closeNixFile()
-        atlasNixFile.closeNixFile()
+        if os.path.exists(atlasOldNixName):
+            print "Merging ", i
+            os.system("cp {0} {1}".format(atlasOldNixName, atlasNixName))
+            atlasNixFile = mio.ModelfittingIO(i.split(".")[0], mergedFolder)
+            greenNixFile = mio.ModelfittingIO(i.split(".")[0], tempFolder)
+            greenFittings = greenNixFile.GetFitNames()
+            atlasFittings = atlasNixFile.GetFitNames()
+            for fittingName in greenFittings:
+                if not fittingName in atlasFittings:
+                    fittingFromGreen = greenNixFile.GetFit(fittingName)
+                    atlasNixFile.AddFit(fittingName, fittingFromGreen["model"], None, initials=fittingFromGreen["inits"],
+                                        best_pos=fittingFromGreen["fitted"], in_name = fittingFromGreen["input"],
+                                        out_name = fittingFromGreen["output"], input_var=fittingFromGreen["input_var"],
+                                        description="green")
+            greenNixFile.closeNixFile()
+            atlasNixFile.closeNixFile()
+        else:
+            print "Copying from green: ", i
+            os.system("cp {0} {1}".format(greenNixName, atlasNixName))

@@ -27,10 +27,10 @@ for i in sys.argv[1:]:
     names = [t for t in df.dtypes.keys() if df.dtypes[t]=="float64"]
     if mode=="":
         print df
-    elif mode=="dt":
+    elif mode=="dtype":
         print type(df.dtypes)
         print df.dtypes
-    elif mode=="fl":
+    elif mode=="float":
         print df.dtypes[df.dtypes=="float64"]
     elif mode=="mean":
         print df.mean()
@@ -45,7 +45,7 @@ for i in sys.argv[1:]:
         for k, s in df.iterrows():
             f1, f2 = AdEx.ActType(dict(s))
             ax.plot(f1, f2, color=color(s["neuron"]), marker='o')
-            ax.annotate(s['neuron']+", "+s["start"][-3:], (f1, f2), size=10)
+            ax.annotate(s['neuron']+", "+s["start"][17:], (f1, f2), size=10)
             print(k, s["neuron"], s["Gamma"], s['start'])
             xmin = min(xmin, f1)
             xmax = max(xmax, f1)

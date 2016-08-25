@@ -1,9 +1,14 @@
-import NixModelFitter as nio
+import NixUtils.NixModelFitter as nio
 import sys, os
 
 direc = None if sys.argv[1]==":" else sys.argv[1]
 
-for expname in sys.argv[2:]:
+if len(sys.argv[2:])>0:
+    lst = sys.argv[2:]
+else:
+    lst = [x.split(".")[0] for x in os.listdir(direc) if ".h5" in x]
+
+for expname in lst:
     print "//-------------//"
     print "//--Processing neuron:", expname
     f = nio.NixModelFitter(expname, dir=direc)

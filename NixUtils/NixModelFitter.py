@@ -165,6 +165,8 @@ class NixModelFitter(object):
                             simulationSpikes = sim.results[1]
                             recordingSpikes = output[1]
                             gamma = GammaFactor(recordingSpikes, simulationSpikes)
+                            print "Gamma = ", gamma
+                            if MIO.np.isnan(gamma): gamma = 0
                             self.file.openNixFile(mode = MIO.nix.FileMode.ReadWrite)
                             sec = self.file.nixFile.sections[self.file.modelFittings].sections[fname]
                             sec["Gamma"] = MIO.nix.Value(gamma)
