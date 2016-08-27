@@ -5,6 +5,8 @@ import sys, os, json
 import datetime as dt
 import numpy as np
 
+excluded_neurons = set(["130501-2Rh"])
+
 df0 = pd.DataFrame()
 
 nixFilesFolder = sys.argv[1]
@@ -19,6 +21,7 @@ for configName in sys.argv[2:]:
             stri = open(os.path.join(fs.OUTPUT, i)).read()
             di = {k[0]:k[1][1:] for k in map(lambda x:x.split(":", 1), [l for l in stri.split("\n") if ":" in l])}
             expname = di["Neuron"]
+            if expname in excluded_neurons: continue
             fname = di["Fitting name"]
             f = mio.ModelfittingIO(expname, nixFilesFolder)
             fit = f.GetFit(fname)
@@ -31,7 +34,7 @@ for configName in sys.argv[2:]:
             params["fitting"] = fname
             params["start"] = di["Initial point"]
             params["Gamma"] = fit["Gamma"]
-
+            params["a_by_gL"] = params["a"]/params["gL"]
             df0 = df0.append(pd.DataFrame(data = params, index=[df0.shape[0]]))
 
 young = set(["130523-3LY", "130605-1LY", "130605-2LY", "140813-3Al", "140917-1Al", "140930-1Al", "141030-1Al"])

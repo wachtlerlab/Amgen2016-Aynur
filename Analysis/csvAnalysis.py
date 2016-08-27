@@ -1,22 +1,12 @@
 import pandas as pd
 import seaborn as sns
 from matplotlib import pyplot as plt
-from matplotlib import rcParams
 from BrianUtils.NeuronModels import AdEx
 from matplotlib import patches
 import numpy as np
 import sys
 
-'''plParams = {'text.usetex': False,
-           'axes.labelsize': 'large',
-           'font.size': 24,
-           'font.family': 'sans-serif',
-           'font.sans-serif': 'computer modern roman',
-           'xtick.labelsize': 20,
-           'ytick.labelsize': 20,
-           'legend.fontsize': 20,
-           }
-rcParams.update(plParams)'''
+
 
 
 for csvFilename in sys.argv[1:]:
@@ -33,19 +23,19 @@ for csvFilename in sys.argv[1:]:
         print df.dtypes
     elif mode=="stat":
         print "Calculating stats"
-        from scipy.stats import kruskal
+        from scipy.stats import kruskal, ttest_ind
         dfstat = pd.DataFrame()
         for i in names:
             print "Parameter", i
             v1 = [k[1][i] for k in df.iterrows() if k[1]["group"] == "young"]
             v2 = [k[1][i] for k in df.iterrows() if k[1]["group"] == "forager"]
-            stat, pval = kruskal(v1, v2)
-            mean1 = np.mean(v1)
-            std1 = np.std(v1)
-            mean2 = np.mean(v2)
-            std2 = np.std(v2)
-            nrow = {"parameter":i, "stat":stat, "pval":pval, "mean_young":mean1, "std_young":std1,
-                    "mean_forager": mean2, "std_forager": std2}
+            kruskal_stat, kruskal_pval = kruskal(v1, v2)
+            t_stat, t_pval = ttest_ind(v1, v2, equal_var=False)
+            stat = (np.mean(v1), np.std(v1), np.mean(v2), np.std(v2))
+            nrow = {"parameter":i, "kruskal_stat":kruskal_stat, "kruskal_pval":kruskal_pval,
+                    "t_stat":t_stat, "t_pval":t_pval,
+                    "mean_young":stat[0], "std_young":stat[1],
+                    "mean_forager": stat[2], "std_forager": stat[3]}
             print nrow
             dfstat = dfstat.append(nrow, ignore_index=True)
             fig1, ax1 = plt.subplots(figsize=(8, 12))
@@ -67,34 +57,81 @@ for csvFilename in sys.argv[1:]:
     elif mode=="mean":
         print df.mean()
     elif mode=="regime":
-        xmin = 0
-        xmax = 0
-        ymin = 0
-        ymax = 0
+        # xmin = xmax = ymin = ymax = 0
         color = lambda x: "r" if x=="young" else "b"
-        fig, ax = plt.subplots(figsize=(14, 11.2))
-        for k, s in df.iterrows():
-            f1, f2 = AdEx.ActType(dict(s))
-            ax.plot(f1, f2, color=color(s["group"]), marker='o')
-            ax.annotate(s['neuron']+", "+s["start"][17:], (f1, f2), size=10)
-            print(k, s["neuron"], s["Gamma"], s['start'])
-            xmin = min(xmin, f1)
-            xmax = max(xmax, f1)
-            ymin = min(ymin, f2)
-            ymax = max(ymax, f2)
-        func1 = lambda x: x
-        func2 = lambda x: 0.25 * x * (1 - (1 / x)) ** 2
-        x = np.linspace(xmin, xmax, 150)
-        y1 = func1(x)
-        y2 = func2(x)
-        plt.plot(x, y1, "k:", label = "Hopf/Saddle-node")
-        plt.plot(x, y2, "k--", label = "Resonator/Integrator")
-        plt.xlim([xmin, xmax])
-        plt.ylim([ymin, ymax])
-        plt.xlabel("$\\tau_m / \\tau_w$")
-        plt.ylabel("$a / g_L$")
-        plt.legend()
-        plt.show()
+        xmin = 0.01
+        xmax = 10.
+        ymin = 0.
+        ymax = 4.
+        with sns.axes_style("whitegrid"):
+            fig, ax = plt.subplots(figsize=(15, 15))
+            plParams = {'text.usetex': False,
+                        'axes.labelsize': 'large',
+                        'font.size': 20,
+                        'font.family': 'serif',
+                        'font.sans-serif': 'computer modern roman',
+                        'xtick.labelsize': 20,
+                        'ytick.labelsize': 20,
+                        'legend.fontsize': 20,
+                    }
+            sns.set(rc = plParams)
+            func1 = lambda x: x
+            func2 = lambda x: 0.25 * x * (1 - (1 / x)) ** 2
+            pCount = 450
+            logmaxX = np.log10(xmax)
+            logminX = np.log10(xmin)
+            xlog = np.linspace(logminX, logmaxX, pCount)
+            x = np.power(10, xlog)
+            pInt = (xlog[-1]-xlog[0])/(pCount+1)/2.
+            y1 = func1(x)
+            y2 = func2(x)
+            plt.semilogx(x, y1, "k:")
+            plt.semilogx(x, y2, "k--")
+            kwargs = dict(edgecolor=(0,0,0,0), interpolate=True)
+            rgbs = np.array([
+                (128,205,193),
+                (1,133,113),
+                (223, 194, 125),
+                (166,97,26),
+                (245,245,245)
+            ])/255.
+            arCols = [(xxx[0], xxx[1], xxx[2], 0.5) for xxx in rgbs]
+            lup, ldn = [30]*len(x), [0]*len(x)
+            limit = np.log10(np.sqrt(0.1))
+            c1, c2, c3, c4 = (xlog<=limit+pInt), (xlog<=limit+pInt), (xlog <= 0.+pInt)*(xlog>limit-pInt), xlog>limit-pInt
+            ax.fill_between(x, y1, y2, where=c1, facecolor=arCols[0], **kwargs)
+            ax.fill_between(x, y1, ldn, where=c2, facecolor=arCols[1], **kwargs)
+            ax.fill_between(x, y2, ldn, where=c3, facecolor=arCols[1], **kwargs)
+            ax.fill_between(x, y2, lup, where=c2, facecolor=arCols[2], **kwargs)
+            ax.fill_between(x, y1, lup, where=c4, facecolor=arCols[2], **kwargs)
+            ax.fill_between(x, y1, y2, where=c4, facecolor=arCols[3], **kwargs)
+            ax.fill_between(x, y2, ldn, where=x>=1., facecolor=arCols[4], **kwargs)
+            ax.text(0.04, 0.5, "Mixed Hopf")
+            ax.text(0.1, 3, "Hopf resonator")
+            ax.text(0.12, 0.1, "Mixed saddle-node")
+            ax.text(0.8, 0.5, "Saddle-node resonator")
+            ax.text(3, 0.2, "Saddle-node integrator")
+            plty1, plty2, pltf1, pltf2 = [], [], [], []
+            for k, s in df.iterrows():
+                f1, f2 = AdEx.ActType(dict(s))
+                if color(s["group"])=="r":
+                    plty1.append(f1)
+                    plty2.append(f2)
+                else:
+                    pltf1.append(f1)
+                    pltf2.append(f2)
+                print(k, s["neuron"], s["Gamma"], s['start'])
+
+            ax.scatter(pltf1, pltf2, color="b", marker='x', s=20, linewidths=2, edgecolor="k", label="Forager")
+            ax.scatter(plty1, plty2, color="r", marker='x', s=20, linewidths=2, edgecolor="k", label="Young")
+                # ax.annotate(s['neuron']+", "+s["start"][17:], (f1, f2), size=10)
+                # xmin, xmax, ymin, ymax = min(xmin, f1), max(xmax, f1), min(ymin, f2), max(ymax, f2)
+            plt.legend()
+            plt.xlim([xmin, xmax])
+            plt.ylim([ymin, ymax])
+            plt.xlabel("$\\tau_m / \\tau_w$")
+            plt.ylabel("$a / g_L$")
+            plt.show()
     else:
         sds = mode.split(",")
         numbers = set()
