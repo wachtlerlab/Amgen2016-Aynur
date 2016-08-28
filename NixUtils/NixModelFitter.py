@@ -75,7 +75,8 @@ class NixModelFitter(object):
         ctime = str(dt.datetime.now())
         self.file.openNixFile()
         name = self.file.AddFit(name = ctime, results=results, initials=inits, model = model_str,
-                         in_name=input, out_name=output, description="fitting", safe=True, returninfo=returninfo)
+                         in_name=input, out_name=output, description="fitting", safe=True, returninfo=returninfo,
+                                duration = duration)
         self.file.closeNixFile()
         if not logstr is None:
             f = open(os.path.join(FS.OUTPUT, name), "w")
@@ -141,8 +142,9 @@ class NixModelFitter(object):
                 title = "Neuron: {0}, modelfitting: {1}".format(self.file.exp, fname)
                 if os.path.exists(path):
                     obj = nio.LoadJson(path)
-                    PL.PlotLists([zip(obj[0], obj[1])], sigfilter = sigfilter, spkfilter = spkfilter,
-                                 savesize=savesize, savename=savename, title = title)
+                    if not calculGamma:
+                        PL.PlotLists([zip(obj[0], obj[1])], sigfilter = sigfilter, spkfilter = spkfilter,
+                                    savesize=savesize, savename=savename, title = title)
                 else:
                     if not fitting["input"] is None:
                         input = self.file.GetIn(fitting["input"])

@@ -3,12 +3,12 @@ import sys
 
 
 # expname = "130313-4Rh"
-expname = "130322-1LY"
+# expname = "130322-1LY"
 # expname = "130326-2Rh"
 # expname = "130425-1Al"
 # expname = "130501-2Rh"
 # expname = "130523-3LY"
-# expname = "130605-2LY"
+expname = "130605-2LY"
 # expname = "130705-1LY"
 # expname = "140813-2Al"
 # expname = "140917-1Al"

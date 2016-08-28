@@ -15,7 +15,7 @@ def printlst(lst):
 
 np = NeoPlotter()
 m = sys.argv[1:]
-f = mio.ModelfittingIO("130322-1LY", pstr.FITTING)
+f = mio.ModelfittingIO("130313-4Rh", pstr.FITTING)
 inputs = f.GetInNames()
 outputs = f.GetOutNames()
 sims = f.GetSimNames()

@@ -59,10 +59,10 @@ for csvFilename in sys.argv[1:]:
     elif mode=="regime":
         # xmin = xmax = ymin = ymax = 0
         color = lambda x: "r" if x=="young" else "b"
-        xmin = 0.01
+        xmin = 0.001
         xmax = 10.
         ymin = 0.
-        ymax = 4.
+        ymax = 10.
         with sns.axes_style("whitegrid"):
             fig, ax = plt.subplots(figsize=(15, 15))
             plParams = {'text.usetex': False,
@@ -121,11 +121,11 @@ for csvFilename in sys.argv[1:]:
                     pltf1.append(f1)
                     pltf2.append(f2)
                 print(k, s["neuron"], s["Gamma"], s['start'])
+                # xmin, xmax, ymin, ymax = min(xmin, f1), max(xmax, f1), min(ymin, f2), max(ymax, f2)
 
             ax.scatter(pltf1, pltf2, color="b", marker='x', s=20, linewidths=2, edgecolor="k", label="Forager")
             ax.scatter(plty1, plty2, color="r", marker='x', s=20, linewidths=2, edgecolor="k", label="Young")
                 # ax.annotate(s['neuron']+", "+s["start"][17:], (f1, f2), size=10)
-                # xmin, xmax, ymin, ymax = min(xmin, f1), max(xmax, f1), min(ymin, f2), max(ymax, f2)
             plt.legend()
             plt.xlim([xmin, xmax])
             plt.ylim([ymin, ymax])

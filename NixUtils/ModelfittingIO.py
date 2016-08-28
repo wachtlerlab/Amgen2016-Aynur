@@ -114,7 +114,7 @@ class ModelfittingIO(object):
                    blk, [dsig], sec, self.flt(sig.duration))
 
     def AddFit(self, name, model, results = None, initials={}, in_name="", out_name="", description="",
-               safe = True, returninfo = True, best_pos = {}, input_var = None):
+               safe = True, returninfo = True, best_pos = {}, input_var = None, duration = None):
         '''
         Adds info about fitting into NIX file
         :param name: str, name of fitting (should be uniq)

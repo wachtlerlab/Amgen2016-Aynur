@@ -5,7 +5,7 @@ import sys, os, json
 import datetime as dt
 import numpy as np
 
-excluded_neurons = set(["130501-2Rh"])
+excluded_neurons = set()#set(["130501-2Rh"])
 
 df0 = pd.DataFrame()
 
@@ -47,8 +47,10 @@ dmax = pd.DataFrame()
 
 for k, s in df0.groupby("neuron"):
     dd = s.fillna(0.)
-    dd = dd[dd["Gamma"] <= 1.]
-    n = dd["Gamma"].idxmax()
+    dd2 = dd[dd["Gamma"] <= 1.]
+    if dd2["Gamma"].shape[0]:
+        n = dd2["Gamma"].idxmax()
+    else: n = dd["Gamma"].idxmax()
     if not np.isnan(n):
         dmax = dmax.append(s.loc[[n]])
 
