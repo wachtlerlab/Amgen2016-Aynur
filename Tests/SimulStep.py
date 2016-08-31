@@ -5,7 +5,6 @@ from NeoUtils import NeoPlot as npl
 import quantities as q
 import brian as b
 import sys
-from matplotlib import pyplot as plt
 
 lenS = 400
 
@@ -29,8 +28,4 @@ sigs = sim.run(lenS*b.msecond, 0.01*b.msecond, inits=inits, monitors={"i":b.mA,"
 
 title = "Simulation in regime "+ regime +"."
 
-# for sig in sigs:
-#     plt.plot(sig.times.simplified, sig.magnitude, label = sig.name + " " + str(sig.units), lw=2)
 npl.PlotLists([zip(sigs, [None]*len(sigs))], title=title, legend=False, lw=2)
-# plt.legend()
-# plt.show()
