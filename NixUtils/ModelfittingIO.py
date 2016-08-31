@@ -379,7 +379,7 @@ class ModelfittingIO(object):
 
 
 '''To rewrite'''
-def ReadExperiment(ename, default = ["Trial", "PredictedInput"], labels = None):
+def ReadExperiment(ename, direc,  default = ["Trial", "PredictedInput"], labels = None):
     '''
     Reads initial Ajay's NIX Files and makes neo.Block from it
     :param ename: str, experiment name
@@ -390,7 +390,7 @@ def ReadExperiment(ename, default = ["Trial", "PredictedInput"], labels = None):
     '''
     labels = default if labels==None else None
     freqs = [265]
-    analyser=rd.RawDataAnalyser(ename, fs.reorg)
+    analyser=rd.RawDataAnalyser(ename, direc)
     data = [t for t in analyser.getContResps(freqs)[freqs[0]] if len(t)>0]
     block = neo.Block(name = ename, description="experimental data")
     spk = analyser.getContSpikes(freqs=freqs, types=None)[freqs[0]]

@@ -20,7 +20,7 @@ def twoDoubleExps(xSig, A1, A2, t1, t2, taur1, taud1, taur2, taud2, offset):
         return d1 - d2 + offset
 
 
-originalsFolder = sys.argv[1]
+originalsFolder = os.path.abspath(sys.argv[1])
 ps.createFolders()
 
 NameBestPars = os.path.join(originalsFolder, "bestPars.json")
@@ -29,8 +29,13 @@ bestPars = json.load(open(NameBestPars))
 x = np.array(bestPars["xData"])
 
 params = bestPars["bestPars"]
+
+readen = []
 for ename in params:
     fileName = os.path.join(originalsFolder, ename + ".h5")
+    if not os.path.exists(fileName):
+        continue
+    else: readen.append(ename)
     y = twoDoubleExps(x, *list(params[ename]))
     xQ = x*q.ms
     sampling_period = (xQ[-1]-xQ[1])/(len(xQ)-1)
@@ -74,3 +79,5 @@ for ename in params:
     f.AddIn(derivative, name = "derivative", description = "current")
     derivativeDA = ss.ExpandNull(derivative, timemaxDA)
     f.AddIn(derivativeDA, name = "derivative-DuringAfterStimulus", description = "current")
+
+ps.createExpIdFile(readen)
