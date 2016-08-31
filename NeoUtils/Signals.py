@@ -111,7 +111,7 @@ class SignalBuilder(object):
         :param amplitude: quantities.Quantity
         :return: neo.AnalogSignal
         '''
-        signal = amplitude.magnitude*np.sin(2*np.pi*(self.props.times - shift)/period)
+        signal = amplitude.magnitude*np.sin(((self.props.times - shift)/period).simplified*2*np.pi)
         return self.__return_signal__(signal.magnitude, amplitude.units)
 
     def get_rect(self, start, stop, amplitude = 1.*q.dimensionless):

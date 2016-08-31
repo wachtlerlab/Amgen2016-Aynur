@@ -15,9 +15,11 @@ plParams = {'text.usetex': False,
            }
 sns.set(rc = plParams)
 
-trlw = 5
-splw = 5
+trlw1 = 4
+trlw2 = 4
+splw = 7
 sglw = 35
+noise=0.15
 
 sigpos = 30
 simpos = 0
@@ -32,8 +34,8 @@ with sns.axes_style("white"):
     # x = np.linspace(0, float(sim.times[-1].simplified*1000), 1000)
     # y = 2*np.sin(x)*(x<1200)*(x>200)
     # plt.plot(x, y, lw=1, label = "stimulus")
-    plt.plot(sim.times.simplified*1000, simsc*sim.magnitude+simpos, lw=trlw, label = "simulation")
-    plt.plot(exp.times.simplified*1000, exp.magnitude+exppos, lw=trlw, label = "recording")
+    plt.plot(sim.times.simplified*1000, simsc*sim.magnitude+simpos+noise*np.random.randn(len(sim.magnitude)), lw=trlw2, label = "simulation")
+    plt.plot(exp.times.simplified*1000, exp.magnitude+exppos, lw=trlw1, label = "recording")
     for i in spk.times:
         t = i.simplified.magnitude
         xdsim = np.abs(sim.times.simplified.magnitude - t)

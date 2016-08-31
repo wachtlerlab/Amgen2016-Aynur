@@ -134,7 +134,7 @@ class NeoPlotter(object):
         if xlabel==None: xlabel = "Time, ${0}$".format(timeunit)
         if ylabel==None: ylabel = "Value, Unit"
         self.subplots.append(([], [], [w * 10 + h * 100 + n, title, legend, timeunit, xlabel, ylabel, Xrange]))
-    def Show(self, figsize = (16, 12), filename = None):
+    def Show(self, figsize = (16, 12), filename = None, **kwargs):
         '''
         Display all plot contents or save into file
         :param figsize: tuple (float, float) , size of figure
@@ -156,8 +156,8 @@ class NeoPlotter(object):
                 x = sig.times.rescale(i[2][3])
                 y = sig.magnitude * a[j]
                 color = str(colors[sig.color]) if not (sig.color is None) else False
-                if color: ax.plot(x, y, color, label = name)
-                else : ax.plot(x, y, label = name)
+                if color: ax.plot(x, y, color, label = name, **kwargs)
+                else : ax.plot(x, y, label = name, **kwargs)
             for s in i[1]:
                 color = str(colors[s.color]) if not (s.color is None) else None
                 if color == None: color = np.random.rand(3, 1)
@@ -176,7 +176,7 @@ class NeoPlotter(object):
 
 
 def PlotLists(lst, title = "", legend = True, sigfilter = lambda x:True, spkfilter = lambda x:True,
-              savesize = None, savename = None):
+              savesize = None, savename = None, **kwargs):
     '''
     Plots analogsignals and corresponding spiketrains using NixPlotter on a single subplot
     :param lst: [(neo.AnalogSignal, neo.Spiketrain), ...]
@@ -199,7 +199,7 @@ def PlotLists(lst, title = "", legend = True, sigfilter = lambda x:True, spkfilt
             if spkfilter(k[1]):
                 f.PlotSpiketrain(k[1], colorgroup=cl)
             cl+=1
-    f.Show(figsize=savesize, filename=savename)
+    f.Show(figsize=savesize, filename=savename, **kwargs)
 
 def _plot_single_spike_train(spk, color = None, timeunit=q.ms, linestyle="--"):
     '''

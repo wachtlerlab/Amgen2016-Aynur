@@ -1,5 +1,4 @@
 import pandas as pd
-import seaborn as sns
 from matplotlib import pyplot as plt
 from BrianUtils.NeuronModels import AdEx
 from matplotlib import patches
@@ -59,79 +58,73 @@ for csvFilename in sys.argv[1:]:
     elif mode=="regime":
         # xmin = xmax = ymin = ymax = 0
         color = lambda x: "r" if x=="young" else "b"
-        xmin = 0.001
+        xmin = 0.01
         xmax = 10.
-        ymin = 0.
-        ymax = 10.
-        with sns.axes_style("whitegrid"):
-            fig, ax = plt.subplots(figsize=(15, 15))
-            plParams = {'text.usetex': False,
-                        'axes.labelsize': 'large',
-                        'font.size': 20,
-                        'font.family': 'serif',
-                        'font.sans-serif': 'computer modern roman',
-                        'xtick.labelsize': 20,
-                        'ytick.labelsize': 20,
-                        'legend.fontsize': 20,
-                    }
-            sns.set(rc = plParams)
-            func1 = lambda x: x
-            func2 = lambda x: 0.25 * x * (1 - (1 / x)) ** 2
-            pCount = 450
-            logmaxX = np.log10(xmax)
-            logminX = np.log10(xmin)
-            xlog = np.linspace(logminX, logmaxX, pCount)
-            x = np.power(10, xlog)
-            pInt = (xlog[-1]-xlog[0])/(pCount+1)/2.
-            y1 = func1(x)
-            y2 = func2(x)
+        ymin = 0.05
+        ymax = 4.
+        semilog = 0
+        fig, ax = plt.subplots(figsize=(10, 8))
+        func1 = lambda x: x
+        func2 = lambda x: 0.25 * x * (1 - (1 / x)) ** 2
+        pCount = 450
+        logmaxX = np.log10(xmax)
+        logminX = np.log10(xmin)
+        xlog = np.linspace(logminX, logmaxX, pCount)
+        x = np.power(10, xlog)
+        pInt = (xlog[-1]-xlog[0])/(pCount+1)/2.
+        y1 = func1(x)
+        y2 = func2(x)
+        if semilog:
             plt.semilogx(x, y1, "k:")
-            plt.semilogx(x, y2, "k--")
-            kwargs = dict(edgecolor=(0,0,0,0), interpolate=True)
-            rgbs = np.array([
-                (128,205,193),
-                (1,133,113),
-                (223, 194, 125),
-                (166,97,26),
-                (245,245,245)
-            ])/255.
-            arCols = [(xxx[0], xxx[1], xxx[2], 0.5) for xxx in rgbs]
-            lup, ldn = [30]*len(x), [0]*len(x)
-            limit = np.log10(np.sqrt(0.1))
-            c1, c2, c3, c4 = (xlog<=limit+pInt), (xlog<=limit+pInt), (xlog <= 0.+pInt)*(xlog>limit-pInt), xlog>limit-pInt
-            ax.fill_between(x, y1, y2, where=c1, facecolor=arCols[0], **kwargs)
-            ax.fill_between(x, y1, ldn, where=c2, facecolor=arCols[1], **kwargs)
-            ax.fill_between(x, y2, ldn, where=c3, facecolor=arCols[1], **kwargs)
-            ax.fill_between(x, y2, lup, where=c2, facecolor=arCols[2], **kwargs)
-            ax.fill_between(x, y1, lup, where=c4, facecolor=arCols[2], **kwargs)
-            ax.fill_between(x, y1, y2, where=c4, facecolor=arCols[3], **kwargs)
-            ax.fill_between(x, y2, ldn, where=x>=1., facecolor=arCols[4], **kwargs)
-            ax.text(0.04, 0.5, "Mixed Hopf")
-            ax.text(0.1, 3, "Hopf resonator")
-            ax.text(0.12, 0.1, "Mixed saddle-node")
-            ax.text(0.8, 0.5, "Saddle-node resonator")
-            ax.text(3, 0.2, "Saddle-node integrator")
-            plty1, plty2, pltf1, pltf2 = [], [], [], []
-            for k, s in df.iterrows():
-                f1, f2 = AdEx.ActType(dict(s))
-                if color(s["group"])=="r":
-                    plty1.append(f1)
-                    plty2.append(f2)
-                else:
-                    pltf1.append(f1)
-                    pltf2.append(f2)
-                print(k, s["neuron"], s["Gamma"], s['start'])
-                # xmin, xmax, ymin, ymax = min(xmin, f1), max(xmax, f1), min(ymin, f2), max(ymax, f2)
+            plt.semilogx(x, y2, "k:")
+        else:
+            plt.loglog(x, y1, "k:")
+            plt.loglog(x, y2, "k:")
+        kwargs = dict(edgecolor=(0,0,0,0), interpolate=True)
+        rgbs = np.array([
+            (128,205,193),
+            (1,133,113),
+            (223, 194, 125),
+            (166,97,26),
+            (245,245,245)
+        ])/255.
+        arCols = [(xxx[0], xxx[1], xxx[2], 1) for xxx in rgbs]
+        lup, ldn = [ymax]*len(x), [ymin]*len(x)
+        limit = np.log10(np.sqrt(0.1))
+        ax.fill_between(x, y1, y2, where=y1<y2, facecolor=arCols[0], **kwargs)
+        ax.fill_between(x, y1, ldn, where=x<1, facecolor=arCols[1], **kwargs)
+        ax.fill_between(x, y2, lup, where=x<xmax, facecolor=arCols[2], **kwargs)
+        ax.fill_between(x, y1, y2, where=y1>y2, facecolor=arCols[3], **kwargs)
+        ax.fill_between(x, y2, ldn, where=x>=1, facecolor=arCols[4], **kwargs)
+        # ax.text(0.04, 0.5, "Hopf,\nmixed")
+        # ax.text(0.1, 3, "Hopf,\nresonator")
+        # ax.text(0.12, 0.1, "Saddle-node,\nmixed")
+        # ax.text(0.8, 0.5, "Saddle-node,\nresonator")
+        # ax.text(3, 0.2, "Saddle-node,\nintegrator")
+        plty1, plty2, pltf1, pltf2 = [], [], [], []
+        for k, s in df.iterrows():
+            f1, f2 = AdEx.ActType(dict(s))
+            if color(s["group"])=="r":
+                plty1.append(f1)
+                plty2.append(f2)
+            else:
+                pltf1.append(f1)
+                pltf2.append(f2)
+            print(k, s["neuron"], s["Gamma"], s['start'])
+            # xmin, xmax, ymin, ymax = min(xmin, f1), max(xmax, f1), min(ymin, f2), max(ymax, f2)
 
-            ax.scatter(pltf1, pltf2, color="b", marker='x', s=20, linewidths=2, edgecolor="k", label="Forager")
-            ax.scatter(plty1, plty2, color="r", marker='x', s=20, linewidths=2, edgecolor="k", label="Young")
-                # ax.annotate(s['neuron']+", "+s["start"][17:], (f1, f2), size=10)
-            plt.legend()
-            plt.xlim([xmin, xmax])
-            plt.ylim([ymin, ymax])
-            plt.xlabel("$\\tau_m / \\tau_w$")
-            plt.ylabel("$a / g_L$")
-            plt.show()
+        ax.scatter(pltf1, pltf2, color="b", marker='x', s=40, linewidths=3, edgecolor="k", label="Forager")
+        ax.scatter(plty1, plty2, color="r", marker='x', s=40, linewidths=3, edgecolor="k", label="Young")
+            # ax.annotate(s['neuron']+", "+s["start"][17:], (f1, f2), size=10)
+        plt.rcParams["font.size"]=25
+        plt.rcParams["axes.labelsize"]='large'
+        plt.legend()
+        plt.xlim([xmin, xmax])
+        plt.ylim([ymin, ymax])
+        plt.xlabel("$\\tau_m / \\tau_w$")
+        plt.ylabel("$a / g_L$")
+        plt.tight_layout()
+        fig.savefig(csvFilename+".regimes.png", dpi=300)
     else:
         sds = mode.split(",")
         numbers = set()
@@ -147,6 +140,7 @@ for csvFilename in sys.argv[1:]:
                 e = -1 if lex[1]=="" else int(lex[1])
                 numbers.update(set(names[slice(s, e)]))
         print names
+        import seaborn as sns
         sns.set(style="ticks", color_codes=True)
         fig = sns.pairplot(df, hue="group", palette={"young":"red", "forager":"blue"},
                            vars=list(numbers), diag_kind="kde")
