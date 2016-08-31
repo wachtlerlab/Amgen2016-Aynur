@@ -16,7 +16,9 @@ def FitSingleCompartmentalModel(NModel, input, output, popsize=10000, maxiter=10
     :param algo_params: parameters of algorithm
     :return: brian.modelfitting.result; dict of inits
     '''
-
+    print "=========================Input and output: "
+    print input
+    print output
     input_raw = list(input.simplified.magnitude)
     output_spk = [brian.second*k for k in list(output.times.simplified.magnitude)]
     input_dt = float(input.sampling_period.simplified.magnitude)*brian.second

@@ -2,8 +2,6 @@ import json
 import os
 import subprocess
 import sys
-
-from Storage import ProjectStructure as fs
 from checkConfFitting import checkConfFitting
 
 for filename in sys.argv[1:]:
@@ -18,7 +16,6 @@ for filename in sys.argv[1:]:
                     "model": str(task["model"]), "file": os.path.basename(filename)}
                 checkConfFitting(tsk)
 
-
 for filename in sys.argv[1:]:
     conf = json.load(open(filename))
     for task in conf["tasks"]:
@@ -29,4 +26,4 @@ for filename in sys.argv[1:]:
                     "neuron":str(neuron), "regime":str(regime), "duration":task["duration"],
                     "optparams":task["optparams"], "iters":task["iters"],
                     "model":str(task["model"]), "file":os.path.basename(filename)}
-                subprocess.call(["python", os.path.join(fs.scripts, "Fitting", "singleConfFitting.py"), str(tsk)])
+                subprocess.call(["python", os.path.join("Fitting", "singleConfFitting.py"), str(tsk)])

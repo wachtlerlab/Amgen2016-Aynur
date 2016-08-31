@@ -3,18 +3,15 @@ import os
 import sys
 from datetime import datetime
 
-from BrianUtils.NeuronModels import AdEx
+from BrianUtils import NeuronModels as NM
 from Storage import ProjectStructure as fs
 from NixUtils.NixModelFitter import NixModelFitter
 
-#print sys.argv
-
 task = ast.literal_eval(sys.argv[1])
-#print task
 
 neuron = str(task["neuron"])
 nixMF = NixModelFitter(neuron)
-model = str(task["model"])
+modelID = str(task["model"])
 regime = str(task["regime"])
 iters = int(task["iters"])
 optparams = map(str, task["optparams"])
@@ -23,12 +20,13 @@ output = str(task["output"])
 input = str(task["input"])
 duration = task["duration"]
 
-inits = getattr(AdEx.AdEx, regime)
+model = NM.GetModelById(modelID)
+inits = getattr(model, regime)
 
 t = datetime.now()
-logstr = "Fitting started at "+ str(t) + "\n"
+logstr = "Started at: "+ str(t) + "\n"
 logstr += "Neuron: "+neuron+"\n"
-logstr += "Model: " + model + "\n"
+logstr += "Model: " + modelID + "\n"
 logstr += "Initial point: " + str(regime) + "\n"
 logstr += "Optimized parameters: " + str(optparams) + "\n"
 logstr += "Iterations: " + str(iters) + "\n"
@@ -37,13 +35,13 @@ logstr += "Algorithm parameters: " + str(algoptparams) + "\n"
 print "///---------------///"
 print logstr
 
-res = nixMF.FitModel(model, input=input,
+res = nixMF.FitModel(modelID, input=input,
                      output=output, maxiter=iters,
                      inits=inits, algoptparams=algoptparams, from_perc=False,
                      popsize=1000, optparams=optparams, returninfo=True, duration = duration)
 
 t = datetime.now()
-logstr += "Finished at " + str(t) + "\n"
+logstr += "Finished at: " + str(t) + "\n"
 logstr += "Fitting name: " + str(res) + "\n"
 confname = task["file"]
 if not logstr is None:

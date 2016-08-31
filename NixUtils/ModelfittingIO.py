@@ -35,6 +35,7 @@ class ModelfittingIO(object):
         self.__pickle = str(os.path.join(self.__nixLocation, exp))
         self.exp = str(exp)
         self.nixFilePath = str(os.path.join(self.__nixLocation, exp + ".h5"))
+        print "File ",exp, " is open in ", nixLocation
         self.__initNixFile()
 
     def __initNixFile(self):
@@ -350,7 +351,7 @@ class ModelfittingIO(object):
         :return:
         '''
         if condition:
-            if safe: raise Exception(text)
+            if safe: raise Exception(text+"\n"+str(self.nixFilePath))
             else: return True
         else: return False
 
@@ -376,122 +377,3 @@ class ModelfittingIO(object):
 
     def __del__(self):
         self.nixFile.close()
-
-
-'''To rewrite'''
-def ReadExperiment(ename, direc,  default = ["Trial", "PredictedInput"], labels = None):
-    '''
-    Reads initial Ajay's NIX Files and makes neo.Block from it
-    :param ename: str, experiment name
-    :param default: default for label. Itself by default is equal to ["Trial", "PredictedInput"]
-    :param labels: it's better not to use, but here you can specify, whether you want to read Trials
-        and PredictedInputs or not. By default os equal to default
-    :return: neo.Block
-    '''
-    labels = default if labels==None else None
-    freqs = [265]
-    analyser=rd.RawDataAnalyser(ename, direc)
-    data = [t for t in analyser.getContResps(freqs)[freqs[0]] if len(t)>0]
-    block = neo.Block(name = ename, description="experimental data")
-    spk = analyser.getContSpikes(freqs=freqs, types=None)[freqs[0]]
-    Ds, Bs, As = "DuringStimulus", "BeforeStimulus", "AfterStimulus"
-    seg = neo.Segment("DuringStimulus", "ExpData")
-    seg_af = neo.Segment("AfterStimulus", "ExpData")
-    for i in xrange(len(data)):
-        sc = data[i]
-        sp = spk[i]
-        if not(Ds in sc and As in sc and Bs in sc): continue
-        median = np.median(np.concatenate((sc[Bs].magnitude/sc[Bs].units, sc[As].magnitude/sc[As].units)))*sc[Ds].units
-
-        interm = sc[Ds] - ss.SignalBuilder(sc[Ds]).get_constant(median)
-        signal = ss.BeginSignalOn(interm, 0 * q.s)
-        signal.name = "Trial"+str(i+1)
-        signal.description = "voltage"
-        sh_spk = ss.ShiftSpikeTrain(sp[Ds], - interm.times[0])
-        sh_spk.name = signal.name
-        sh_spk.description = "spikes"
-        seg.analogsignals.append(signal)
-        seg.spiketrains.append(sh_spk)
-
-        interm = sc[As] - ss.SignalBuilder(sc[As]).get_constant(median)
-        signal = ss.BeginSignalOn(interm, 0 * q.s)
-        length = 0.5*q.s
-        signal = signal[signal.times < length]
-        signal.name = "Trial"+str(i+1)
-        signal.description = "voltage"
-        sh_spk = ss.ShiftSpikeTrain(sp[As], - interm.times[0])
-        sh_spk = sh_spk[sh_spk < length]
-        sh_spk.name = signal.name
-        sh_spk.description = "spikes"
-        seg_af.analogsignals.append(signal)
-        seg_af.spiketrains.append(sh_spk)
-        
-    if default[1] in labels:
-        myExpSect = analyser.nixFile.sections["VibrationStimulii-Processed"].sections["ContinuousStimulii"
-        ].sections["ContinuousStimulusAt265.0"].sections
-        for j in myExpSect:
-            if "Fitting"!=j.name[:7]: continue
-            myFitTag = [t for t in analyser.nixFile.blocks["FittingTraces"].tags if t.metadata == myExpSect[j.name]]
-            print "myFitTag", myFitTag
-            res = nio.tag2AnalogSignal(myFitTag[0], 0)
-            res = res[res.times<1*q.s]
-            res.name = labels[1]+j.name[7:]
-            res.description = "voltage"
-            seg.analogsignals.append(res)
-            tcur = neo.AnalogSignal(res.magnitude, units=q.nA, t_start=res.t_start, sampling_period=res.sampling_period)
-            tcur.name=res.name+"-1"
-            tcur.description="current"
-            seg.analogsignals.append(tcur)
-            mag = res.sampling_rate.simplified.magnitude*np.gradient(res.magnitude)
-            res = neo.AnalogSignal(mag, t_start=res.t_start, sampling_period=res.sampling_period, units=q.nA)
-            res.name = labels[1]+j.name[7:]
-            res.description = "current"
-            seg.analogsignals.append(res)
-
-    block.segments.append(seg)
-    block.segments.append(seg_af)
-
-    return block
-
-def PickleExp(ename, default = ["Trial", "PredictedInput"], labels = None):
-    '''
-    Pickles experiment, readen from NIX File, to pickle file.
-    :param ename: name of experiment
-    :param default: defaults, see ReadExperiment function
-    :param labels: labels, see ReadExperiment function
-    :return: None
-    '''
-    blk = ReadExperiment(ename, default, labels)
-    if not os.path.exists(fs.temp):
-        os.makedirs(fs.temp)
-    pickle.dump(blk, open(os.path.join(fs.temp, ename + ".pickle"), "w"))
-
-def UnpickleExp(ename):
-    '''
-    Unpickles pickled experiment
-    :param ename: name of experiment
-    :return: neo.Block
-    '''
-    path = os.path.join(fs.temp, ename + ".pickle")
-    blk = pickle.load(open(path)) if os.path.exists(path) else None
-    return blk
-
-def GetAvaliableIds():
-    '''
-    Returns experiment names, for which we want to make fittings, simulations, add new Inputs and Outputs and e.t.c.
-    :return: list of str
-    '''
-    path = os.path.join(fs.DATA, "ids_with_input")
-    if os.path.exists(path):
-        di = json.load(open(path))
-        return di["ids"]
-    else: return []
-
-if __name__=="__main__":
-    new_neurons = ["130705-1LY", "140813-3Al"]
-    if len(sys.argv)>1:
-        lst = [k for k in GetAvaliableIds() if k in new_neurons]
-    else:
-        lst = GetAvaliableIds()
-    for k in lst:
-        PickleExp(str(k))

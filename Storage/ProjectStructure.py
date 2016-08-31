@@ -7,10 +7,9 @@ import json
 Here if you want to use it with your computer, please change HOME to your preferred folder for the project
 '''
 HOME = os.path.expanduser('~')
+
 if socket.gethostname()=="sapphire": HOME = os.path.join(HOME, "Public", "Trial31")#HOME = os.path.join(HOME, "Public", "atlas")
 elif socket.gethostname()=="green": pass
-
-
 
 DATA = os.path.join(HOME, "DATA")
 INPUT = os.path.join(DATA, "INPUT")
@@ -19,7 +18,6 @@ FITTING = os.path.join(DATA, "FITTING")
 TRACES = os.path.join(DATA, "TRACES")
 fpickle = os.path.join(FITTING, "pickle")
 temp = os.path.join(DATA, "temp")
-scripts = os.path.join(HOME, "Amgen2016-Aynur")
 analysis = os.path.join(DATA, "analysis")
 tables = os.path.join(analysis, "tables")
 config = os.path.join(DATA, "config")
