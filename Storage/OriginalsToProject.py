@@ -14,7 +14,6 @@ def doubleExpFun(xSig, Ar, Ad, t0, itaur, itaud):
     return doubleExp
 
 def twoDoubleExps(xSig, A1, A2, t1, t2, taur1, taud1, taur2, taud2, offset):
-        print A1, A2, t1, t2, taur1, taud1, taur2, taud2, offset
         d1 = doubleExpFun(xSig, A1, A1, t1, 1 / taur1, 1 / taud1)
         d2 = doubleExpFun(xSig, A2, A2, t2, 1 / taur2, 1 / taud2)
         return d1 - d2 + offset
@@ -27,6 +26,7 @@ NameBestPars = os.path.join(originalsFolder, "bestPars.json")
 bestPars = json.load(open(NameBestPars))
 
 x = np.array(bestPars["xData"])
+xQ = x*q.ms
 
 params = bestPars["bestPars"]
 
@@ -34,10 +34,12 @@ readen = []
 for ename in params:
     fileName = os.path.join(originalsFolder, ename + ".h5")
     if not os.path.exists(fileName):
+        print "Exp ", ename, " not found in ", originalsFolder
         continue
-    else: readen.append(ename)
+    else:
+        readen.append(ename)
+        print "Processing exp ", ename, " from ", originalsFolder, ", creating at folder ", ps.FITTING
     y = twoDoubleExps(x, *list(params[ename]))
-    xQ = x*q.ms
     sampling_period = (xQ[-1]-xQ[1])/(len(xQ)-1)
     subthreshold = ss.neo.AnalogSignal(y, units=q.mV, sampling_period=sampling_period, t_start=xQ[0])
     subthreshold.name = "subthreshold"
@@ -45,7 +47,7 @@ for ename in params:
     analyser = rd.RawDataAnalyser(ename, originalsFolder)
     signals = [t for t in analyser.getContResps([265])[265] if len(t) > 0]
     spikes = analyser.getContSpikes(freqs=[265], types=None)[265]
-    del analyser, x, xQ, y
+    del analyser, y
     f = mio.ModelfittingIO(ename, ps.FITTING)
     f.AddIn(subthreshold)
     timemaxDA = 0 * q.s

@@ -48,7 +48,7 @@ class RawDataAnalyser(object):
         '''
 
         self.expName = expName
-        self.nixFile = nix.File.open(os.path.join(dirpath, expName + '.h5'), nix.FileMode.ReadOnly)
+        self.nixFile = nix.File.open(str(os.path.join(dirpath, expName + '.h5')), nix.FileMode.ReadOnly)
 
     def getContResps(self, freqs=None, types=None):
         '''
