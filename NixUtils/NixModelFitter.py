@@ -156,7 +156,9 @@ class NixModelFitter(object):
                         inits.update(fitting["fitted"])
                         inp_var = fitting["input_var"]
                         time = TimeToBrian(input.t_start)
-                        duration = TimeToBrian(input.duration)
+                        dur = fitting["duration"]
+                        durationQ = dur*MIO.q.s if not dur is None else input.duration
+                        duration = TimeToBrian(durationQ)
                         sim = S.Simulator(model())
                         sim.set_time(time)
                         sim.set_input(inp_var, input)
@@ -172,7 +174,9 @@ class NixModelFitter(object):
                             sec = self.file.nixFile.sections[self.file.modelFittings].sections[fname]
                             sec["Gamma"] = MIO.nix.Value(gamma)
                             self.file.closeNixFile()
-                        spks = [None]*len(res)+[output[1]]
+                        spk = output[1]
+                        spk = spk[spk<durationQ] if not spk is None else None
+                        spks = [None]*len(res)+[spk]
                         sigs = res + [output[0]]
                         pltlst = [zip(sigs, spks)]
                         PL.PlotLists(pltlst, legend = legend, title = title, sigfilter = sigfilter, spkfilter = spkfilter,

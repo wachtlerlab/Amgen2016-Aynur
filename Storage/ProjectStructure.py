@@ -23,6 +23,7 @@ tables = os.path.join(analysis, "tables")
 config = os.path.join(DATA, "config")
 
 expIDs = os.path.join(DATA, "expIDs.json")
+settingFile = os.path.join(DATA, "settings.json")
 
 def createExpIdFile(ids_list):
     di = {"ids":ids_list}
@@ -38,3 +39,12 @@ def createFolders():
     for dr in [OUTPUT, FITTING, TRACES, analysis, tables, config, temp]:
         if not os.path.exists(dr):
             os.makedirs(dr)
+
+def getSettings():
+    if not os.path.exists(settingFile):
+        di = {"expname":getExpIds()[0]}
+        json.dump(di, open(settingFile, "w"))
+    return json.load(open(settingFile))
+
+def setSettings(ns):
+    json.dump(ns, open(settingFile, "w"))

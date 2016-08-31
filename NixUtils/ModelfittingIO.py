@@ -80,7 +80,7 @@ class ModelfittingIO(object):
         if name is None: name = sig.name
         if description is None: description = sig.description
         if name in self.GetInNames():
-            if safe: raise Exception("Input '{0}' already exists")
+            if safe: raise Exception("Input '{0}' already exists".format(name))
         blk = self.nixFile.blocks[self.fittingInputs]
         sig.name = name
         asig = nio.addAnalogSignal2Block(blk, sig)
@@ -161,6 +161,7 @@ class ModelfittingIO(object):
         sec["model"] = nix.Value(str(model))
         sec.props["model"].definition = "model id"
         sec["input"] = nix.Value(str(in_name))
+        sec["duration"] = nix.Value(duration)
         sec["output"] = nix.Value(str(out_name))
         sec["input_var"] = nix.Value(str(results.args[-1]["input_var"]))
         sec.props["input"].definition = "Name of input signal used for fitting;" \
@@ -184,6 +185,7 @@ class ModelfittingIO(object):
         di["input"] = str(g.props["input"].values[0].value) if "input" in g.props else None
         di["output"] = str(g.props["output"].values[0].value) if "output" in g.props else None
         di["pickle"] = str(g.props["pickle"].values[0].value) if "pickle" in g.props else None
+        di["duration"] = float(g.props["duration"].values[0].value if "duration" in g.props else None)
         di["model"] = str(g.props["model"].values[0].value) if "model" in g.props else None
         di["Gamma"] = float(g.props["Gamma"].values[0].value) if "Gamma" in g.props else None
         di["inits"] = {k.name:k.values[0].value for k in g.sections[self.inits]} if self.inits in g.sections else None

@@ -30,6 +30,10 @@ xQ = x*q.ms
 
 params = bestPars["bestPars"]
 
+dtime = 200*q.ms
+tr = lambda x: ss.ShiftSignalNull(ss.BeginSignalOn(x, q.s*0), dtime=dtime)
+trk = lambda x, y: ss.ShiftSpikeTrain(x, -y.t_start+dtime)
+
 readen = []
 for ename in params:
     fileName = os.path.join(originalsFolder, ename + ".h5")
@@ -49,7 +53,7 @@ for ename in params:
     spikes = analyser.getContSpikes(freqs=[265], types=None)[265]
     del analyser, y
     f = mio.ModelfittingIO(ename, ps.FITTING)
-    f.AddIn(subthreshold)
+    f.AddIn(tr(subthreshold))
     timemaxDA = 0 * q.s
     for i in xrange(len(signals)):
         for subS in ["BeforeStimulus", "DuringStimulus", "AfterStimulus"]:
@@ -60,7 +64,7 @@ for ename in params:
                 sig.description = "voltage"
                 spk.name = signals[i][subS].name
                 spk.description = "spiketrain"
-                f.AddOut(sig, spk)
+                f.AddOut(tr(sig), trk(spk, sig))
         if "DuringStimulus" in signals[i] and "AfterStimulus" in signals[i]:
             name = "Trial"+str(i)+"-"+"DuringAfterStimulus"
             sigD = signals[i]["DuringStimulus"]
@@ -69,17 +73,19 @@ for ename in params:
             spkA = spikes[i]["AfterStimulus"]
             sig = ss.Concat(sigD, sigA, name=name, description="voltage")
             spk = ss.JoinSpikeTrains([spkD, spkA])
-            if sig.times[-1]>timemaxDA: timemaxDA = sig.times[-1]
-            f.AddOut(sig, spk)
-    subthresholdDA = ss.ExpandNull(subthreshold, timemaxDA)
+            p = (tr(sig), trk(spk, sig))
+            if p[0].times[-1]>timemaxDA: timemaxDA = p[0].times[-1]
+            f.AddOut(*p)
+    subthresholdDA = tr(subthreshold)
     subthresholdDA.name = subthreshold.name+"-DuringAfterStimulus"
+    subthresholdDA = ss.ExpandNull(subthresholdDA, timemaxDA)
     f.AddIn(subthresholdDA)
     f.AddIn(subthresholdDA*1e-7, name=subthresholdDA.name+"-e-7")
     dermag = np.gradient(subthreshold.magnitude)/(subthreshold.sampling_period.simplified.magnitude)
     derivative = ss.neo.AnalogSignal(dermag, sampling_period=subthreshold.sampling_period, t_start=subthreshold.t_start,
                                      units = q.nA)
-    f.AddIn(derivative, name = "derivative", description = "current")
-    derivativeDA = ss.ExpandNull(derivative, timemaxDA)
+    f.AddIn(tr(derivative), name = "derivative", description = "current")
+    derivativeDA = ss.ExpandNull(tr(derivative), timemaxDA)
     f.AddIn(derivativeDA, name = "derivative-DuringAfterStimulus", description = "current")
 
 ps.createExpIdFile(readen)

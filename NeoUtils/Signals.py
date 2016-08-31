@@ -37,7 +37,7 @@ def NearestDivident(a, d):
     :param d: float
     :return: val
     '''
-    n = int((a/d).simplified)
+    n = int((a/d).simplified.magnitude)
     return n*d
 
 def QuantityFromString(stri):
@@ -200,11 +200,11 @@ def ShiftSignalNull(sig, dtime):
     :param dtime: quantities.Quantity
     :return: neo.AnalogSignal
     '''
-    s = NearestDivident(dtime, sig.sampling_period)
-    n = int(s/sig.sampling_period)
-    res = neo.AnalogSignal(sig.magnitude, t_start=sig.times[0]+s, sampling_period=sig.sampling_period, units=sig.units)
-    res2 = neo.AnalogSignal(n*[0*sig.units], t_start=sig.times[0], sampling_period=sig.sampling_period, units=sig.units)
-    return Concat(res, res2, name=sig.name, description=sig.description)
+    n = int((dtime/sig.sampling_period).simplified.magnitude)
+    res = neo.AnalogSignal(np.array(n*[0*sig.units]+list(sig.magnitude)), t_start=sig.times[0],
+                           sampling_period=sig.sampling_period, units=sig.units, name=sig.name,
+                           description=sig.description)
+    return res
 
 def BeginSignalOn(sig, time):
     '''
