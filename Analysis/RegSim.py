@@ -1,38 +1,56 @@
-from NixUtils import ModelfittingIO as mio
-from NixUtils import ProjectFileStructure as fs
+from NixUtils import NixModelFitter as NF
 from BrianUtils.NeuronModels import AdEx
 from matplotlib import pylab as plt
-from NeoUtils import NeoPlot as nep
+import os
 import numpy as np
 import sys
 
-if len(sys.argv)<2: n = None
-else: n = True
+path = sys.argv[1]
+if path[0]==":":
+    expname = os.path.basename(path[1:]).split(".")[0]
+    path = os.path.dirname(path[1:])
+else:
+    expname = path
+    path = None
 
-expname = "130322-1LY"
+predirec = sys.argv[2]
 
-f = mio.ModelfittingIO(expname,fs.FITTING)
+if expname=="":
+    explst  = [k.split(".")[0] for k in os.listdir(path) if ".h5" in k]
+else: explst = [expname]
 
-lst = f.GetFitNames()
+print "ExpList", explst
 
-if n is None:
-    print lst
+for expname in explst:
+    direc = os.path.join(predirec, expname)
 
-func1 = lambda x: x
-func2 = lambda x: 0.25 * x * (1 - (1 / x)) ** 2
+    if not os.path.exists(direc):
+        os.mkdir(direc)
 
-pos = 1
-for i in map(int, sys.argv[1:]):
-    print lst[i]
-    if lst:
-        g = f.GetFit(lst[i])
+    print "path = ", path, "direc = ", direc, "predirec = ", predirec, "expname = ", expname
+
+    f = NF.NixModelFitter(expname, mode="r", dir=path)
+    lst = f.GetFittingNames()
+
+    fitList = map(int, sys.argv[3:])
+
+    if len(lst)<=max(fitList) or len(lst)<abs(min(fitList)): continue
+
+    print lst, fitList
+
+    func1 = lambda x: x
+    func2 = lambda x: 0.25 * x * (1 - (1 / x)) ** 2
+
+    pos = 1
+    for i in fitList:
+        print lst[i]
+        g = f.file.GetFit(lst[i])
         inits = g["inits"]
         print inits
         fitted = inits.copy()
         fitted.update(g["fitted"])
         if g["model"]=="adex":
-            nep.subplot(1, len(sys.argv)-1, pos)
-            pos+=1
+            plt.figure(figsize=(16, 12))
             f1, f2 = AdEx.ActType(inits)
             print "Initially: a/gL = {0}, tm/tw = {1}".format(f2, f1)
             f_f1, f_f2 = AdEx.ActType(fitted)
@@ -56,8 +74,10 @@ for i in map(int, sys.argv[1:]):
             plt.xlabel("$\\tau_m / \\tau_w$")
             plt.ylabel("$a / g_L$")
             plt.legend()
-
+            filename1 = os.path.join(direc, lst[i]+"_REG.png")
+            plt.savefig(filename1)
+            sigfilter = lambda x: True if x.description == "from the model" and x.name != "w" else False
+            filename2 = os.path.join(direc, lst[i]+"_SIM.png")
+            f.SimulateAndPlotFitting(lst[i], legend=True, sigfilter=sigfilter, savesize=(24, 18), savename=filename2)
         else:
             print "Model {0} is not AdEx model".format(g["model"])
-
-plt.show()

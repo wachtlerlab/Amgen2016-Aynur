@@ -1,15 +1,17 @@
-import os
 import json
-import pickle
 import numpy as np
-import quantities as q
+import os
+import pickle
+import sys
 
 import neo
-import nixio as nix
 import neoNIXIO as nio
-
-from NixUtils import rawDataAnalyse as rd, ProjectFileStructure as fs
+import nixio as nix
+import quantities as q
 from NeoUtils import Signals as ss
+from Storage import ProjectStructure as fs
+from NixUtils import rawDataAnalyse as rd
+
 
 class ModelfittingIO(object):
     '''
@@ -25,13 +27,15 @@ class ModelfittingIO(object):
     fpickle_suff = ".fitting.pickle"
     def __init__(self, exp, nixLocation, mode = nix.FileMode.ReadWrite):
         '''
-        :param exp:
-        :param nixLocation:
+        :param exp: experiment name (neuron name)
+        :param nixLocation: directory, where corresponding file stored. Will be created new file with
+        suitable structure, if not exists and mode allows write access
         '''
         self.__nixLocation = str(os.path.expanduser(nixLocation))
         self.__pickle = str(os.path.join(self.__nixLocation, exp))
         self.exp = str(exp)
         self.nixFilePath = str(os.path.join(self.__nixLocation, exp + ".h5"))
+        print "File ",exp, " is open in ", nixLocation
         self.__initNixFile()
 
     def __initNixFile(self):
@@ -40,22 +44,21 @@ class ModelfittingIO(object):
         :return: None
         '''
         if not os.path.exists(self.__pickle): os.makedirs(self.__pickle)
-        if os.path.exists(self.nixFilePath):
-            self.nixFile = nix.File.open(self.nixFilePath, nix.FileMode.ReadWrite)
-            blks = [(self.fittingInputs, "analogsignals"),
-                    (self.expectedOutputs, "signals,spiketrains,spiketimes"),
-                    (self.simulations, "signals,spiketrains,spiketimes")]
-            scs = [(self.modelFittings, "All fittings' list"),
-                   (self.fittingInputs, "About inputs"),
-                   (self.expectedOutputs, "About outputs"),
-                   (self.simulations, "Simulations' list")]
-            for b in blks:
-                if not b[0] in [i.name for i in self.nixFile.blocks]:
-                    self.nixFile.create_block(b[0], b[1])
-            for s in scs:
-                if not s[0] in self.nixFile.sections:
-                    self.nixFile.create_section(s[0], s[1])
-            self.closeNixFile()
+        self.nixFile = nix.File.open(self.nixFilePath, nix.FileMode.ReadWrite)
+        blks = [(self.fittingInputs, "analogsignals"),
+                (self.expectedOutputs, "signals,spiketrains,spiketimes"),
+                (self.simulations, "signals,spiketrains,spiketimes")]
+        scs = [(self.modelFittings, "All fittings' list"),
+               (self.fittingInputs, "About inputs"),
+               (self.expectedOutputs, "About outputs"),
+               (self.simulations, "Simulations' list")]
+        for b in blks:
+            if not b[0] in [i.name for i in self.nixFile.blocks]:
+                self.nixFile.create_block(b[0], b[1])
+        for s in scs:
+            if not s[0] in self.nixFile.sections:
+                self.nixFile.create_section(s[0], s[1])
+        self.closeNixFile()
 
     def openNixFile(self, mode = nix.FileMode.ReadWrite):
         '''
@@ -77,7 +80,7 @@ class ModelfittingIO(object):
         if name is None: name = sig.name
         if description is None: description = sig.description
         if name in self.GetInNames():
-            if safe: raise Exception("Input '{0}' already exists")
+            if safe: raise Exception("Input '{0}' already exists".format(name))
         blk = self.nixFile.blocks[self.fittingInputs]
         sig.name = name
         asig = nio.addAnalogSignal2Block(blk, sig)
@@ -111,8 +114,8 @@ class ModelfittingIO(object):
         nio.addTag("whole " + name, "whole signal tag", self.flt(sig.t_start),
                    blk, [dsig], sec, self.flt(sig.duration))
 
-    def AddFit(self, name, model, results = None, initials={}, in_name="", out_name="", description ="",
-               safe = True, returninfo = True):
+    def AddFit(self, name, model, results = None, initials={}, in_name="", out_name="", description="",
+               safe = True, returninfo = True, best_pos = {}, input_var = None, duration = None):
         '''
         Adds info about fitting into NIX file
         :param name: str, name of fitting (should be uniq)
@@ -132,11 +135,17 @@ class ModelfittingIO(object):
         if self.EoR(not out_name in self.GetOutNames(), "Output '{0}' not found".format(out_name), safe): return False
         if self.EoR(name in self.GetFitNames(), "Fitting '{0}' already exists".format(name), safe): return False
         if results==None:
-            results = object()
-            results.best_pos = {}
-            results.parameters = object()
-            results.parameters.params = {}
+            class B(object):
+                def __init__(self):
+                    self.params = {}
+            class A(object):
+                def __init__(self):
+                    self.best_pos = best_pos
+                    self.parameters = B()
+                    self.args = [{"input_var":input_var}]
+            results = A()
             if description=="": description = "Not-A-Fitting"
+        else: pickle.dump(results, open(os.path.join(self.__pickle, name + self.fpickle_suff), "w"))
         sec = self.nixFile.sections[self.modelFittings].create_section(name, "fitting trial")
         fp = sec.create_section(self.best_pos, "parameters after fitting")
         for v in results.best_pos:
@@ -147,12 +156,12 @@ class ModelfittingIO(object):
         fp = sec.create_section(self.inits, "other parameters")
         for k in initials:
             fp[k] = nix.Value(initials[k])
-        pickle.dump(results, open(os.path.join(self.__pickle, name + self.fpickle_suff), "w"))
         sec["pickle"] = nix.Value(str(name+self.fpickle_suff))
         sec.props["pickle"].definition = "Pickle filename for results of fitting"
         sec["model"] = nix.Value(str(model))
         sec.props["model"].definition = "model id"
         sec["input"] = nix.Value(str(in_name))
+        sec["duration"] = nix.Value(duration)
         sec["output"] = nix.Value(str(out_name))
         sec["input_var"] = nix.Value(str(results.args[-1]["input_var"]))
         sec.props["input"].definition = "Name of input signal used for fitting;" \
@@ -161,6 +170,29 @@ class ModelfittingIO(object):
                                   " look to the section '{0}'".format(self.expectedOutputs)
         sec.definition = description
         return name
+
+    def GetFit(self, name):
+        '''
+        To given fitting returns information, stored in this NIX File
+        :param name: string, name of fitting
+        :return: {"input":str, "output":str, "pickle":str, "model":str, "inits":dict, "fitted":dict, "input_var":str}
+        '''
+        if not self.nixFile.is_open(): self.openNixFile()
+        g = [v for v in self.nixFile.sections[self.modelFittings].sections if v.name == name]
+        if len(g)==0: return None
+        g = g[0]
+        di = {}
+        di["input"] = str(g.props["input"].values[0].value) if "input" in g.props else None
+        di["output"] = str(g.props["output"].values[0].value) if "output" in g.props else None
+        di["pickle"] = str(g.props["pickle"].values[0].value) if "pickle" in g.props else None
+        di["duration"] = float(g.props["duration"].values[0].value if "duration" in g.props else None)
+        di["model"] = str(g.props["model"].values[0].value) if "model" in g.props else None
+        di["Gamma"] = float(g.props["Gamma"].values[0].value) if "Gamma" in g.props else None
+        di["inits"] = {k.name:k.values[0].value for k in g.sections[self.inits]} if self.inits in g.sections else None
+        # di["inits"].update({k:g.section[self.inits_i][k] for k in g.section[self.inits_i].props})
+        di["fitted"] = {k.name: k.values[0].value for k in g.sections[self.best_pos].props}
+        di["input_var"] = str(g.props["input_var"].values[0].value) if "input_var" in g.props else None
+        return di
 
     def RmFit(self, name, safe = True):
         '''
@@ -184,7 +216,8 @@ class ModelfittingIO(object):
                     for k in ar:
                         del k
                     del j
-            del sec
+            for i in sec:
+                del i
 
     def GetIn(self, name):
         '''
@@ -219,27 +252,6 @@ class ModelfittingIO(object):
         sig.name = name
         spk = nio.multiTag2SpikeTrain(spks[0], sig.t_start, sig.t_start+sig.duration) if len(spks)>0 else None
         return sig, spk
-
-    def GetFit(self, name):
-        '''
-        To given fitting returns information, stored in this NIX File
-        :param name: string, name of fitting
-        :return: {"input":str, "output":str, "pickle":str, "model":str, "inits":dict, "fitted":dict, "input_var":str}
-        '''
-        if not self.nixFile.is_open(): self.openNixFile()
-        g = [v for v in self.nixFile.sections[self.modelFittings].sections if v.name == name]
-        if len(g)==0: return None
-        g = g[0]
-        di = {}
-        di["input"] = str(g.props["input"].values[0].value)
-        di["output"] = str(g.props["output"].values[0].value)
-        di["pickle"] = str(g.props["pickle"].values[0].value)
-        di["model"] = str(g.props["model"].values[0].value)
-        di["inits"] = {k.name:k.values[0].value for k in g.sections[self.inits].props}
-        # di["inits"].update({k:g.section[self.inits_i][k] for k in g.section[self.inits_i].props})
-        di["fitted"] = {k.name: k.values[0].value for k in g.sections[self.best_pos].props}
-        di["input_var"] = str(g.props["input_var"].values[0].value)
-        return di
 
     def AddSim(self, fname, res, safe = True):
         '''
@@ -341,7 +353,7 @@ class ModelfittingIO(object):
         :return:
         '''
         if condition:
-            if safe: raise Exception(text)
+            if safe: raise Exception(text+"\n"+str(self.nixFilePath))
             else: return True
         else: return False
 
@@ -367,115 +379,3 @@ class ModelfittingIO(object):
 
     def __del__(self):
         self.nixFile.close()
-
-def ReadExperiment(ename, default = ["Trial", "PredictedInput"], labels = None):
-    '''
-    Reads initial Ajay's NIX Files and makes neo.Block from it
-    :param ename: str, experiment name
-    :param default: default for label. Itself by default is equal to ["Trial", "PredictedInput"]
-    :param labels: it's better not to use, but here you can specify, whether you want to read Trials
-        and PredictedInputs or not. By default os equal to default
-    :return: neo.Block
-    '''
-    labels = default if labels==None else None
-    freqs = [265]
-    analyser=rd.RawDataAnalyser(ename, fs.reorg)
-    data = [t for t in analyser.getContResps(freqs)[freqs[0]] if len(t)>0]
-    block = neo.Block(name = ename, description="experimental data")
-    spk = analyser.getContSpikes(freqs=freqs, types=None)[freqs[0]]
-    Ds, Bs, As = "DuringStimulus", "BeforeStimulus", "AfterStimulus"
-    seg = neo.Segment("DuringStimulus", "ExpData")
-    seg_af = neo.Segment("AfterStimulus", "ExpData")
-    for i in xrange(len(data)):
-        sc = data[i]
-        sp = spk[i]
-        if not(Ds in sc and As in sc and Bs in sc): continue
-        median = np.median(np.concatenate((sc[Bs].magnitude/sc[Bs].units, sc[As].magnitude/sc[As].units)))*sc[Ds].units
-
-        interm = sc[Ds] - ss.SignalBuilder(sc[Ds]).get_constant(median)
-        signal = ss.BeginSignalOn(interm, 0 * q.s)
-        signal.name = "Trial"+str(i+1)
-        signal.description = "voltage"
-        sh_spk = ss.ShiftSpikeTrain(sp[Ds], - interm.times[0])
-        sh_spk.name = signal.name
-        sh_spk.description = "spikes"
-        seg.analogsignals.append(signal)
-        seg.spiketrains.append(sh_spk)
-
-        interm = sc[As] - ss.SignalBuilder(sc[As]).get_constant(median)
-        signal = ss.BeginSignalOn(interm, 0 * q.s)
-        length = 0.5*q.s
-        signal = signal[signal.times < length]
-        signal.name = "Trial"+str(i+1)
-        signal.description = "voltage"
-        sh_spk = ss.ShiftSpikeTrain(sp[As], - interm.times[0])
-        sh_spk = sh_spk[sh_spk < length]
-        sh_spk.name = signal.name
-        sh_spk.description = "spikes"
-        seg_af.analogsignals.append(signal)
-        seg_af.spiketrains.append(sh_spk)
-        
-    if default[1] in labels:
-        myExpSect = analyser.nixFile.sections["VibrationStimulii-Processed"].sections["ContinuousStimulii"
-        ].sections["ContinuousStimulusAt265.0"].sections
-        for j in myExpSect:
-            if "Fitting"!=j.name[:7]: continue
-            myFitTag = [t for t in analyser.nixFile.blocks["FittingTraces"].tags if t.metadata == myExpSect[j.name]]
-            print "myFitTag", myFitTag
-            res = nio.tag2AnalogSignal(myFitTag[0], 0)
-            res = res[res.times<1*q.s]
-            res.name = labels[1]+j.name[7:]
-            res.description = "voltage"
-            seg.analogsignals.append(res)
-            tcur = neo.AnalogSignal(res.magnitude, units=q.nA, t_start=res.t_start, sampling_period=res.sampling_period)
-            tcur.name=res.name+"-1"
-            tcur.description="current"
-            seg.analogsignals.append(tcur)
-            mag = res.sampling_rate.simplified.magnitude*np.gradient(res.magnitude)
-            res = neo.AnalogSignal(mag, t_start=res.t_start, sampling_period=res.sampling_period, units=q.nA)
-            res.name = labels[1]+j.name[7:]
-            res.description = "current"
-            seg.analogsignals.append(res)
-
-    block.segments.append(seg)
-    block.segments.append(seg_af)
-
-    return block
-
-def PickleExp(ename, default = ["Trial", "PredictedInput"], labels = None):
-    '''
-    Pickles experiment, readen from NIX File, to pickle file.
-    :param ename: name of experiment
-    :param default: defaults, see ReadExperiment function
-    :param labels: labels, see ReadExperiment function
-    :return: None
-    '''
-    blk = ReadExperiment(ename, default, labels)
-    if not os.path.exists(fs.nxpickle):
-        os.makedirs(fs.nxpickle)
-    pickle.dump(blk, open(os.path.join(fs.nxpickle, ename+".pickle"), "w"))
-
-def UnpickleExp(ename):
-    '''
-    Unpickles pickled experiment
-    :param ename: name of experiment
-    :return: neo.Block
-    '''
-    path = os.path.join(fs.nxpickle, ename+".pickle")
-    blk = pickle.load(open(path)) if os.path.exists(path) else None
-    return blk
-
-def GetAvaliableIds():
-    '''
-    Returns experiment names, for which we want to make fittings, simulations, add new Inputs and Outputs and e.t.c.
-    :return: list of str
-    '''
-    path = os.path.join(fs.DATA, "ids_with_input")
-    if os.path.exists(path):
-        di = json.load(open(path))
-        return di["ids"]
-    else: return []
-
-if __name__=="__main__":
-    for k in GetAvaliableIds():
-        PickleExp(str(k))

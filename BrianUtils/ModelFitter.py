@@ -2,8 +2,8 @@ from brian.library import modelfitting as m
 import brian
 
 
-def FitModel(NModel, input, output, popsize=10000, maxiter=100, method="RK", algorithm = "CMAES", algo_params = None,
-             returninfo = True):
+def FitSingleCompartmentalModel(NModel, input, output, popsize=10000, maxiter=100, method="RK", algorithm ="CMAES", algo_params = None,
+                                returninfo = True):
     '''
     Fits model for given model and parameters
     :param NModel: instance for BrianUtils.NeuronModel.Models.Model
@@ -16,7 +16,9 @@ def FitModel(NModel, input, output, popsize=10000, maxiter=100, method="RK", alg
     :param algo_params: parameters of algorithm
     :return: brian.modelfitting.result; dict of inits
     '''
-
+    print "=========================Input and output: "
+    print input
+    print output
     input_raw = list(input.simplified.magnitude)
     output_spk = [brian.second*k for k in list(output.times.simplified.magnitude)]
     input_dt = float(input.sampling_period.simplified.magnitude)*brian.second

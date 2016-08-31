@@ -1,12 +1,15 @@
 import  NixUtils.NixModelFitter as NF
+from Storage import ProjectStructure as ps
 import sys
 
-# f = NF.NixModelFitter("130523-3LY", mode="r")
-f = NF.NixModelFitter("130501-2Rh", mode="r")
+
+expname = ps.getSettings()["expname"]
+
+f = NF.NixModelFitter(expname,  mode="r")
 
 lst = f.GetFittingNames()
 
-n = lst[-1] if len(sys.argv)<2 else lst[int(sys.argv[1][1:])] if sys.argv[1][0]=="%" else sys.argv[1]
+n = lst[-1] if len(sys.argv)<2 else sys.argv[1][1:] if sys.argv[1][0]=="%" else lst[int(sys.argv[1])]
 
 if len(sys.argv)<2: print lst
 else: print n

@@ -1,1 +1,2 @@
-import ProjectFileStructure, ModelfittingIO, NixModelFitter
+import ModelfittingIO
+import NixModelFitter

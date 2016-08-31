@@ -1,7 +1,7 @@
 import numpy as np
 
 import quantities as q
-from brian import Equations, StateMonitor, run
+from brian import Equations, StateMonitor, SpikeMonitor, run
 
 import BrianUtils.Utilities
 from BrianUtils import Utilities as bu
@@ -25,7 +25,7 @@ class Model:
         self.opt_params = {}
         self.monitors_list = {}
         self.units = {}
-    	pass
+        self.spikemonitor = None
 
     def update_perc(self, di):
         '''
@@ -156,6 +156,7 @@ class Model:
         self.monitors_un = monitors
         for k in monitors:
             self.monitors[k] = StateMonitor(neurongroup, k, record=[0])
+        self.spikemonitor = SpikeMonitor(neurongroup, record=[0])
         run(time, threads=2)
         return self.monitors
 
@@ -185,6 +186,12 @@ class Model:
             times = q.s*self.monitors[i].times
             res.append(ss.AnalogSignalFromTimes(times, mag, qq.units, i, "from the model"))
         return res
+
+    def return_spikes(self):
+        times = q.s*self.spikemonitor[0]
+        t_stop = times[-1]+0.01*q.s if len(times)>0 else 0.01*q.s
+        spiketrain = ss.neo.SpikeTrain(times, t_stop)
+        return spiketrain
 
 
 class DummyModel(Model):
