@@ -9,7 +9,7 @@ import neoNIXIO as nio
 import nixio as nix
 import quantities as q
 from NeoUtils import Signals as ss
-from Storage import ProjectFileStructure as fs
+from Storage import ProjectStructure as fs
 from NixUtils import rawDataAnalyse as rd
 
 
@@ -377,6 +377,8 @@ class ModelfittingIO(object):
     def __del__(self):
         self.nixFile.close()
 
+
+'''To rewrite'''
 def ReadExperiment(ename, default = ["Trial", "PredictedInput"], labels = None):
     '''
     Reads initial Ajay's NIX Files and makes neo.Block from it
@@ -460,9 +462,9 @@ def PickleExp(ename, default = ["Trial", "PredictedInput"], labels = None):
     :return: None
     '''
     blk = ReadExperiment(ename, default, labels)
-    if not os.path.exists(fs.nxpickle):
-        os.makedirs(fs.nxpickle)
-    pickle.dump(blk, open(os.path.join(fs.nxpickle, ename+".pickle"), "w"))
+    if not os.path.exists(fs.temp):
+        os.makedirs(fs.temp)
+    pickle.dump(blk, open(os.path.join(fs.temp, ename + ".pickle"), "w"))
 
 def UnpickleExp(ename):
     '''
@@ -470,7 +472,7 @@ def UnpickleExp(ename):
     :param ename: name of experiment
     :return: neo.Block
     '''
-    path = os.path.join(fs.nxpickle, ename+".pickle")
+    path = os.path.join(fs.temp, ename + ".pickle")
     blk = pickle.load(open(path)) if os.path.exists(path) else None
     return blk
 

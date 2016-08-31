@@ -1,7 +1,7 @@
 import NeoUtils.Signals as sg
 import quantities as q
 from NeoUtils import NeoPlot as NP
-from Storage import ProjectFileStructure as fs
+from Storage import ProjectStructure as fs
 from NixUtils import ModelfittingIO as mio
 
 a = sg.SignalBuilder(t_start=0 * q.ms, sampling_period=0.1 * q.ms, length=10000)

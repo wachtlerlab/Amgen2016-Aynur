@@ -4,7 +4,7 @@ from matplotlib import pylab as plt
 
 from BrianUtils.NeuronModels import AdEx
 from NeoUtils import NeoPlot as nep
-from Storage import ProjectFileStructure as fs
+from Storage import ProjectStructure as fs
 from NixUtils import ModelfittingIO as mio
 
 if len(sys.argv)<2: n = None

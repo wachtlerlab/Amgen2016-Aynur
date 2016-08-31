@@ -3,7 +3,7 @@ import os
 import sys
 
 import NixUtils.ModelfittingIO as mio
-from Storage import ProjectFileStructure as FS
+from Storage import ProjectStructure as FS
 
 tempFolder = "/tmp/nixfiles"
 

@@ -1,4 +1,4 @@
-from Storage import ProjectFileStructure as fs
+from Storage import ProjectStructure as fs
 from NixUtils import ModelfittingIO as mio
 
 new_neurons = ["130705-1LY", "140813-3Al"]

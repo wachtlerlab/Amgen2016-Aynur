@@ -1,7 +1,8 @@
 import NixUtils.NixModelFitter as nio
+from Storage import ProjectStructure as fs
 import sys, os
 
-direc = None if sys.argv[1]==":" else sys.argv[1]
+direc = fs.FITTING if sys.argv[1]==":" else sys.argv[1]
 
 if len(sys.argv[2:])>0:
     lst = sys.argv[2:]

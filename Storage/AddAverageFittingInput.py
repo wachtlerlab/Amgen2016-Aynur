@@ -3,7 +3,7 @@ import numpy as np
 import os
 from matplotlib import pylab as plt
 
-import Storage.ProjectFileStructure as FS
+import Storage.ProjectStructure as FS
 import NixUtils.neoNIXIO as nx
 import neo
 import nixio as nix
@@ -16,30 +16,16 @@ new_neurons = ["130705-1LY", "140813-3Al"]
 
 
 def doubleExpFun(xSig, Ar, Ad, t0, itaur, itaud):
-
     expd = Ad * np.exp(-itaud * (xSig - t0))
     expr = Ar * np.exp(-itaur * (xSig - t0))
-
     doubleExp = expd - expr
     doubleExp[xSig < t0] = (Ad - Ar)
-
     return doubleExp
 
 def twoDoubleExps(xSig, A1, A2, t1, t2, taur1, taud1, taur2, taud2, offset):
-
         print A1, A2, t1, t2, taur1, taud1, taur2, taud2, offset
-
         d1 = doubleExpFun(xSig, A1, A1, t1, 1 / taur1, 1 / taud1)
         d2 = doubleExpFun(xSig, A2, A2, t2, 1 / taur2, 1 / taud2)
-
-        # if np.any(np.array([A1, A2, t1, t2, itaur1, itaud1, itaur2, itaud2]) < 0)\
-        #         or np.any(np.array([t1, t2]) < delayms - 10):
-        #
-        #     return np.ones_like(x) * 100
-        # to avoid inverted double exponential for the lower delay one
-        # elif (Ad1 < Ar1):
-        #     return np.zeros_like(x)
-        # else:
         return d1 - d2 + offset
 
 olddir = FS.nixFiles
