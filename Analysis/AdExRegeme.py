@@ -1,26 +1,31 @@
-import numpy as np
-import sys
-from matplotlib import pylab as plt
+'''
+Generates regime plot for fitting.
+Only for AdEx model!
 
+Usage:
+
+python Analysis/AdExRegime.py -1
+
+Plots regime plot for last fitting in current NIX file.
+
+python Analysis/AdExRegime
+
+Plots available fittings
+'''
+import sys
+import numpy as np
+from matplotlib import pylab as plt
 from BrianUtils.NeuronModels import AdEx
 from NeoUtils import NeoPlot as nep
-from Storage import ProjectStructure as fs
+from Storage import ProjectStructure as pstr
 from NixUtils import ModelfittingIO as mio
 
 if len(sys.argv)<2: n = None
 else: n = True
 
-# expname = "130313-4Rh"
-# expname = "130322-1LY"
-# expname = "130326-2Rh"
-# expname = "130425-1Al"
-expname = "130501-2Rh"
-# expname = "130523-3LY"
-# expname = "130605-2LY"
-# expname = "140917-1Al"
-# expname = "141030-1Al"
+expname = pstr.getSettings()["expname"]
 
-f = mio.ModelfittingIO(expname, fs.FITTING)
+f = mio.ModelfittingIO(expname, pstr.FITTING)
 
 lst = f.GetFitNames()
 

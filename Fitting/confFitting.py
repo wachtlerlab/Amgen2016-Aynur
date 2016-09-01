@@ -1,3 +1,8 @@
+'''
+Fitting with the config file
+Usage:
+python confFitting.py path_to_conf_file
+'''
 import json
 import os
 import subprocess

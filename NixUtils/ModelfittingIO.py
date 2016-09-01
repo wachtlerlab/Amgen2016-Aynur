@@ -1,6 +1,6 @@
 import os
 import pickle
-import neoNIXIO as nio
+from NixUtils import neoNIXIO as nio
 import nixio as nix
 
 class ModelfittingIO(object):
