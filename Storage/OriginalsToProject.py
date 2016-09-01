@@ -1,3 +1,6 @@
+'''
+Creates project from original NIX files. Creates NIX files for internal model fitting use.
+'''
 from NixUtils import ModelfittingIO as mio
 from Storage import ProjectStructure as ps
 from NixUtils import rawDataAnalyse as rd

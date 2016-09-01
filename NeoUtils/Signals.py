@@ -1,3 +1,6 @@
+'''
+Provides functions to create, modify, join, shhift e.t.c. neo analogsignals and spiketrains
+'''
 import brian as b
 import neo
 import numpy as np

@@ -1,3 +1,7 @@
+'''
+Provides variables for project structure (directory and specific file names e.t.c. Manages usage of same code
+from different computers.
+'''
 import os
 import socket
 import json

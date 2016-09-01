@@ -1,3 +1,6 @@
+'''
+Provides functions and objects to plot neo analogsignals and spiketrains
+'''
 from astropy.visualization import quantity_support
 quantity_support()
 from matplotlib import pylab as plt
