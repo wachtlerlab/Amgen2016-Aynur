@@ -1,6 +1,16 @@
+'''
+Usages:
+
+python SimulateAndPlotFitting.py -1
+will simulate and plot last fitting in current neuron
+
+python SimulateAndPlotFitting.py %fitting_name
+will simulate and plot fitting with name fitting_name
+'''
 import  NixUtils.NixModelFitter as NF
 from Storage import ProjectStructure as ps
 import sys
+
 
 
 expname = ps.getSettings()["expname"]

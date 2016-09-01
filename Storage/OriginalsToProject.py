@@ -91,4 +91,5 @@ for ename in params:
     derivativeDA = ss.ExpandNull(tr(derivative), timemaxDA)
     f.AddIn(derivativeDA, name = "derivative-DuringAfterStimulus", description = "current")
 
+readen.sort()
 ps.createExpIdFile(readen)

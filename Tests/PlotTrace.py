@@ -13,6 +13,13 @@ It'll list inputs available, then outputs available, then will plot input with n
 and output with number 3 (only analogsignal, not spiketrain),
 and finally show it on the screen.
 
+python Tests/PlotTrace.py sub:121 xlab:'time, ms' ylab:'Nice axis' col:0 inp:0 out++:0 col:1 inp:4 out+-:2 leg:0 save:superplot.png
+
+Will plot input 0 and output 0 (both signal and spiketrain) in one color,
+input 4 and output 2(without spiketrain) - in other,
+on the subplot 121 (width height pos), with xlabel='time, ms' and ylabel='Nice axis'
+without legend
+and save plot as png with filename superplot.png
 '''
 from BrianUtils.Utilities import timer
 t = timer()
@@ -71,3 +78,4 @@ for ko in m:
             print "Outputs: "
             printlst(outputs)
     elif k[0]=="show":np.Show()
+    elif k[0]=="save":np.Show(filename=k[1])

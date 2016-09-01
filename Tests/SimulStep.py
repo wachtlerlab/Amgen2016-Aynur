@@ -1,3 +1,9 @@
+'''
+Was used for simulation and plots of responces of AdEx to a step current.
+Usage:
+python SimulStep.py regime_name
+makes plot for regime regime_name from AdEx model
+'''
 from BrianUtils.NeuronModels import AdEx
 from BrianUtils import Simulator
 from NeoUtils import Signals as ss

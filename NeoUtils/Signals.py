@@ -6,20 +6,6 @@ import neo
 import numpy as np
 import quantities as q
 
-def CutFirst(stri):
-    '''
-    When using custom quantities.UnitQuantity, cuts first part from string representation.
-    Example: "1.0 0.1 mV" -> "0.1 mV"
-    Do not use!
-    :param stri: string representation of UnitQuantity
-    :return: string, first part cut
-    '''
-    stri = str(stri)
-    spl = stri.split(" ")
-    if len(spl)>2:
-        return " ".join(spl[-2:])
-    else: return stri
-
 def Compare(a, b, precision=1e-9):
     '''
     Compares float values a and b with given precision
