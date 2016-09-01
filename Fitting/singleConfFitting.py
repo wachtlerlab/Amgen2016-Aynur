@@ -1,3 +1,6 @@
+'''
+Makes single fitting. Called by confFitting.py script, you don't need to use it.
+'''
 import ast
 import os
 import sys

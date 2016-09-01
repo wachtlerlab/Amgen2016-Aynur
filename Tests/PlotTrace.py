@@ -1,3 +1,26 @@
+'''
+Simple-to-use script to visualize data in NIX file.
+
+Usage:
+
+python Test/PlotTrace.py command1[:param1] command2[:param2]
+
+Example:
+
+python Test/PlotTrace.py list:i list:o inp:0 out+-:3 show
+
+It'll list inputs available, then outputs available, then will plot input with number 0
+and output with number 3 (only analogsignal, not spiketrain),
+and finally show it on the screen.
+
+python Tests/PlotTrace.py sub:121 xlab:'time, ms' ylab:'Nice axis' col:0 inp:0 out++:0 col:1 inp:4 out+-:2 leg:0 save:superplot.png
+
+Will plot input 0 and output 0 (both signal and spiketrain) in one color,
+input 4 and output 2(without spiketrain) - in other,
+on the subplot 121 (width height pos), with xlabel='time, ms' and ylabel='Nice axis'
+without legend
+and save plot as png with filename superplot.png
+'''
 from BrianUtils.Utilities import timer
 t = timer()
 import sys
@@ -27,10 +50,10 @@ for ko in m:
     if k[0]=="inp":
         res = f.GetIn(inputs[int(k[1])])
         np.PlotSignal(res, colorgroup=colorgroup)
-    elif k[0]=="out":
-        res = f.GetOut(outputs[int(k[2])])
-        if k[1][0]=="+": np.PlotSignal(res[0], colorgroup=colorgroup)
-        if k[1][1]=="+": np.PlotSpiketrain(res[1], colorgroup=colorgroup)
+    elif k[0][:3]=="out":
+        res = f.GetOut(outputs[int(k[1])])
+        if k[0][3]=="+": np.PlotSignal(res[0], colorgroup=colorgroup)
+        if k[0][4]=="+": np.PlotSpiketrain(res[1], colorgroup=colorgroup)
     elif k[0]=="col":
         colorgroup = int(k[1])
     elif k[0]=="sub":
@@ -55,3 +78,4 @@ for ko in m:
             print "Outputs: "
             printlst(outputs)
     elif k[0]=="show":np.Show()
+    elif k[0]=="save":np.Show(filename=k[1])

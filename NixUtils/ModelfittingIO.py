@@ -1,17 +1,7 @@
-import json
-import numpy as np
 import os
 import pickle
-import sys
-
-import neo
-import neoNIXIO as nio
+from NixUtils import neoNIXIO as nio
 import nixio as nix
-import quantities as q
-from NeoUtils import Signals as ss
-from Storage import ProjectStructure as fs
-from NixUtils import rawDataAnalyse as rd
-
 
 class ModelfittingIO(object):
     '''

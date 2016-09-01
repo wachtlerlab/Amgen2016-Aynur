@@ -1,3 +1,6 @@
+'''
+Calculates
+'''
 import NixUtils.NixModelFitter as nio
 from Storage import ProjectStructure as fs
 import sys, os

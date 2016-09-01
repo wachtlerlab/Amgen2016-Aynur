@@ -1,3 +1,7 @@
+'''
+Provides variables for project structure (directory and specific file names e.t.c. Manages usage of same code
+from different computers.
+'''
 import os
 import socket
 import json
@@ -10,6 +14,7 @@ HOME = os.path.expanduser('~')
 
 if socket.gethostname()=="sapphire": HOME = os.path.join(HOME, "Public", "Trial31")#HOME = os.path.join(HOME, "Public", "atlas")
 elif socket.gethostname()=="green": pass
+elif socket.gethostname()=="Aynur-IdeaPad-Z500": HOME = os.path.join(HOME, "Programming")
 
 DATA = os.path.join(HOME, "DATA")
 INPUT = os.path.join(DATA, "INPUT")

@@ -1,3 +1,9 @@
+'''
+Not general script. Plots simulation from .plot.json file, simulation output and recording separately,
+and line, representingcontinuous stimulus as line. Only for nice pictures for posters and presentations
+
+python Tests/PlotSimBeauty.py path_to_file.plot.json
+'''
 from NeoUtils import NeoJsonIO as jio, Signals as ss
 from matplotlib import pyplot as plt
 import numpy as np

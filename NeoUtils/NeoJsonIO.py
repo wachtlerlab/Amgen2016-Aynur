@@ -2,7 +2,7 @@ import json
 from NeoUtils.Signals import QuantityFromString
 import numpy as np
 import neo
-from NeoUtils.NeoPlot import PlotSets, PlotLists
+from NeoUtils.NeoPlot import PlotLists
 
 
 def AnalogSignalToDict(sig):
@@ -60,7 +60,6 @@ def DictToSpikeTrain(dic):
     t_stop = QuantityFromString(t_stop)
     return neo.SpikeTrain(times*units, t_stop, units, name=name, description=description)
 
-
 def SaveSignal(sig, filename):
     dic = AnalogSignalToDict(sig)
     json.dump(dic, open(filename, "w"))
@@ -92,10 +91,6 @@ def LoadJson(fname):
     if not times is None:
         spks.append(DictToSpikeTrain(inp))
     return [sigs, spks]
-
-def PlotJsonO(fname):
-    di = LoadJson(fname)
-    PlotSets(*di)
 
 def PlotJsonAnalogSignals(fname):
     di = LoadJson(fname)
