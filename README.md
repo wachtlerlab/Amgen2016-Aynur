@@ -1,4 +1,17 @@
 # Amgen2016-Aynur
-Here exists code, related to AmgenScholarSummer project, made by Aynur Maksutov and revewed by Ajayrama Kumaraswamy
+Description:
+It is a Framework for efficient and convinient use of Brian Simulator for model fitting.
 
-This project has a number of directories(subprojects)
+Team:
+Author: Aynur Maksutov
+Reviewed and supervised by: Ajayrama Kumaraswamy
+With help from Wachtler lab members
+
+License:
+See license
+
+Structure:
+This Framework has a number of subprojects. See wiki pages.
+
+Support:
+Developed with support from Amgen Scholars Europe Program.
