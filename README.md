@@ -17,7 +17,7 @@ With help from Wachtler lab members
 
 ## License:
 
-See license
+See license [https://github.com/wachtlerlab/Amgen2016-Aynur/blob/master/LICENSE-CCBY]
 
 
 ## Structure:
