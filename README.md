@@ -1,28 +1,30 @@
 # Amgen2016-Aynur
-Description:
+## Description:
 
 It is a Framework for efficient and convinient use of Brian Simulator for model fitting.
 
 
-Team:
+## Team:
 
-Author: Aynur Maksutov
+### Author: 
+Aynur Maksutov
 
-Reviewed and supervised by: Ajayrama Kumaraswamy
+### Reviewed and supervised by:
+Ajayrama Kumaraswamy
 
 With help from Wachtler lab members
 
 
-License:
+## License:
 
 See license
 
 
-Structure:
+## Structure:
 
 This Framework has a number of subprojects. See wiki pages.
 
 
-Support:
+## Support:
 
 Developed with support from Amgen Scholars Europe Program.
