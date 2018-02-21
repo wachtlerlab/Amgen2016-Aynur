@@ -8,6 +8,7 @@ setup(
     install_requires=["numpy==1.11",
                       "matplotlib>=1.5.3",
                       "scipy==0.18.1",
+                      "astropy",
                       "seaborn>=0.7.1",
                       "neo==0.4",
                       "nixio>=0.1.3",
