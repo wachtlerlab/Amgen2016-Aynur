@@ -2,6 +2,7 @@ import os
 import pickle
 from NixUtils import neoNIXIO as nio
 import nixio as nix
+import quantities as q
 
 class ModelfittingIO(object):
     '''
