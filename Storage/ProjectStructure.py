@@ -16,6 +16,7 @@ if socket.gethostname()=="sapphire": HOME = os.path.join(HOME, "Public", "Trial3
 elif socket.gethostname()=="green": pass
 elif socket.gethostname()=="Aynur-IdeaPad-Z500": HOME = os.path.join(HOME, "Programming")
 elif socket.gethostname()=="hydra": HOME = os.path.join(HOME)
+elif socket.gethostname()=="lilac": HOME = os.path.join(HOME, "newdata")
 
 DATA = os.path.join(HOME, "DATA")
 INPUT = os.path.join(DATA, "INPUT")
