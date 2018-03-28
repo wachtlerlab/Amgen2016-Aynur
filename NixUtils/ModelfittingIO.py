@@ -366,7 +366,7 @@ class ModelfittingIO(object):
         Closes NIX file
         :return:
         '''
-        if self.is_open():
+        if self.nixFile.is_open():
 	    self.nixFile.close()
 
     def __del__(self):
