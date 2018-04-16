@@ -1,0 +1,116 @@
+LogFile hydra24_08.json__2016-08-25_18:35:06.342785.log
+File  141030-1Al  is open in  /home/maksutov/DATA/FITTING
+LogFile hydra24_08.json__2016-08-26_02:33:06.905939.log
+File  140813-3Al  is open in  /home/maksutov/DATA/FITTING
+LogFile hydra24_08.json__2016-08-25_22:34:20.250163.log
+File  130705-1LY  is open in  /home/maksutov/DATA/FITTING
+LogFile hydra24_08.json__2018-04-04_17:55:09.949932.log
+File  130322-1LY  is open in  /home/maksutov/DATA/FITTING
+LogFile hydra24_08.json__2018-04-01_01:15:57.900901.log
+File  130313-4Rh  is open in  /home/maksutov/DATA/FITTING
+LogFile hydra24_08.json__2016-08-25_10:36:21.945634.log
+File  130501-2Rh  is open in  /home/maksutov/DATA/FITTING
+LogFile hydra24_08.json__2018-04-04_13:56:07.578509.log
+File  130313-4Rh  is open in  /home/maksutov/DATA/FITTING
+LogFile hydra24_08.json__2018-04-05_01:52:27.502804.log
+File  130425-1Al  is open in  /home/maksutov/DATA/FITTING
+LogFile hydra24_08.json__2018-04-04_21:53:46.462393.log
+File  130326-2Rh  is open in  /home/maksutov/DATA/FITTING
+LogFile hydra24_08.json__2016-08-25_02:37:33.994770.log
+File  130326-2Rh  is open in  /home/maksutov/DATA/FITTING
+LogFile hydra24_08.json__2018-04-05_21:45:23.561598.log
+File  140813-3Al  is open in  /home/maksutov/DATA/FITTING
+LogFile hydra24_08.json__2018-04-05_09:49:26.520146.log
+File  140917-1Al  is open in  /home/maksutov/DATA/FITTING
+LogFile hydra24_08.json__2018-04-06_05:42:19.405957.log
+File  130605-2LY  is open in  /home/maksutov/DATA/FITTING
+LogFile hydra24_08.json__2016-08-25_06:36:59.474058.log
+File  130425-1Al  is open in  /home/maksutov/DATA/FITTING
+LogFile hydra24_08.json__2016-08-25_14:35:58.233423.log
+File  140917-1Al  is open in  /home/maksutov/DATA/FITTING
+LogFile hydra24_08.json__2018-03-29_09:06:31.263855.log
+File  130326-2Rh  is open in  /home/maksutov/DATA/FITTING
+LogFile hydra24_08.json__2018-04-05_05:51:08.248121.log
+File  130501-2Rh  is open in  /home/maksutov/DATA/FITTING
+LogFile hydra24_08.json__2016-08-24_18:39:25.438078.log
+File  130313-4Rh  is open in  /home/maksutov/DATA/FITTING
+LogFile hydra24_08.json__2018-03-29_05:08:08.308138.log
+File  130322-1LY  is open in  /home/maksutov/DATA/FITTING
+LogFile hydra24_08.json__2018-04-05_17:46:39.217866.log
+File  130705-1LY  is open in  /home/maksutov/DATA/FITTING
+LogFile hydra24_08.json__2018-03-29_01:09:01.769347.log
+File  130313-4Rh  is open in  /home/maksutov/DATA/FITTING
+LogFile hydra24_08.json__2018-04-05_13:47:59.457805.log
+File  141030-1Al  is open in  /home/maksutov/DATA/FITTING
+LogFile hydra24_08.json__2016-08-24_22:38:31.872329.log
+File  130322-1LY  is open in  /home/maksutov/DATA/FITTING
+LogFile hydra24_08.json__2016-08-26_10:30:56.506925.log
+File  130605-2LY  is open in  /home/maksutov/DATA/FITTING
+LogFile hydra24_08.json__2016-08-26_06:31:55.525680.log
+File  130523-3LY  is open in  /home/maksutov/DATA/FITTING
+LogFile hydra24_08.json__2018-04-06_01:43:48.952817.log
+File  130523-3LY  is open in  /home/maksutov/DATA/FITTING
+               C     Gamma        Vr        Vt             a   a_by_gL  \
+4   5.037313e-09      None -0.066715 -0.044204  8.533968e-07  2.329281   
+22  2.118817e-09  0.580025 -0.054501 -0.048469  8.321982e-07  1.886995   
+9   4.932928e-09  0.983212 -0.035676 -0.049194  8.830723e-07  1.518499   
+7   5.978508e-09      None -0.055238 -0.051651  1.067118e-06  2.893912   
+16  6.827969e-09      None -0.065058 -0.049762  1.185118e-06  2.224155   
+25  6.089353e-09      None -0.065410 -0.049136  8.902018e-07  6.125200   
+23  4.604703e-09  0.487867 -0.054983 -0.049210  1.273777e-06  2.599200   
+2   5.436636e-09         0 -0.054851 -0.050586  5.805776e-07  3.209723   
+1   7.719812e-09         0 -0.054844 -0.049742  1.152723e-06  4.591646   
+11  4.184986e-09      None -0.060371 -0.049352  9.191981e-07  1.948205   
+21  4.481985e-09      None -0.060210 -0.050829  1.349262e-06  3.271166   
+
+               b                     fitting            gL  \
+4   1.696571e-09  2018-04-01_01:15:57.900901  3.663778e-07   
+22  3.190267e-09  2016-08-24_22:38:31.872329  4.410177e-07   
+9   1.489122e-09  2016-08-25_02:37:33.994770  5.815428e-07   
+7   1.884754e-09  2018-04-05_01:52:27.502804  3.687458e-07   
+16  9.166239e-10  2018-04-05_05:51:08.248121  5.328396e-07   
+25  2.375547e-09  2018-04-06_01:43:48.952817  1.453343e-07   
+23  4.328579e-09  2016-08-26_10:30:56.506925  4.900650e-07   
+2   1.307271e-09  2016-08-25_22:34:20.250163  1.808809e-07   
+1   2.012799e-09  2016-08-26_02:33:06.905939  2.510479e-07   
+11  9.134257e-10  2018-04-05_09:49:26.520146  4.718181e-07   
+21  1.821503e-09  2018-04-05_13:47:59.457805  4.124712e-07   
+
+                                   input model      neuron  \
+4   subthreshold-DuringAfterStimulus-e-7  adex  130313-4Rh   
+22  subthreshold-DuringAfterStimulus-e-7  adex  130322-1LY   
+9   subthreshold-DuringAfterStimulus-e-7  adex  130326-2Rh   
+7   subthreshold-DuringAfterStimulus-e-7  adex  130425-1Al   
+16  subthreshold-DuringAfterStimulus-e-7  adex  130501-2Rh   
+25  subthreshold-DuringAfterStimulus-e-7  adex  130523-3LY   
+23  subthreshold-DuringAfterStimulus-e-7  adex  130605-2LY   
+2   subthreshold-DuringAfterStimulus-e-7  adex  130705-1LY   
+1   subthreshold-DuringAfterStimulus-e-7  adex  140813-3Al   
+11  subthreshold-DuringAfterStimulus-e-7  adex  140917-1Al   
+21  subthreshold-DuringAfterStimulus-e-7  adex  141030-1Al   
+
+                         output        sF  scaleFactor  scaleFactor2  \
+4   Trial17-DuringAfterSimiulus  0.004017    22.438158      0.056291   
+22   Trial3-DuringAfterSimiulus  0.006473    52.718760     -0.140176   
+9    Trial3-DuringAfterSimiulus  0.008763    42.210868     -0.071664   
+7    Trial2-DuringAfterSimiulus  0.004643    47.758283     -0.025466   
+16   Trial5-DuringAfterSimiulus  0.007205    82.498311     -0.030908   
+25   Trial1-DuringAfterSimiulus  0.009023    68.045840     -0.193132   
+23   Trial3-DuringAfterSimiulus  0.005420    55.471145     -0.047276   
+2    Trial1-DuringAfterSimiulus  0.002844    23.222823     -0.062587   
+1    Trial1-DuringAfterSimiulus  0.006362    39.464355      0.129834   
+11   Trial3-DuringAfterSimiulus  0.005342    44.736005     -0.051203   
+21   Trial3-DuringAfterSimiulus  0.007520    63.209797      0.070328   
+
+              start       tau    group  
+4   mean_24_08_2016  0.262020  forager  
+22  mean_24_08_2016  0.696375  forager  
+9   mean_24_08_2016  0.646483  forager  
+7   mean_24_08_2016  0.785564  forager  
+16  mean_24_08_2016  0.499018  forager  
+25  mean_24_08_2016  0.602065    young  
+23  mean_24_08_2016  0.324183    young  
+2   mean_24_08_2016  0.683159  forager  
+1   mean_24_08_2016  0.650318    young  
+11  mean_24_08_2016  0.464789    young  
+21  mean_24_08_2016  0.838526    young  

@@ -176,7 +176,7 @@ class ModelfittingIO(object):
         di["input"] = str(g.props["input"].values[0].value) if "input" in g.props else None
         di["output"] = str(g.props["output"].values[0].value) if "output" in g.props else None
         di["pickle"] = str(g.props["pickle"].values[0].value) if "pickle" in g.props else None
-        di["duration"] = float(g.props["duration"].values[0].value if "duration" in g.props else None)
+        di["duration"] = float(g.props["duration"].values[0].value) if "duration" in g.props else None
         di["model"] = str(g.props["model"].values[0].value) if "model" in g.props else None
         di["Gamma"] = float(g.props["Gamma"].values[0].value) if "Gamma" in g.props else None
         di["inits"] = {k.name:k.values[0].value for k in g.sections[self.inits]} if self.inits in g.sections else None

@@ -26,4 +26,4 @@ else: print n
 
 sigfilter = lambda x: True if x.description=="from the model" and x.name!="w" else False
 
-f.SimulateAndPlotFitting(n, legend = True, sigfilter = sigfilter)
+f.SimulateAndPlotFitting(n, legend = True, sigfilter = sigfilter, calculGamma = True)

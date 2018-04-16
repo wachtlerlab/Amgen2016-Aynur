@@ -35,6 +35,7 @@ for configName in sys.argv[2:]:
             params["start"] = di["Initial point"]
             params["Gamma"] = fit["Gamma"]
             params["a_by_gL"] = params["a"]/params["gL"]
+            params["TauM_by_TauW"] = params["C"]/params["gL"]/params["tau"]
             df0 = df0.append(pd.DataFrame(data = params, index=[df0.shape[0]]))
 
 young = set(["130523-3LY", "130605-1LY", "130605-2LY", "140813-3Al", "140917-1Al", "140930-1Al", "141030-1Al"])

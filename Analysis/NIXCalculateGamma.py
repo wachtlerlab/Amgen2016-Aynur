@@ -1,6 +1,8 @@
 '''
 Calculates
 '''
+import matplotlib
+matplotlib.use("agg")
 import NixUtils.NixModelFitter as nio
 from Storage import ProjectStructure as fs
 import sys, os

@@ -142,7 +142,7 @@ class NeoPlotter(object):
         :param filename: str, where to save (if None, will show() without saving)
         :return: None
         '''
-        colors = rcParams['axes.color_cycle']
+        colors = [color['color'] for color in list(rcParams['axes.prop_cycle'])]
         fig = plt.figure(figsize=figsize)
         for i in self.subplots:
             ax = fig.add_subplot(i[2][0])

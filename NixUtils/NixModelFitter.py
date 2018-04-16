@@ -26,6 +26,9 @@ class NixModelFitter(object):
                                 (see NixUtils.ModelfittingIO.ModelfittingIO)
         :param mode: str from {"w":ReadWrite, "r":ReadOnly}.keys()
         '''
+	if expname[-3:]==".h5":
+	    dir = os.path.dirname(expname)
+	    expname = os.path.basename(expname)[:-3]
         if dir is None: dir = FS.FITTING
         if mode == "w":
             self.file = MIO.ModelfittingIO(expname, dir, mode = MIO.nix.FileMode.ReadWrite)
