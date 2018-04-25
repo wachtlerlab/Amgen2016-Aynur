@@ -26,6 +26,7 @@ TRACES = os.path.join(DATA, "TRACES")
 fpickle = os.path.join(FITTING, "pickle")
 temp = os.path.join(DATA, "temp")
 analysis = os.path.join(DATA, "analysis")
+regime_plots = os.path.join(analysis, "regime_plots")
 tables = os.path.join(analysis, "tables")
 config = os.path.join(DATA, "config")
 
